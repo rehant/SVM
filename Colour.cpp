@@ -7,24 +7,24 @@ Colour::Colour()
 	b = 0;
 }
 
-Colour::Colour(double nr, double ng, double nb)
+Colour::Colour(float nr, float ng, float nb)
 {
 	r = nr;
 	g = ng;
 	b = nb;
 }
 
-double Colour::getR()
+float Colour::getR()
 {
 	return r;
 }
 
-double Colour::getG()
+float Colour::getG()
 {
 	return g;
 }
 
-double Colour::getB()
+float Colour::getB()
 {
 	return b;
 }

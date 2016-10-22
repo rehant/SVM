@@ -1,6 +1,10 @@
 #ifndef __FUNCS_HPP__
 #define __FUNCS_HPP__
 
+// C library includes
+#include <cmath> // sqrt, pow
+
+// Our includes
 #include "Point2D.hpp"
 #include "Vec2D.hpp"
 	
