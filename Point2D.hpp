@@ -4,14 +4,14 @@
 class Point2D
 {
 	private:
-		double x;
-		double y;
+		float x;
+		float y;
 
 	public:
 		Point2D();
-		Point2D(double nx, double ny);
-		double getX();
-		double getY();
+		Point2D(float nx, float ny);
+		float getX();
+		float getY();
 };
 
 #endif

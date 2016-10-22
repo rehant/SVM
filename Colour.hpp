@@ -4,16 +4,16 @@
 class Colour
 {
 	private:
-		double r;
-		double g;
-		double b;
+		float r;
+		float g;
+		float b;
 
 	public:
 		Colour();
-		Colour(double nr, double ng, double nb);
-		double getR();
-		double getG();
-		double getB();
+		Colour(float nr, float ng, float nb);
+		float getR();
+		float getG();
+		float getB();
 };
 
 #endif

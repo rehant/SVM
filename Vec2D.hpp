@@ -4,16 +4,16 @@
 class Vec2D
 {
 	private:
-		double x;
-		double y;
-		double magnitude;
+		float x;
+		float y;
+		float magnitude;
 	
 	public:
 		Vec2D(); // Default constructor
-		Vec2D(double nx, double ny, double mag); // Constructs Vec2D w/ specified vals
-		double getX();
-		double getY();
-		double getMagnitude();
+		Vec2D(float nx, float ny, float mag); // Constructs Vec2D w/ specified vals
+		float getX();
+		float getY();
+		float getMagnitude();
 };
 
 #endif
