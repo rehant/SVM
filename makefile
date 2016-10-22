@@ -48,6 +48,8 @@ run: $(PROGRAM_NAME)
 #ie. boilerplateClass.o and yourFile.o
 #make will automatically know that the objectfile needs to be compiled
 #form a cpp source file and find it itself :)
+
+# Note: we don't need to add header-only classes (like Vector3D and Face3D) here. They don't have any code that needs to be compiled.
 $(PROGRAM_NAME): 3gc3.hpp Colour.o funcs.o Mesh.o
 	$(CC) -o $(PROGRAM_NAME) $(EXEEXT) $^ $(CFLAGS) $(LDFLAGS)
 
