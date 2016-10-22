@@ -1,5 +1,5 @@
-#ifndef VERTEX3D_H
-#define VERTEX3D_H
+#ifndef __MESH_HPP__
+#define __MESH_HPP__
 
 #include <vector>
 using namespace std;
