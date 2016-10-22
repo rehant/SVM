@@ -1,6 +1,8 @@
 #ifndef __MESH_HPP__
 #define __MESH_HPP__
 
+/* C++ STL */
+#include <string>
 #include <vector>
 using namespace std;
 
@@ -12,10 +14,15 @@ using namespace std;
 class Mesh3D
 {
     public:
-        Mesh3D(); // Constructor
-        void drawMesh();
-        void load(); // WHy not load in constructor
-        void loadOBJ(char *filename);
+        /**
+        * Constructor. Loads a .OBJ file into an object.
+        */
+        Mesh3D(string filename);
+
+        /**
+        * Draws the mesh.
+        */
+        void draw();
 
     private:
         vector<vertex3D> *verts;
