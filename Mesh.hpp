@@ -20,13 +20,18 @@ class Mesh3D
         Mesh3D(string filename);
 
         /**
+        * Destructor. Performs cleanup when mesh is deleted.
+        */
+        ~Mesh3D();
+
+        /**
         * Draws the mesh.
         */
         void draw();
 
     private:
-        vector<vertex3D> *verts;
-        vector<face3D> *faces;
+        vector<Vertex3D> *verts;
+        vector<Face3D> *faces;
         vector<Colour> *colours;
 };
 
