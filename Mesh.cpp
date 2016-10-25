@@ -2,9 +2,12 @@
 
 // C++ includes
 #include <fstream> // ifstream
-#include <sstream> // istringstream
+#include <sstream> // stringstream
 #include <string> // string
 #include <iostream> // cout
+#include <vector> // vector
+#include <ios> // failure
+#include <stdexcept> // length_error
 using namespace std;
 
 /* C includes */
@@ -16,11 +19,13 @@ Mesh::Mesh3D(string filename)
 {
     ifstream objFile(filename.c_str()); // Create the file object
     char line[256]; // Line in file
-    istringstream lineSplitter(); // Used to split lines by whitespace. Initialised with empty string.
-    string curToken; // Current token in current line
-    float vx, vy, vz; // X, Y, and Z for current vertex.
+    stringstream lineSplitter(); // Used to split lines by whitespace. Initialised with empty string.
+    string curToken = ""; // Current token in current line
+    float vx, vy, vz = 0.0, 0.0, 0.0; // X, Y, and Z for current vertex.
     int convVal; // Return value of converting function
-    long int[] finds[4]; // Index used to read face indices
+    vector<long int> finds(); // Vector storing vertex indices for a face
+    long int convInd;
+    int numInds = 0; // Number of indices in 1 face
 
     /* Construct vectors */
     verts = new vector<Vertex3D>(); // Create Vertex3D vector
@@ -33,7 +38,7 @@ Mesh::Mesh3D(string filename)
         {
             while (objFile.good()) // Keep reading lines from the stream until we reach the end of the file
             {
-                objFile.getLine(line); // Get a line from the file
+                objFile.getline(line); // Get a line from the file
                 lineSplitter.str(string(line)); // Copy the l
                 curToken << lineSplitter; // Read the command token
 
@@ -45,7 +50,7 @@ Mesh::Mesh3D(string filename)
 
                     if (convVal != 0) // Error
                     {
-                        cout << "Mesh: Error converting vx (" << curToken << ") to string" << endl;
+                        cout << "Mesh: Error converting vx (" << curToken << ") to float" << endl;
                         exit(convVal); // Exit with error
                     }
 
@@ -55,7 +60,7 @@ Mesh::Mesh3D(string filename)
 
                     if (convVal != 0) // Error
                     {
-                        cout << "Mesh: Error converting vy (" << curToken << ") to string" << endl;
+                        cout << "Mesh: Error converting vy (" << curToken << ") to float" << endl;
                         exit(convVal); // Exit with error
                     }
 
@@ -65,7 +70,7 @@ Mesh::Mesh3D(string filename)
 
                     if (convVal != 0) // Error
                     {
-                        cout << "Mesh: Error converting vz (" << curToken << ") to string" << endl;
+                        cout << "Mesh: Error converting vz (" << curToken << ") to float" << endl;
                         exit(convVal); // Exit with error
                     }
 
@@ -74,44 +79,18 @@ Mesh::Mesh3D(string filename)
 
                 else if (curToken == "f") // Face: int[] vertInds; (an array of indices into the array of vertices)
                 {
-                    /* Read index 0 */
-                    curToken << lineSplitter; // Read first index
-                    convVal = convToLongInt(curToken.c_str(), &finds[0]); // Try to convert the string
-
-                    if (convVal != 0) // Error
+                    while (lineSplitter.good()) // While we can still read from the stream
                     {
-                        cout << "Mesh: error in converting f[0]" << endl;
-                        exit(convVal);
-                    }
+                        curToken << lineSplitter; // Read the next index
+                        convVal = convToLongInt(curToken.c_str(), &convInd); // Convert the string to a long int
 
-                    /* Read index 1 */
-                    curToken << lineSplitter; // Read first index
-                    convVal = convToLongInt(curToken.c_str(), &finds[1]); // Try to convert the string
+                        if (convVal != 0) // Error
+                        {
+                            cout << "Mesh: Error converting convInd (" << curToken << ") to long int" << endl;
+                            exit(convVal); // Exit with error
+                        }
 
-                    if (convVal != 0) // Error
-                    {
-                        cout << "Mesh: error in converting f[1]" << endl;
-                        exit(convVal);
-                    }
-
-                    /* Read index 2 */
-                    curToken << lineSplitter; // Read first index
-                    convVal = convToLongInt(curToken.c_str(), &finds[2]); // Try to convert the string
-
-                    if (convVal != 0) // Error
-                    {
-                        cout << "Mesh: error in converting f[2]" << endl;
-                        exit(convVal);
-                    }
-
-                    /* Read index 3 */
-                    curToken << lineSplitter; // Read first index
-                    convVal = convToLongInt(curToken.c_str(), &finds[3]); // Try to convert the string
-
-                    if (convVal != 0) // Error
-                    {
-                        cout << "Mesh: error in converting f[3]" << endl;
-                        exit(convVal);
+                        finds->push_back(convInd); // Add it to the vector
                     }
 
                     faces->push_back(Face3D(finds)); // Create new face using given indices
@@ -122,7 +101,17 @@ Mesh::Mesh3D(string filename)
         }
     }
 
-    catch ()
+    catch (failure& f) // getline
+    {
+        cerr << "Caught failure exception: " << f.what() << endl;
+        exit(-1);
+    }
+
+    catch (length_error& le)
+    {
+        cerr << "Caught length_error exception: " << le.what() << endl;
+        exit(-2);
+    }
 }
 
 /**

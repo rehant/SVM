@@ -1,31 +1,32 @@
 #ifndef FACE3D_H
 #define FACE3D_H
+
+#include <vector>
+using namespace std;
+
 struct Face3D
 {
-    long int verts[4]; // List of vertices in the face
-
-    /**
-	* Constructs a Face3D with the given vertices.
-	**/
-	Face3D(long int v1, long int v2, long int v3, long int v4)
-	{
-        /* Save vertices. */
-        verts[0] = v1;
-        verts[1] = v2;
-        verts[2] = v3;
-        verts[3] = v4;
-	}
+    vector<long int> *verts; // List of vertices in the face
 
 	/**
 	* Constructs a Face3D with the vertices in the given array.
 	**/
-	Face3D(long int[] uVerts)
+	Face3D(vector<long int> uVerts)
 	{
-        /* Save vertices. */
-        verts[0] = uVerts[0];
-        verts[1] = uVerts[1];
-        verts[2] = uVerts[2];
-        verts[3] = uVerts[3];
+        verts = new vector<long int>(); // Create the vector.
+
+        for (int i = 0; i < uVerts.size(); i++)
+        {
+            verts->push_back(uVerts[i]); // Add it to our vector
+        }
+	}
+
+	/**
+	* Destructor. Destroys a face.
+	*/
+	~Face3D()
+	{
+        delete verts; // Delete the vector
 	}
 };
 #endif
