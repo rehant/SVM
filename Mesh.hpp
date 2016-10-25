@@ -11,7 +11,7 @@ using namespace std;
 #include "Vertex3D.h"
 #include "Face3D.h"
 
-class Mesh3D
+class Mesh
 {
     public:
         /**

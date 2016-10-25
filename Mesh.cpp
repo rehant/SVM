@@ -15,7 +15,7 @@ using namespace std;
 #include <cmath> // HUGE_VAL
 #include <cerrno> // errno
 
-Mesh::Mesh3D(string filename)
+Mesh::Mesh(string filename)
 {
     ifstream objFile(filename.c_str()); // Create the file object
     char line[256]; // Line in file
@@ -117,7 +117,7 @@ Mesh::Mesh3D(string filename)
 /**
 * Destructor. Performs cleanup when mesh is deleted.
 */
-Mesh3D::~Mesh3D()
+Mesh::~Mesh()
 {
     delete colours; // Delete vector of colours
     delete faces; // Delete vector of faces
