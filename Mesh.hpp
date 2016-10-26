@@ -17,12 +17,12 @@ class Mesh
         /**
         * Constructor. Loads a .OBJ file into an object.
         */
-        Mesh3D(string filename);
+        Mesh(string filename);
 
         /**
         * Destructor. Performs cleanup when mesh is deleted.
         */
-        ~Mesh3D();
+        ~Mesh();
 
         /**
         * Draws the mesh.

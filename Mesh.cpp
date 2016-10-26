@@ -23,7 +23,7 @@ Mesh::Mesh(string filename)
     string curToken = ""; // Current token in current line
     float vx, vy, vz = 0.0, 0.0, 0.0; // X, Y, and Z for current vertex.
     int convVal; // Return value of converting function
-    vector<long int> finds(); // Vector storing vertex indices for a face
+    vector<int> finds(); // Vector storing vertex indices for a face
     long int convInd;
     int numInds = 0; // Number of indices in 1 face
 

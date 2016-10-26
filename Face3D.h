@@ -6,14 +6,14 @@ using namespace std;
 
 struct Face3D
 {
-    vector<long int> *verts; // List of vertices in the face
+    vector<int> *verts; // List of vertices in the face
 
 	/**
 	* Constructs a Face3D with the vertices in the given array.
 	**/
-	Face3D(vector<long int> uVerts)
+	Face3D(vector<int> uVerts)
 	{
-        verts = new vector<long int>(); // Create the vector.
+        verts = new vector<int>(); // Create the vector.
 
         for (int i = 0; i < uVerts.size(); i++)
         {
