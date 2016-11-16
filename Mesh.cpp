@@ -8,6 +8,7 @@
 #include <vector> // vector
 #include <ios> // failure
 #include <stdexcept> // length_error
+#include <regex> // regex
 using namespace std;
 
 /* C includes */
@@ -26,11 +27,14 @@ Mesh::Mesh(string filename)
     vector<int> finds(); // Vector storing vertex indices for a face
     long int convInd;
     int numInds = 0; // Number of indices in 1 face
+	regex fVInd("f ([\+|-])*([0-9]+)*"); // Regex for matching a face with only vertex indices
+	regex fNormInd("f ([\+|-])*([0-9]+\/[0-9]+\/[0-9]+)*"); // Regex matching a line with verte tecture coord indices
 
     /* Construct vectors */
     verts = new vector<Vertex3D>(); // Create Vertex3D vector
     faces = new vector<Face3D>(); // Create Face3D vector
-    colours = new vector<Colour>(); // Create Colour vector
+	texVerts = new vector<Vertex2D>(); // Create texture vertices vector
+	norms = new vector<Vec3D>(); // Create normals vector
 
     try
     {
@@ -79,22 +83,63 @@ Mesh::Mesh(string filename)
 
                 else if (curToken == "f") // Face: int[] vertInds; (an array of indices into the array of vertices)
                 {
-                    while (lineSplitter.good()) // While we can still read from the stream
-                    {
-                        curToken << lineSplitter; // Read the next index
-                        convVal = convToLongInt(curToken.c_str(), &convInd); // Convert the string to a long int
+			if (regex_match(lineSpitter, fvInd)) // Vertex indices for face
+			{
+	                    while (lineSplitter.good()) // While we can still read from the stream
+	                    {
+	                        curToken << lineSplitter; // Read the next index
+	                        convVal = convToLongInt(curToken.c_str(), &convInd); // Convert the string to a long int
+	
+	                        if (convVal != 0) // Error
+	                        {
+	                            cout << "Mesh: Error converting convInd (" << curToken << ") to long int" << endl;
+	                            exit(convVal); // Exit with error
+	                        }
+	
+	                        finds->push_back(convInd); // Add it to the vector
+	                    }
+	
+	                    faces->push_back(Face3D(finds)); // Create new face using given indices
+			}
 
-                        if (convVal != 0) // Error
-                        {
-                            cout << "Mesh: Error converting convInd (" << curToken << ") to long int" << endl;
-                            exit(convVal); // Exit with error
-                        }
-
-                        finds->push_back(convInd); // Add it to the vector
-                    }
-
-                    faces->push_back(Face3D(finds)); // Create new face using given indices
+			else if (regex_match(
                 }
+
+                else if (curToken == "mtllib") // Material library file
+                {
+                    curToken << lineSplitter; // Read the path to the materials file
+                }
+
+		else if (curToken == "vt") // Texture vertex
+		{
+			/* Texture coords */
+			float tx;
+			float ty;
+
+			curToken << lineSplitter; // Read coord one
+			convToFloat(curToken.c_str(), &tx); // Convert to float
+			curToken << lineSplitter; // Read coord two
+			convToFloat(curToken.c_str(), &ty); // Convert coord 2
+			texVerts->push_back(Vertex2D(tx, ty)); // Save texture vertex
+		}
+
+		else if (curToken == "vn") // Vertex normal
+		{
+			float nx, ny, nz;
+			
+			/* Read and convert coords */
+			curToken << lineSplitter;
+			convToFloat(curToken.c_str(), &nx);
+			
+			curToken << lineSplitter;
+			convToFloat(curToken.c_str(), &ny);
+
+			curToken << lineSplitter;
+			convToFloat(curToken.c_str(), &nz);
+
+			/* Create and add the normal */
+			norms->push_back(Vec3D(nx, ny, nz)); // Add the normal
+		}
             }
 
             objFile.close(); // Close the file
@@ -119,7 +164,8 @@ Mesh::Mesh(string filename)
 */
 Mesh::~Mesh()
 {
-    delete colours; // Delete vector of colours
+	delete norms; // Delete normals vector
+	delete texVerts; // Delete texture vertices vector
     delete faces; // Delete vector of faces
     delete verts; // Delete vector of vertices
 }

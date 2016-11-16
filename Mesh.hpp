@@ -10,6 +10,8 @@ using namespace std;
 #include "Colour.hpp"
 #include "Vertex3D.h"
 #include "Face3D.h"
+#include "Vertex2D.h"
+#include "Vec3D.hpp"
 
 class Mesh
 {
@@ -30,9 +32,10 @@ class Mesh
         void draw();
 
     private:
-        vector<Vertex3D> *verts;
-        vector<Face3D> *faces;
-        vector<Colour> *colours;
+        vector<Vertex3D> *verts; // Mesh vertices
+        vector<Face3D> *faces; // Mesh faces
+	vector<Vertex2D> *texVerts; // Texture vertices
+	vector<Vec3D> *norms; // Normals
 };
 
 #endif // VERTEX3D_H
