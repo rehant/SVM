@@ -102,7 +102,7 @@ Mesh::Mesh(string filename)
 	                    faces->push_back(Face3D(finds)); // Create new face using given indices
 			}
 
-			else if (regex_match(
+			//else if (regex_match(
                 }
 
                 else if (curToken == "mtllib") // Material library file

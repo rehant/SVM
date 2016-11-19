@@ -29,7 +29,27 @@ class Mesh
         /**
         * Draws the mesh.
         */
-        void draw();
+        //void draw();
+
+	vector<Vertex3D>* getVertices()
+	{
+		return verts;
+	}
+
+	vector<Face3D>* getFaces()
+	{
+		return faces;
+	}
+
+	vector<Vertex2D>* getTexVerts()
+	{
+		return texVerts;
+	}
+
+	vector<Vec3D>* getNorms()
+	{
+		return norms;
+	}	
 
     private:
         vector<Vertex3D> *verts; // Mesh vertices
