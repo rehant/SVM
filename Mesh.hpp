@@ -9,7 +9,7 @@ using namespace std;
 // My includes
 #include "Colour.hpp"
 #include "Vertex3D.h"
-#include "Face3D.h"
+#include "Face3D.hpp"
 #include "Vertex2D.h"
 #include "Vec3D.hpp"
 
@@ -31,6 +31,7 @@ class Mesh
         */
         //void draw();
 
+	/* Return pointers to vectors */
 	vector<Vertex3D>* getVertices()
 	{
 		return verts;
@@ -50,6 +51,48 @@ class Mesh
 	{
 		return norms;
 	}	
+
+	/* Return item at specific position in vector */
+	Vertex3D getVertex(int no)
+	{
+		return verts->at(no);
+	}
+
+	Face3D getFace(int no)
+	{
+		return faces->at(no);
+	}
+
+	Vertex2D getTexVert(int no)
+	{
+		return texVerts->at(no);
+	}
+
+	Vec3D getNorm(int no)
+	{
+		return norms->at(no);
+	}
+
+	/* Get size of vectors */	
+	int getNumVerts()
+	{
+		return verts->size();
+	}
+	
+	int getNumFaces()
+	{
+		return faces->size();
+	}
+
+	int getNumTexVerts()
+	{
+		return texVerts->size();
+	}
+
+	int getNumNorms()
+	{
+		return norms->size();
+	}
 
     private:
         vector<Vertex3D> *verts; // Mesh vertices

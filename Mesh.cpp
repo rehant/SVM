@@ -1,4 +1,5 @@
 #include "Mesh.hpp" // Class definition
+#include "Vertex3D.h"
 
 // C++ includes
 #include <fstream> // ifstream
@@ -24,11 +25,11 @@ Mesh::Mesh(string filename)
     string curToken = ""; // Current token in current line
     float vx, vy, vz = 0.0, 0.0, 0.0; // X, Y, and Z for current vertex.
     int convVal; // Return value of converting function
-    vector<int> finds(); // Vector storing vertex indices for a face
+    vector<Vertex3D> finds(); // Vector storing vertex indices for a face
     long int convInd;
     int numInds = 0; // Number of indices in 1 face
-	regex fVInd("f ([\+|-])*([0-9]+)*"); // Regex for matching a face with only vertex indices
-	regex fNormInd("f ([\+|-])*([0-9]+\/[0-9]+\/[0-9]+)*"); // Regex matching a line with verte tecture coord indices
+	regex fVInd("f ([\\+|-])*([0-9]+)*"); // Regex for matching a face with only vertex indices
+	regex fNormInd("f ([\\+|-])*([0-9]+\\/[0-9]+\\/[0-9]+)*"); // Regex matching a line with verte tecture coord indices
 
     /* Construct vectors */
     verts = new vector<Vertex3D>(); // Create Vertex3D vector
@@ -96,7 +97,7 @@ Mesh::Mesh(string filename)
 	                            exit(convVal); // Exit with error
 	                        }
 	
-	                        finds->push_back(convInd); // Add it to the vector
+	                        finds->push_back(verts->at(convInd)); // Add it to the vector
 	                    }
 	
 	                    faces->push_back(Face3D(finds)); // Create new face using given indices
