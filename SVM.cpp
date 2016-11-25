@@ -1,10 +1,9 @@
 // Main file for the project
 
 // INCLUDING LOCAL FILES
-#include "Mesh.hpp"
+//#include "Mesh.hpp"
 
 // INCLUDING SYSTEM LIBRARIES
-#include <string>
 
 // INCLUDING OPENGL LIBRARIES
 #ifdef __APPLE__
@@ -20,19 +19,18 @@
 /*================================================
 				GLOBALS VARIABLES
 ================================================*/
-std::string TITLE = "Ships vs. Monsters"
 int winPos[2] = {50,50};
-int winSize[2] = {1280,720};
+int winSize[2] = {800,600};
 
 /*================================================
 				DRAW METHODS
 ================================================*/
-void drawFace(//vector of stuff as parameter)
+void drawFace(void)
 {
 
 }
 
-void drawObject(Mesh* pmesh)
+void drawObject(void)
 {
 	glBegin(GL_TRIANGLES);
 	/*
@@ -41,7 +39,7 @@ void drawObject(Mesh* pmesh)
 			for each vertex in vector(vertex)
 				draw the face here
 	*/
-	glEnd(GL_TRIANGLES);
+	glEnd();
 }
 
 /*================================================
@@ -79,7 +77,7 @@ void display(void)
 	glutSwapBuffers();
 }
 
-void callbacks(void)
+void callBacks(void)
 {
 	// Runs display callback function
 	glutDisplayFunc(display);
@@ -145,7 +143,7 @@ int main(int argc, char** argv)
 	glutInitWindowPosition(winPos[0], winPos[1]);
 
 	// Creates window
-	glutCreateWindow(TITLE);
+	glutCreateWindow("Ships vs. Monsters");
 
 	// Calls all callback functions for the program.
 	callBacks();
