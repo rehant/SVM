@@ -36,4 +36,4 @@ $(PROGRAM_NAME): SVM.o
 	$(CC) -o $(PROGRAM_NAME) $(EXEEXT) $^ $(CFLAGS) $(LDFLAGS)
 
 clean:
-	$(RM) *.o
+	$(RM) *.o SVM
