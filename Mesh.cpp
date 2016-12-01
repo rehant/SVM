@@ -1,5 +1,4 @@
 #include "Mesh.hpp" // Class definition
-#include "Vertex3D.h"
 
 // C++ includes
 #include <fstream> // ifstream
@@ -19,145 +18,94 @@ using namespace std;
 
 Mesh::Mesh(string filename)
 {
-    ifstream objFile(filename.c_str()); // Create the file object
-    char line[256]; // Line in file
-    stringstream lineSplitter(); // Used to split lines by whitespace. Initialised with empty string.
-    string curToken = ""; // Current token in current line
-    float vx, vy, vz = 0.0, 0.0, 0.0; // X, Y, and Z for current vertex.
-    int convVal; // Return value of converting function
-    vector<Vertex3D> finds(); // Vector storing vertex indices for a face
-    long int convInd;
-    int numInds = 0; // Number of indices in 1 face
-	regex fVInd("f ([\\+|-])*([0-9]+)*"); // Regex for matching a face with only vertex indices
-	regex fNormInd("f ([\\+|-])*([0-9]+\\/[0-9]+\\/[0-9]+)*"); // Regex matching a line with verte tecture coord indices
+	/* Internal vars */
+	vector<Vertex3D> verts; // Internal vector. Vertices in here are added to faces
+	ifstream meshStream(filename); // Stream for reading from file
+	string line; // Line from file
+	stringstream* lsp; // Line splitter string stream
+	string com; // Current command
+	regex numOnly("[0-9]+\\.[0-9]+"); // Regex matching a number-only entry for a face
+	regex slashParam("[0-9]+/[0-9]+/[0-9]+"); // Regex matching a face entry with vt/vn/etc. entries
 
-    /* Construct vectors */
-    verts = new vector<Vertex3D>(); // Create Vertex3D vector
-    faces = new vector<Face3D>(); // Create Face3D vector
-	texVerts = new vector<Vertex2D>(); // Create texture vertices vector
-	norms = new vector<Vec3D>(); // Create normals vector
+	/* Create class vectors */
+	clog << "Mesh::Mesh: creating vectors" << endl;
+	faces = new vector<Face3D>();
+	texVerts = new vector<Vertex2D>();
+	norms = new vector<Vec3D>();
 
-    try
-    {
-        if (objFile.is_open()) // File opened successfully
-        {
-            while (objFile.good()) // Keep reading lines from the stream until we reach the end of the file
-            {
-                objFile.getline(line); // Get a line from the file
-                lineSplitter.str(string(line)); // Copy the l
-                curToken << lineSplitter; // Read the command token
 
-                if (curToken == "v") // Vertex. Parameters: float x, float y, float z
-                {
-                    /* Read x */
-                    curToken << lineSplitter; // Read string
-                    convVal = convToFloat(curToken.c_str(), &vx); // Try to convert string
+	if (meshStream.is_open())
+	{
+		clog << "Opened mesh file \"" << filename << "\"" << endl;
 
-                    if (convVal != 0) // Error
-                    {
-                        cout << "Mesh: Error converting vx (" << curToken << ") to float" << endl;
-                        exit(convVal); // Exit with error
-                    }
+		while (getline(meshStream, line)) // Read from file
+		{
+			clog << "Current line:" << line << endl;
+			lsp = new stringstream(line); // Put the current line into the stringstream
+			std::clog << "lsp = \"" << lsp->str() << "\"" << endl;
+			*lsp >> com; // Read the command
+			clog << "\tCommand = \"" << com << "\"" << endl;
 
-                    /* Read y */
-                    curToken << lineSplitter; // Read string
-                    convVal = convToFloat(curToken.c_str(), &vy); // Try to convert string
-
-                    if (convVal != 0) // Error
-                    {
-                        cout << "Mesh: Error converting vy (" << curToken << ") to float" << endl;
-                        exit(convVal); // Exit with error
-                    }
-
-                    /* Read z */
-                    curToken << lineSplitter; // Read string
-                    convVal = convToFloat(curToken.c_str(), &vz); // Try to convert string
-
-                    if (convVal != 0) // Error
-                    {
-                        cout << "Mesh: Error converting vz (" << curToken << ") to float" << endl;
-                        exit(convVal); // Exit with error
-                    }
-
-                    verts->push_back(Vertex3D(vx, vy, vz)); // Add it to the vector of vertices
-                }
-
-                else if (curToken == "f") // Face: int[] vertInds; (an array of indices into the array of vertices)
-                {
-			if (regex_match(lineSpitter, fvInd)) // Vertex indices for face
+			/* Handle commands */
+			if (com == "v") // Vertex
 			{
-	                    while (lineSplitter.good()) // While we can still read from the stream
-	                    {
-	                        curToken << lineSplitter; // Read the next index
-	                        convVal = convToLongInt(curToken.c_str(), &convInd); // Convert the string to a long int
+				float x, y, z;
+
+				clog << "\tVertex" << endl;
+			
+				/* X */
+				*lsp >> com; // Read x
+				convToFloat(com.c_str(), &x);	
+				clog << "\t\tx = " << x << endl;
 	
-	                        if (convVal != 0) // Error
-	                        {
-	                            cout << "Mesh: Error converting convInd (" << curToken << ") to long int" << endl;
-	                            exit(convVal); // Exit with error
-	                        }
-	
-	                        finds->push_back(verts->at(convInd)); // Add it to the vector
-	                    }
-	
-	                    faces->push_back(Face3D(finds)); // Create new face using given indices
+				/* Y */
+				*lsp >> com; // Read y
+				convToFloat(com.c_str(), &y);	
+				clog << "\t\ty = " << y << endl;
+
+				/* Z */
+				*lsp >> com; // Read z
+				convToFloat(com.c_str(), &z);	
+				clog << "\t\tz = " << z << endl;
+
+				verts.push_back(Vertex3D(x, y, z)); // Create and add vertex to list
 			}
 
-			//else if (regex_match(
-                }
+			else if (com == "f") // Face
+			{
+				clog << "\tDetected face" << endl;
 
-                else if (curToken == "mtllib") // Material library file
-                {
-                    curToken << lineSplitter; // Read the path to the materials file
-                }
+				vector<Vertex3D> fVerts; // Vector of face vertices
 
-		else if (curToken == "vt") // Texture vertex
-		{
-			/* Texture coords */
-			float tx;
-			float ty;
+				while (lsp->good()) // While we can still read from the stream
+				{
+					*lsp >> com; // Read next token
 
-			curToken << lineSplitter; // Read coord one
-			convToFloat(curToken.c_str(), &tx); // Convert to float
-			curToken << lineSplitter; // Read coord two
-			convToFloat(curToken.c_str(), &ty); // Convert coord 2
-			texVerts->push_back(Vertex2D(tx, ty)); // Save texture vertex
+					if (regex_match(numOnly, com)) // Number only - no slashes
+					{
+						int curInd;
+						convToLongInt(com.c_str(), &curInd); // Convert index string to int
+						clog << "\t\tCurrent index = " << curInd << endl;
+						Vertex3D curVert = verts.at(curInd); // Current vertex
+						clog << "\t\tAdding vertex (" << curVert.getX() << ", " << curVert.getY() << ", " << curVert.getZ() << ") to face" << endl;
+						fVerts.push_back(curVert); // Add vertex at this index to vertex vector
+					}
+				}
+
+				clog << "\tCreated face" << endl;
+				faces->push_back(Face3D(fVerts)); // Add the face
+			}
+
+			delete lsp;
 		}
 
-		else if (curToken == "vn") // Vertex normal
-		{
-			float nx, ny, nz;
-			
-			/* Read and convert coords */
-			curToken << lineSplitter;
-			convToFloat(curToken.c_str(), &nx);
-			
-			curToken << lineSplitter;
-			convToFloat(curToken.c_str(), &ny);
+		meshStream.close();
+	}
 
-			curToken << lineSplitter;
-			convToFloat(curToken.c_str(), &nz);
-
-			/* Create and add the normal */
-			norms->push_back(Vec3D(nx, ny, nz)); // Add the normal
-		}
-            }
-
-            objFile.close(); // Close the file
-        }
-    }
-
-    catch (failure& f) // getline
-    {
-        cerr << "Caught failure exception: " << f.what() << endl;
-        exit(-1);
-    }
-
-    catch (length_error& le)
-    {
-        cerr << "Caught length_error exception: " << le.what() << endl;
-        exit(-2);
-    }
+	else
+	{
+		clog << "Failed to open mesh file \"" << filename << "\"" << endl;
+	}
 }
 
 /**
@@ -165,10 +113,10 @@ Mesh::Mesh(string filename)
 */
 Mesh::~Mesh()
 {
+	clog << "Mesh::~Mesh: deleting vectors" << endl;
 	delete norms; // Delete normals vector
 	delete texVerts; // Delete texture vertices vector
     delete faces; // Delete vector of faces
-    delete verts; // Delete vector of vertices
 }
 
 /**
@@ -180,9 +128,9 @@ Mesh::~Mesh()
             3 if overflow would occur
             4 if underflow would occur.
 */
-int convToFloat(char* str, float* out)
+int Mesh::convToFloat(const char* str, float* out)
 {
-    char endPtr[256]; // Stores end pointer of string
+    char* endPtr; // Stores end pointer of string
     *out = strtof(str, &endPtr); // Try to convert string
 
     if (endPtr[0] != '\0') // End pointer isn't null, string wasn't valid #
@@ -190,7 +138,7 @@ int convToFloat(char* str, float* out)
         return 1;
     }
 
-    if (*out == 0 && endptr == str) // No conversion performed
+    if (*out == 0 && endPtr == str) // No conversion performed
     {
         return 2;
     }
@@ -220,17 +168,17 @@ int convToFloat(char* str, float* out)
             3 if overflow would occur
             4 if underflow would occur.
 */
-int convToLongInt(char* str, long int* out)
+int Mesh::convToLongInt(const char* str, long int* out)
 {
-    char endPtr[256]; // Stores end pointer of string
-    *out = strtol(str, &endPtr); // Try to convert string
+    char* endPtr; // Stores end pointer of string
+    *out = strtol(str, &endPtr, 10); // Try to convert string
 
     if (endPtr[0] != '\0') // End pointer isn't null, string wasn't valid #
     {
         return 1;
     }
 
-    if (*out == 0 && endptr == str) // No conversion performed
+    if (*out == 0 && endPtr == str) // No conversion performed
     {
         return 2;
     }

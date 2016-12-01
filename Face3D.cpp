@@ -10,7 +10,7 @@ Face3D::Face3D(vector<Vertex3D> uVerts)
 
         for (int i = 0; i < uVerts.size(); i++)
         {
-            verts->push_back(uVerts[i]); // Add it to our vector
+            verts->push_back(uVerts.at(i)); // Add it to our vector
         }
 }
 
