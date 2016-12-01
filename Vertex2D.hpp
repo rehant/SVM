@@ -6,12 +6,12 @@ struct Vertex2D
 	float x, y;
 
 	/**
-	* Constructs a Vertex2D with the given X, Y, Z.
+	* Constructs a Vertex2D with the given X, Y, Z->
 	**/
 	Vertex2D(float x, float y)
 	{
-	        this.x = x;
-	        this.y = y;
+	        this->x = x;
+	        this->y = y;
 	}
 };
 
