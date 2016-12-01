@@ -78,10 +78,12 @@ Mesh::Mesh(string filename)
 				/* Check if face has info other than indices */
 				if (regex_match(line, hasSlashes)) // Line has slashes
 				{
+					clog << "\tLine has slashes" << endl;
 				}
 
 				else // Line doesn't have slashes
 				{
+					clog << "\tLine doesn't have slashes" << endl;
 				}
 			}
 

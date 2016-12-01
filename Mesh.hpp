@@ -8,7 +8,7 @@ using namespace std;
 
 // My includes
 #include "Colour.hpp"
-#include "Vertex3D.hpp"
+#include "Vec3D.hpp"
 #include "Face3D.hpp"
 #include "Vertex2D.hpp"
 #include "Vec3D.hpp"

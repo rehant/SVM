@@ -2,7 +2,7 @@
 #define FACE3D_H
 
 #include <vector>
-#include "Vertex3D.h"
+#include "Vertex3D.hpp"
 using namespace std;
 
 class Face3D
