@@ -8,7 +8,7 @@
 LDFLAGS = -lGL -lGLU -lglut -lm
 CFLAGS=-g -Wall -std=c++11
 CC=g++
-EXEEXT=.x
+EXEEXT=
 RM=rm
 
 # Windows (cygwin)
