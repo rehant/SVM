@@ -24,8 +24,8 @@ Mesh::Mesh(string filename)
 	string line; // Line from file
 	stringstream* lsp; // Line splitter string stream
 	string com; // Current command
-	regex numOnly("[0-9]+\\.[0-9]+"); // Regex matching a number-only entry for a face
 	regex slashParam("[0-9]+/[0-9]+/[0-9]+"); // Regex matching a face entry with vt/vn/etc. entries
+	regex hasSlashes("/"); // Regex to check if line has slashes
 
 	/* Create class vectors */
 	clog << "Mesh::Mesh: creating vectors" << endl;
@@ -74,26 +74,15 @@ Mesh::Mesh(string filename)
 			else if (com == "f") // Face
 			{
 				clog << "\tDetected face" << endl;
-
-				vector<Vertex3D> fVerts; // Vector of face vertices
-
-				while (lsp->good()) // While we can still read from the stream
+			 
+				/* Check if face has info other than indices */
+				if (regex_match(line, hasSlashes)) // Line has slashes
 				{
-					*lsp >> com; // Read next token
-
-					if (regex_match(numOnly, com)) // Number only - no slashes
-					{
-						int curInd;
-						convToLongInt(com.c_str(), &curInd); // Convert index string to int
-						clog << "\t\tCurrent index = " << curInd << endl;
-						Vertex3D curVert = verts.at(curInd); // Current vertex
-						clog << "\t\tAdding vertex (" << curVert.getX() << ", " << curVert.getY() << ", " << curVert.getZ() << ") to face" << endl;
-						fVerts.push_back(curVert); // Add vertex at this index to vertex vector
-					}
 				}
 
-				clog << "\tCreated face" << endl;
-				faces->push_back(Face3D(fVerts)); // Add the face
+				else // Line doesn't have slashes
+				{
+				}
 			}
 
 			delete lsp;

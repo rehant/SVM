@@ -27,8 +27,6 @@ endif
 #change the 't1' name to the name you want to call your application
 PROGRAM_NAME=mt
 
-all: $(PROGRAM_NAME)
-
 #run target to compile and build, and then launch the executable
 run: $(PROGRAM_NAME)
 	./$(PROGRAM_NAME)$(EXEEXT)
@@ -46,7 +44,6 @@ Mesh.o: Mesh.cpp
 # Note: we don't need to add header-only classes (like Vector3D and Face3D) here. They don't have any code that needs to be compiled.
 $(PROGRAM_NAME): meshtest.o Vertex3D.o Mesh.o Face3D.o
 	$(CC) -o $(PROGRAM_NAME)$(EXEEXT) $^ $(CFLAGS) $(LDFLAGS) 2>&1 | tee -a out
-	./$(PROGRAM_NAME)$(EXEEXT) 2>&1 | tee -a out
 
 clean:
 	$(RM) *.o *.x
