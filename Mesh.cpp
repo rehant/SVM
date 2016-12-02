@@ -8,7 +8,6 @@
 #include <vector> // vector
 #include <ios> // failure
 #include <stdexcept> // length_error
-#include <regex> // regex
 using namespace std;
 
 /* C includes */
@@ -19,13 +18,11 @@ using namespace std;
 Mesh::Mesh(string filename)
 {
 	/* Internal vars */
-	vector<Vertex3D> verts; // Internal vector. Vertices in here are added to faces
+	vector<Vec3D> verts; // Internal vector. Vertices in here are added to faces
 	ifstream meshStream(filename); // Stream for reading from file
 	string line; // Line from file
 	stringstream* lsp; // Line splitter string stream
 	string com; // Current command
-	regex numOnly("[0-9]+\\.[0-9]+"); // Regex matching a number-only entry for a face
-	regex slashParam("[0-9]+/[0-9]+/[0-9]+"); // Regex matching a face entry with vt/vn/etc. entries
 
 	/* Create class vectors */
 	clog << "Mesh::Mesh: creating vectors" << endl;
@@ -68,32 +65,53 @@ Mesh::Mesh(string filename)
 				convToFloat(com.c_str(), &z);	
 				clog << "\t\tz = " << z << endl;
 
-				verts.push_back(Vertex3D(x, y, z)); // Create and add vertex to list
+				verts.push_back(Vec3D(x, y, z)); // Create and add vertex to list
 			}
 
 			else if (com == "f") // Face
 			{
 				clog << "\tDetected face" << endl;
+			}
 
-				vector<Vertex3D> fVerts; // Vector of face vertices
+			else if (com == "vt") // Texture vertex
+			{
+				clog << "\tDetected texture vertex" << endl;
 
-				while (lsp->good()) // While we can still read from the stream
-				{
-					*lsp >> com; // Read next token
+				float u, v; // U and V coords for vertices
+				
+				/* Read U */
+				*lsp >> com;
+				convToFloat(com.c_str(), &u);
+				clog << "\t\tu = " << u << endl;
 
-					if (regex_match(numOnly, com)) // Number only - no slashes
-					{
-						int curInd;
-						convToLongInt(com.c_str(), &curInd); // Convert index string to int
-						clog << "\t\tCurrent index = " << curInd << endl;
-						Vertex3D curVert = verts.at(curInd); // Current vertex
-						clog << "\t\tAdding vertex (" << curVert.getX() << ", " << curVert.getY() << ", " << curVert.getZ() << ") to face" << endl;
-						fVerts.push_back(curVert); // Add vertex at this index to vertex vector
-					}
-				}
+				/* Read V */
+				*lsp >> com;
+				convToFloat(com.c_str(), &v);
+				clog << "\t\tv = " << v << endl;
 
-				clog << "\tCreated face" << endl;
-				faces->push_back(Face3D(fVerts)); // Add the face
+				texVerts->push_back(Vertex2D(u, v)); // Add texture vertex
+			}
+
+			else if (com == "vn") // Normal
+			{
+				clog << "\tDetected normal" << endl;
+
+				float x, y, z;
+			
+				/* Read X */
+				*lsp >> com;
+				convToFloat(com.c_str(), &x);
+			
+				/* Read Y */
+				*lsp >> com;
+				convToFloat(com.c_str(), &y);
+				
+				/* Read Z */
+				*lsp >> com;
+				convToFloat(com.c_str(), &z);
+
+				clog << "\tRead normal (" << x << ", " << y << ", " << z << ")" << endl;	
+				norms->push_back(Vec3D(x, y, z));
 			}
 
 			delete lsp;

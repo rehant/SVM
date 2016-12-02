@@ -44,7 +44,7 @@ Mesh.o: Mesh.cpp
 	$(CC) -o Mesh.o -c $^ -std=c++11 2>&1 | tee -a out
 
 # Note: we don't need to add header-only classes (like Vector3D and Face3D) here. They don't have any code that needs to be compiled.
-$(PROGRAM_NAME): meshtest.o Vertex3D.o Mesh.o Face3D.o
+$(PROGRAM_NAME): meshtest.o Vec3D.o Mesh.o Face3D.o
 	$(CC) -o $(PROGRAM_NAME)$(EXEEXT) $^ $(CFLAGS) $(LDFLAGS) 2>&1 | tee -a out
 	./$(PROGRAM_NAME)$(EXEEXT) 2>&1 | tee -a out
 
