@@ -37,12 +37,12 @@ run: $(PROGRAM_NAME)
 #make will automatically know that the objectfile needs to be compiled
 #form a cpp source file and find it itself :)
 
-Mesh.o: Mesh.cpp
+Mesh3D.o: Mesh3D.cpp
 	rm -rf out
-	$(CC) -o Mesh.o -c $^ -std=c++11 2>&1 | tee -a out
+	$(CC) -o Mesh3D.o -c $^ -std=c++11 2>&1 > out
 
 # Note: we don't need to add header-only classes (like Vector3D and Face3D) here. They don't have any code that needs to be compiled.
-$(PROGRAM_NAME): meshtest.o Vertex3D.o Mesh.o Face3D.o
+$(PROGRAM_NAME): meshtest.o Vertex3D.o Mesh3D.o Face3D.o Vec3D.o
 	$(CC) -o $(PROGRAM_NAME)$(EXEEXT) $^ $(CFLAGS) $(LDFLAGS) 2>&1 | tee -a out
 
 clean:
