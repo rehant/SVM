@@ -8,7 +8,7 @@
 LDFLAGS = -lGL -lGLU -lglut -lm
 CFLAGS=-g -Wall -std=c++11
 CC=g++
-EXEEXT=
+EXEEXT=.x
 RM=rm
 
 # Windows (cygwin)
@@ -39,7 +39,7 @@ run: $(PROGRAM_NAME)
 
 Mesh3D.o: Mesh3D.cpp
 	rm -rf out
-	$(CC) -o Mesh3D.o -c $^ -std=c++11 2>&1 > out
+	$(CC) -o Mesh3D.o -c $^ -std=c++11 2>&1 | tee out
 
 # Note: we don't need to add header-only classes (like Vector3D and Face3D) here. They don't have any code that needs to be compiled.
 $(PROGRAM_NAME): meshtest.o Vertex3D.o Mesh3D.o Face3D.o Vec3D.o
