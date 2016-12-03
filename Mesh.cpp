@@ -155,8 +155,7 @@ Mesh::Mesh(string filename)
 				clog << "\tDetected face" << endl;
 
 				float v1, v2, v3, t1, t2, t3, n1, n2, n3;
-				string space;
-
+				
 				/* Read v1 */
 				getline(*lsp, com, '/');
 				convToFloat(com.c_str(), &v1);
