@@ -1,5 +1,5 @@
-#ifndef VERTEX2D_H
-#define VERTEX2D_H
+#ifndef VERTEX2D_HPP
+#define VERTEX2D_HPP
 
 struct Vertex2D
 {

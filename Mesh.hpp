@@ -26,17 +26,18 @@ class Mesh
         */
         ~Mesh();
 
-    private:
-	void loadMats(std::string filename); // Loads materials from material libraries
 
+    private:
+    	void loadMats(std::string filename); // Loads materials from material libraries
+        std::vector<Vec3D> *verts; // Vertex coordinates
+        std::vector<Vertex2D> *texVerts; // Texture vertices
+        std::vector<Vec3D> *norms; // Normals
+        std::map<std::string, Material> *mats; // Materials
         std::vector<Face3D> *faces; // Mesh faces
-	std::vector<Vertex2D> *texVerts; // Texture vertices
-	std::vector<Vec3D> *norms; // Normals
-	std::map<std::string, Material> *mats; // Hashmap storing materials by name
 	
-	/* Methods */
-	int convToLongInt(const char* str, long int* out);
-	int convToFloat(const char* str, float* out);
+    	/* Methods */
+    	int convToLongInt(const char* str, long int* out);
+    	int convToFloat(const char* str, float* out);
 };
 
 #endif // VERTEX3D_H

@@ -8,7 +8,7 @@
 LDFLAGS = -lGL -lGLU -lglut -lm
 CFLAGS=-g -Wall -std=c++11
 CC=g++
-EXEEXT=.x
+EXEEXT=
 # Windows (cygwin)
 ifeq "$(OS)" "Windows_NT"
 	EXEEXT=.exe #on windows applications must have .exe extension
@@ -25,11 +25,11 @@ endif
 #change the 't1' name to the name you want to call your application
 PROGRAM_NAME=mt
 
-all: $(PROGRAM_NAME)
-
 #run target to compile and build, and then launch the executable
 run: $(PROGRAM_NAME)
 	./$(PROGRAM_NAME)$(EXEEXT)
+
+all: $(PROGRAM_NAME)
 
 #when adding additional source files, such as boilerplateClass.cpp
 #or yourFile.cpp, add the filename with an object extension below
@@ -42,4 +42,4 @@ $(PROGRAM_NAME): Vec3D.o Mesh.o Face3D.o Colour.o Material.o meshtest.o
 	$(CC) -o $(PROGRAM_NAME)$(EXEEXT) $^ $(CFLAGS) $(LDFLAGS) 2>&1 | tee -a out
 
 clean:
-	$(RM) *.o *.x
+	$(RM) *.o *.$(EXEEXT) $(PROGRAM_NAME)
