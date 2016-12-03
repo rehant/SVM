@@ -19,7 +19,6 @@ using namespace std;
 Mesh::Mesh(string filename)
 {
 	/* Internal vars */
-	vector<Vec3D> verts; // Internal vector. Vertices in here are added to faces
 	ifstream meshStream(filename.c_str()); // Stream for reading from file
 	string line; // Line from file
 	stringstream* lsp; // Line splitter string stream
@@ -34,10 +33,11 @@ Mesh::Mesh(string filename)
 
 	/* Create class vectors */
 	cout << "Mesh::Mesh: creating vectors" << endl;
-	faces = new vector<Face3D>();
+	verts = new vector<Vec3D>(); // Internal vector. Vertices in here are added to faces
 	texVerts = new vector<Vertex2D>();
 	norms = new vector<Vec3D>();
 	mats = new vector<Material>();
+	faces = new vector<Face3D>();
 	string curMaterial; // Current material name for a set of faces in the file
 
 	/* Create class vectors */
