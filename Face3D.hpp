@@ -3,6 +3,8 @@
 
 #include <vector>
 #include "Vertex3D.h"
+#include "Vec3D.hpp"
+using namespace std;
 
 class Face3D
 {
@@ -18,9 +20,9 @@ class Face3D
 		*/
 		~Face3D();
 
-		std::vector<Vertex3D>* getVerts()
+		std::vector<Vertex3D> getVerts()
 		{
-			return verts;
+			return *verts;
 		}
 	
 	private:

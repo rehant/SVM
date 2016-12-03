@@ -8,7 +8,7 @@
 // My includes
 #include "Colour.hpp"
 #include "Vec3D.hpp"
-#include "Face3D.hpp"
+//#include "Face3D.hpp"
 #include "Vertex2D.hpp"
 #include "Material.hpp"
 
