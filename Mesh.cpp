@@ -114,6 +114,12 @@ Mesh::Mesh(string filename)
 				norms->push_back(Vec3D(x, y, z));
 			}
 
+			else if (com == "mtllib") // Material library
+			{
+				*lsp >> com; // Read file name
+				clog << "Material file name: " << com << endl;
+			}
+
 			delete lsp;
 		}
 

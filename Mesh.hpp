@@ -11,6 +11,7 @@ using namespace std;
 #include "Vec3D.hpp"
 #include "Face3D.hpp"
 #include "Vertex2D.hpp"
+#include "Material.hpp"
 
 class Mesh
 {
@@ -26,9 +27,12 @@ class Mesh
         ~Mesh();
 
     private:
+	void loadMats(string filename); // Loads materials from material libraries
+
         vector<Face3D> *faces; // Mesh faces
 	vector<Vertex2D> *texVerts; // Texture vertices
 	vector<Vec3D> *norms; // Normals
+	vector<Material> *mats; // Materials
 	
 	/* Methods */
 	int convToLongInt(const char* str, long int* out);
