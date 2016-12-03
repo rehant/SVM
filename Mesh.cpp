@@ -8,7 +8,7 @@
 #include <vector> // vector
 #include <ios> // failure
 #include <stdexcept> // length_error
-#include <regex> // regex
+#include <algorithm> // find
 using namespace std;
 
 /* C includes */
@@ -19,72 +19,183 @@ using namespace std;
 Mesh::Mesh(string filename)
 {
 	/* Internal vars */
-	vector<Vertex3D> verts; // Internal vector. Vertices in here are added to faces
-	ifstream meshStream(filename); // Stream for reading from file
+	ifstream meshStream(filename.c_str()); // Stream for reading from file
 	string line; // Line from file
 	stringstream* lsp; // Line splitter string stream
 	string com; // Current command
-	regex slashParam("[0-9]+/[0-9]+/[0-9]+"); // Regex matching a face entry with vt/vn/etc. entries
-	regex hasSlashes("/"); // Regex to check if line has slashes
+	string dname(filename); // String which will hold directory name (initialized to filename)
+	
+	// Extract directory name
+	dname.erase(find(dname.rbegin(), dname.rend(), '/').base(), dname.end()); // Get directory name
+	cout << "Mesh directory name = " << dname << endl;
+
+	stringstream matFNameGen; // Stringstream used to create the material file name
+
+	/* Create class vectors */
+	cout << "Mesh::Mesh: creating vectors" << endl;
+	vector<Vec3D> verts; // Internal vector. Vertices in here are added to faces
+	texVerts = new vector<Vertex2D>();
+	norms = new vector<Vec3D>();
+	mats = new vector<Material>();
+	faces = new vector<Face3D>();
+	string curMaterial; // Current material name for a set of faces in the file
 
 	/* Create class vectors */
 	clog << "Mesh::Mesh: creating vectors" << endl;
-	faces = new vector<Face3D>();
+	//faces = new vector<Face3D>();
 	texVerts = new vector<Vertex2D>();
-	norms = new vector<Vec3D>();
+	norms = new vector<Vec3D>();	
 
 
 	if (meshStream.is_open())
 	{
-		clog << "Opened mesh file \"" << filename << "\"" << endl;
+		cout << "Opened mesh file \"" << filename << "\"" << endl;
 
 		while (getline(meshStream, line)) // Read from file
 		{
-			clog << "Current line:" << line << endl;
+			cout << "Current line:" << line << endl;
 			lsp = new stringstream(line); // Put the current line into the stringstream
-			std::clog << "lsp = \"" << lsp->str() << "\"" << endl;
+			std::cout << "lsp = \"" << lsp->str() << "\"" << endl;
 			*lsp >> com; // Read the command
-			clog << "\tCommand = \"" << com << "\"" << endl;
+			cout << "\tCommand = \"" << com << "\"" << endl;
 
 			/* Handle commands */
 			if (com == "v") // Vertex
 			{
 				float x, y, z;
 
-				clog << "\tVertex" << endl;
+				cout << "\tVertex" << endl;
+				clog << "\tDetected vertex coordinates" << endl;
 			
 				/* X */
 				*lsp >> com; // Read x
 				convToFloat(com.c_str(), &x);	
-				clog << "\t\tx = " << x << endl;
+				cout << "\t\tx = " << x << endl;
 	
 				/* Y */
 				*lsp >> com; // Read y
 				convToFloat(com.c_str(), &y);	
-				clog << "\t\ty = " << y << endl;
+				cout << "\t\ty = " << y << endl;
 
 				/* Z */
 				*lsp >> com; // Read z
 				convToFloat(com.c_str(), &z);	
-				clog << "\t\tz = " << z << endl;
+				cout << "\t\tz = " << z << endl;
 
-				verts.push_back(Vertex3D(x, y, z)); // Create and add vertex to list
+				verts.push_back(Vec3D(x, y, z)); // Create and add vertex to list
 			}
 
-			else if (com == "f") // Face
+			else if (com == "vt") // Texture vertex
+			{
+				cout << "\tDetected texture vertex" << endl;
+
+				float u, v; // U and V coords for vertices
+				
+				/* Read U */
+				*lsp >> com;
+				convToFloat(com.c_str(), &u);
+				cout << "\t\tu = " << u << endl;
+
+				/* Read V */
+				*lsp >> com;
+				convToFloat(com.c_str(), &v);
+				cout << "\t\tv = " << v << endl;
+
+				texVerts->push_back(Vertex2D(u, v)); // Add texture vertex
+			}
+
+			else if (com == "vn") // Normal
+			{
+				cout << "\tDetected normal" << endl;
+				clog << "\tDetected normal vector" << endl;
+
+				float x, y, z;
+			
+				/* Read X */
+				*lsp >> com;
+				convToFloat(com.c_str(), &x);
+			
+				/* Read Y */
+				*lsp >> com;
+				convToFloat(com.c_str(), &y);
+				
+				/* Read Z */
+				*lsp >> com;
+				convToFloat(com.c_str(), &z);
+
+				cout << "\tRead normal (" << x << ", " << y << ", " << z << ")" << endl;	
+				clog << "\t\tRead normal (" << x << ", " << y << ", " << z << ")" << endl;	
+				norms->push_back(Vec3D(x, y, z));
+			}
+
+			else if (com == "mtllib") // Material library
+			{
+				clog << "\tDetected material library" << endl;
+				*lsp >> com; // Read file name
+				cout << "Material file name: " << com << endl;
+				matFNameGen << dname << com; // Create path to materials file (taking directory into account)
+				loadMats(matFNameGen.str()); // Load materials from material files
+				
+				clog << "\t\tMaterial file name: " << com << endl;
+			}
+
+			else if (com == "usemtl") // Sets current material id
+			{
+				clog << "\tDetected current material" << endl;
+
+				*lsp >> com; // Read name of current material
+				curMaterial = com; // Save current material of faces to use to create face objects
+				
+				clog << "\t\tCurrent material = " << curMaterial << endl;
+			}
+
+
+			else if (com == "f") // Faces; parses face lines and makes face objects via indices
 			{
 				clog << "\tDetected face" << endl;
-			 
-				/* Check if face has info other than indices */
-				if (regex_match(line, hasSlashes)) // Line has slashes
-				{
-					clog << "\tLine has slashes" << endl;
-				}
 
-				else // Line doesn't have slashes
-				{
-					clog << "\tLine doesn't have slashes" << endl;
-				}
+				float v1, v2, v3, t1, t2, t3, n1, n2, n3;
+				
+				/* Read v1 */
+				getline(*lsp, com, '/');
+				convToFloat(com.c_str(), &v1);
+
+				/* Read v2 */
+				getline(*lsp, com, '/');
+				convToFloat(com.c_str(), &v2);
+
+				/* Read v3 */
+				/* KILL THE NASTY LITTLE SPACE */
+				getline(*lsp, com, ' ');
+				convToFloat(com.c_str(), &v3);
+
+				/* Read t1 */
+				getline(*lsp, com, '/');
+				convToFloat(com.c_str(), &t1);
+
+				/* Read t2 */
+				getline(*lsp, com, '/');
+				convToFloat(com.c_str(), &t2);
+
+				/* Read t3 */
+				/* KILL THE NASTY LITTLE SPACE */
+				getline(*lsp, com, ' ');
+				convToFloat(com.c_str(), &t3);
+
+				/* Read n1 */
+				getline(*lsp, com, '/');
+				convToFloat(com.c_str(), &n1);
+
+				/* Read n2 */
+				getline(*lsp, com, '/');
+				convToFloat(com.c_str(), &n2);
+
+				/* Read n3 */
+				/* KILL THE NASTY LITTLE SPACE */
+				getline(*lsp, com, ' ');
+				convToFloat(com.c_str(), &n3);
+
+				clog << "\t\tReadface (" << v1 << ", " << v2 << ", " << v3 << ", " << t1 << ", " << t2 << ", " << t3 << ", " << n1 << ", " << n2 << ", " << n3 << ", " << curMaterial << ")" << endl;
 			}
 
 			delete lsp;
@@ -95,7 +206,7 @@ Mesh::Mesh(string filename)
 
 	else
 	{
-		clog << "Failed to open mesh file \"" << filename << "\"" << endl;
+		cout << "Failed to open mesh file \"" << filename << "\"" << endl;
 	}
 }
 
@@ -104,7 +215,8 @@ Mesh::Mesh(string filename)
 */
 Mesh::~Mesh()
 {
-	clog << "Mesh::~Mesh: deleting vectors" << endl;
+	cout << "Mesh::~Mesh: deleting vectors" << endl;
+	delete mats;
 	delete norms; // Delete normals vector
 	delete texVerts; // Delete texture vertices vector
     delete faces; // Delete vector of faces
@@ -188,4 +300,56 @@ int Mesh::convToLongInt(const char* str, long int* out)
     }
 
     return 0; // All OK
+}
+
+/* Load materials from material file */
+void Mesh::loadMats(string filename)
+{
+	ifstream f(filename.c_str()); // Create an object to read from the file
+	string line; // Holds a line
+	stringstream lsp; // Line splitter
+	string typ; // Type of data on a given line
+	float r, g, b; // Red, green. and blue values for the colours
+	bool matStarted = false; // Whether or not a material has been started
+	string matName; // Name of the current material
+
+	if (f.is_open()) // File opened
+	{
+		while (getline(f, line))
+		{
+			lsp.str(line); // Replace stringstream contents with line
+			cout << lsp.str() << endl; // Debuggin- print stringstream contents to ensure they're correct
+			lsp >> typ; // Read the string type
+
+			if (typ == "Kd") // Diffuse colour
+			{
+				/* Red comp */
+				lsp >> typ; // Read red comp val
+				convToFloat(typ.c_str(), &r); // Convert to number
+
+				/* Green component */
+				lsp >> typ;
+				convToFloat(typ.c_str(), &g);
+
+				/* Green component */
+				lsp >> typ;
+				convToFloat(typ.c_str(), &b);
+	
+				cout << "Diffuse colour is (" << r << ", " << g << ", " << b << ")" << endl;
+			}
+
+			else if (typ == "newmtl") // New material name
+			{
+				lsp >> matName; // Read material name
+				matStarted = true;
+			}
+		}
+
+		f.close();
+	}
+
+	else
+	{
+		cerr << "Unable to open file " << filename << endl;
+	}
 }
