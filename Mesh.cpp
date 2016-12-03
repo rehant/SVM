@@ -33,19 +33,12 @@ Mesh::Mesh(string filename)
 
 	/* Create class vectors */
 	cout << "Mesh::Mesh: creating vectors" << endl;
-	vector<Vec3D> verts; // Internal vector. Vertices in here are added to faces
+	verts = new vector<Vec3D>(); // Internal vector. Vertices in here are added to faces
 	texVerts = new vector<Vertex2D>();
 	norms = new vector<Vec3D>();
 	mats = new vector<Material>();
 	faces = new vector<Face3D>();
 	string curMaterial; // Current material name for a set of faces in the file
-
-	/* Create class vectors */
-	clog << "Mesh::Mesh: creating vectors" << endl;
-	//faces = new vector<Face3D>();
-	texVerts = new vector<Vertex2D>();
-	norms = new vector<Vec3D>();	
-
 
 	if (meshStream.is_open())
 	{
@@ -82,7 +75,7 @@ Mesh::Mesh(string filename)
 				convToFloat(com.c_str(), &z);	
 				cout << "\t\tz = " << z << endl;
 
-				verts.push_back(Vec3D(x, y, z)); // Create and add vertex to list
+				verts->push_back(Vec3D(x, y, z)); // Create and add vertex to list
 			}
 
 			else if (com == "vt") // Texture vertex
@@ -194,6 +187,9 @@ Mesh::Mesh(string filename)
 				/* KILL THE NASTY LITTLE SPACE */
 				getline(*lsp, com, ' ');
 				convToFloat(com.c_str(), &n3);
+
+				// Save face index parameters in a face object to vector of faces
+				faces->push_back(Face3D(v1, v2, v3, t1, t2, t3, n1, n2, n3, curMaterial));
 
 				clog << "\t\tReadface (" << v1 << ", " << v2 << ", " << v3 << ", " << t1 << ", " << t2 << ", " << t3 << ", " << n1 << ", " << n2 << ", " << n3 << ", " << curMaterial << ")" << endl;
 			}
