@@ -4,9 +4,9 @@
 /**
 * Constructs a Face3D with the vertices in the given array.
 **/
-Face3D::Face3D(vector<Vertex3D> uVerts)
+Face3D::Face3D(std::vector<Vertex3D> uVerts)
 {
-        verts = new vector<Vertex3D>(); // Create the vector.
+        verts = new std::vector<Vertex3D>(); // Create the vector.
 
         for (int i = 0; i < uVerts.size(); i++)
         {

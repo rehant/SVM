@@ -11,6 +11,7 @@ class Colour
 	public:
 		Colour();
 		Colour(double nr, double ng, double nb);
+		Colour(Colour& other); // Copy constructor
 		double getR();
 		double getG();
 		double getB();

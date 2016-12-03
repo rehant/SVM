@@ -4,7 +4,6 @@
 /* C++ STL */
 #include <string>
 #include <vector>
-using namespace std;
 
 // My includes
 #include "Colour.hpp"
@@ -19,7 +18,7 @@ class Mesh
         /**
         * Constructor. Loads a .OBJ file into an object.
         */
-        Mesh(string filename);
+        Mesh(std::string filename);
 
         /**
         * Destructor. Performs cleanup when mesh is deleted.
@@ -27,12 +26,12 @@ class Mesh
         ~Mesh();
 
     private:
-	void loadMats(string filename); // Loads materials from material libraries
+	void loadMats(std::string filename); // Loads materials from material libraries
 
-        vector<Face3D> *faces; // Mesh faces
-	vector<Vertex2D> *texVerts; // Texture vertices
-	vector<Vec3D> *norms; // Normals
-	vector<Material> *mats; // Materials
+        std::vector<Face3D> *faces; // Mesh faces
+	std::vector<Vertex2D> *texVerts; // Texture vertices
+	std::vector<Vec3D> *norms; // Normals
+	std::vector<Material> *mats; // Materials
 	
 	/* Methods */
 	int convToLongInt(const char* str, long int* out);

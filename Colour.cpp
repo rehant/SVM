@@ -28,3 +28,11 @@ double Colour::getB()
 {
 	return b/255; // OpenGL b
 }
+
+Colour::Colour(Colour& other) // Copy constructor
+{
+	// Values are multiplied by 255 to cancel out the division in the gets
+	r = other.getR()*255;
+	g = other.getG()*255;
+	b = other.getB()*255;
+}

@@ -13,13 +13,18 @@ class Material
 		Colour getAmb();
 		Colour getDif();
 		Colour getSpec();
-		string getName();
+		std::string getName();
+		Material(Colour amb, Colour dif, Colour spec, std::string name);
+		~Material();
+		void setAmb(Colour newAmb);
+		void setDif(Colour newDif);
+		void setSpec(Colour newSpec);
 
 	private:
-		Colour amb; // Ambient colour
-		Colour dif; // Diffuse colour
-		Colour spec; // Specular colour
-		string name;
+		Colour* amb; // Ambient colour
+		Colour* dif; // Diffuse colour
+		Colour* spec; // Specular colour
+		std::string* name;
 };
 
 #endif

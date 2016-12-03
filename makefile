@@ -8,9 +8,7 @@
 LDFLAGS = -lGL -lGLU -lglut -lm
 CFLAGS=-g -Wall -std=c++11
 CC=g++
-EXEEXT=
-RM=rm
-
+EXEEXT=.x
 # Windows (cygwin)
 ifeq "$(OS)" "Windows_NT"
 	EXEEXT=.exe #on windows applications must have .exe extension
@@ -39,14 +37,9 @@ run: $(PROGRAM_NAME)
 #make will automatically know that the objectfile needs to be compiled
 #form a cpp source file and find it itself :)
 
-Mesh.o: Mesh.cpp
-	rm -rf out
-	$(CC) -o Mesh.o -c $^ -std=c++11 2>&1 | tee -a out
-
 # Note: we don't need to add header-only classes (like Vector3D and Face3D) here. They don't have any code that needs to be compiled.
-$(PROGRAM_NAME): meshtest.o Vec3D.o Mesh.o Face3D.o
+$(PROGRAM_NAME): Vec3D.o Mesh.o Face3D.o Colour.o Material.o meshtest.o 
 	$(CC) -o $(PROGRAM_NAME)$(EXEEXT) $^ $(CFLAGS) $(LDFLAGS) 2>&1 | tee -a out
-	./$(PROGRAM_NAME)$(EXEEXT) 2>&1 | tee -a out
 
 clean:
 	$(RM) *.o *.x
