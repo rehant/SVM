@@ -219,7 +219,7 @@ Mesh::~Mesh()
 	delete mats;
 	delete norms; // Delete normals vector
 	delete texVerts; // Delete texture vertices vector
-    	delete faces; // Delete vector of faces
+    delete faces; // Delete vector of faces
 }
 
 /**

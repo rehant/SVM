@@ -16,14 +16,22 @@ class Face3D
 		/**
 		* Destructor. Destroys a face.
 		*/
-		~Face3D();
+		//~Face3D();
 
-		std::vector<Vertex3D> getVerts()
-		{
-			return *verts;
-		}
+		int getV1();
+		int getV1();
+		int getV1();
+
+		int getT1();
+		int getT2();
+		int getT3();
+
+		int getN1();
+		int getN2();
+		int getN3();
 	
 	private:
-    		std::vector<Vertex3D> *verts; // List of vertices in the face
+    		
 };
+
 #endif
