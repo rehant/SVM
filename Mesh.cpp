@@ -37,7 +37,7 @@ Mesh::Mesh(string filename)
 	faces = new vector<Face3D>();
 	texVerts = new vector<Vertex2D>();
 	norms = new vector<Vec3D>();
-	mats = new vector<Material>();
+	mats = new map<string, Material>(); // Create material map
 	string curMaterial; // Current material name for a set of faces in the file
 
 	/* Create class vectors */
@@ -134,7 +134,7 @@ Mesh::Mesh(string filename)
 				*lsp >> com; // Read file name
 				cout << "Material file name: " << com << endl;
 				matFNameGen << dname << com; // Create path to materials file (taking directory into account)
-				loadMats(matFNameGen.str()); // Load materials from material files
+				//loadMats(matFNameGen.str()); // Load materials from material files
 				
 				clog << "\t\tMaterial file name: " << com << endl;
 			}
@@ -217,7 +217,7 @@ Mesh::Mesh(string filename)
 Mesh::~Mesh()
 {
 	cout << "Mesh::~Mesh: deleting vectors" << endl;
-	delete mats;
+	delete mats; // Delete map of names to materials
 	delete norms; // Delete normals vector
 	delete texVerts; // Delete texture vertices vector
     	delete faces; // Delete vector of faces
@@ -310,9 +310,12 @@ void Mesh::loadMats(string filename)
 	string line; // Holds a line
 	stringstream lsp; // Line splitter
 	string typ; // Type of data on a given line
-	float r, g, b; // Red, green. and blue values for the colours
+	float ar, ag, ab; // Red, green. and blue values for ambient colour
+	float dr, dg, db; // Red, green and blue for diffuse colour
 	bool matStarted = false; // Whether or not a material has been started
 	string matName; // Name of the current material
+	float shiny; // Shinyness
+	float sr, sg, sb; // Specular RGB
 
 	if (f.is_open()) // File opened
 	{
@@ -322,27 +325,84 @@ void Mesh::loadMats(string filename)
 			cout << lsp.str() << endl; // Debuggin- print stringstream contents to ensure they're correct
 			lsp >> typ; // Read the string type
 
-			if (typ == "Kd") // Diffuse colour
+			if (typ == "Ka") // Ambient colour
 			{
 				/* Red comp */
-				lsp >> typ; // Read red comp val
-				convToFloat(typ.c_str(), &r); // Convert to number
+				lsp >> typ; // Read ared comp val
+				convToFloat(typ.c_str(), &ar); // Conveart to numabear
 
-				/* Green component */
+				/* Gareen component */
 				lsp >> typ;
-				convToFloat(typ.c_str(), &g);
+				convToFloat(typ.c_str(), &ag);
 
-				/* Green component */
+				/* Gareen component */
 				lsp >> typ;
-				convToFloat(typ.c_str(), &b);
+				convToFloat(typ.c_str(), &ab);
 	
-				cout << "Diffuse colour is (" << r << ", " << g << ", " << b << ")" << endl;
+				cout << "Ambient colouar is (" << ar << ", " << ag << ", " << ab << ")" << endl;
+			}
+
+			else if (typ == "Kd") // Diffuse coloudr
+			{
+				/* Red comp */
+				lsp >> typ; // Read dred comp val
+				convToFloat(typ.c_str(), &dr); // Convedrt to numdbedr
+
+				/* Gdreen component */
+				lsp >> typ;
+				convToFloat(typ.c_str(), &dg);
+
+				/* Gdreen component */
+				lsp >> typ;
+				convToFloat(typ.c_str(), &db);
+	
+				cout << "Diffuse colour is (" << dr << ", " << dg << ", " << db << ")" << endl;
+			}
+
+			else if (typ == "Tf") // Specular
+			{
+				/* Red */
+				lsp >> typ;
+				convToFloat(typ.c_str(), &sr);
+
+				/* Green */
+				lsp >> typ;
+				convToFloat(typ.c_str(), &sg);
+	
+				/* Blue */
+				lsp >> typ;
+				convToFloat(typ.c_str(), &sb);
+
+				cout << "Specular colour is: (" << sr << ", " << sg << ", " << sb << ")" << endl;
+			}
+
+			else if (typ == "Ni") // Shinyness
+			{
+				lsp >> typ; // Read shiny value
+				convToFloat(typ.c_str(), &shiny); // Convert to float
+				cout << "Shinyness = " << shiny << endl;
 			}
 
 			else if (typ == "newmtl") // New material name
 			{
-				lsp >> matName; // Read material name
-				matStarted = true;
+
+				/* Check if we have already started a material */
+				if (matStarted) // We were already parsing a material
+				{
+					// Need to create a material object and add it to the hashmap
+					Colour ambient(255*ar, 255*ag, 255*ab);
+					Colour diffuse(255*dr, 255*dg, 255*db);
+					Colour specular(255*sr, 255*sg, 255*sb);
+					Material m(ambient, diffuse, specular, shiny, matName); // Create the material
+					mats->insert(pair<string, Material>(matName, m)); // Insert the material and its name into the map
+				}
+
+				else // Material hasn't yet been started (beginning of file)
+				{
+					lsp >> matName; // Read material name
+					matStarted = true; // Set boolean for next loop, so that we know that a material has ended
+				}
+
 			}
 		}
 

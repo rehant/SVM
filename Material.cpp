@@ -20,13 +20,14 @@ std::string Material::getName()
 	return *name;
 }
 
-Material::Material(Colour amb, Colour dif, Colour spec, std::string name)
+Material::Material(Colour amb, Colour dif, Colour spec, int shine, std::string name)
 {
 	/* Copy stuff */
 	this->amb = new Colour(amb.getR()*255, amb.getG()*255, amb.getB()*255);
 	this->dif = new Colour(dif);
 	this->spec = new Colour(spec);
 	this->name = new std::string(name);
+	this->shine = shine;
 }
 
 Material::~Material()
@@ -53,4 +54,9 @@ void Material::setSpec(Colour newSpec)
 {
 	delete spec;
 	spec = new Colour(newSpec);
+}
+
+int Material::getShine()
+{
+	return shine;
 }

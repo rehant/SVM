@@ -14,17 +14,19 @@ class Material
 		Colour getDif();
 		Colour getSpec();
 		std::string getName();
-		Material(Colour amb, Colour dif, Colour spec, std::string name);
+		Material(Colour amb, Colour dif, Colour spec, int shine, std::string name);
 		~Material();
 		void setAmb(Colour newAmb);
 		void setDif(Colour newDif);
 		void setSpec(Colour newSpec);
+		int getShine();
 
 	private:
 		Colour* amb; // Ambient colour
 		Colour* dif; // Diffuse colour
 		Colour* spec; // Specular colour
 		std::string* name;
+		int shine;
 };
 
 #endif

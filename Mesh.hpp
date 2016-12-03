@@ -4,11 +4,12 @@
 /* C++ STL */
 #include <string>
 #include <vector>
+#include <map>
 
 // My includes
 #include "Colour.hpp"
 #include "Vec3D.hpp"
-//#include "Face3D.hpp"
+#include "Face3D.hpp"
 #include "Vertex2D.hpp"
 #include "Material.hpp"
 
@@ -31,7 +32,7 @@ class Mesh
         std::vector<Face3D> *faces; // Mesh faces
 	std::vector<Vertex2D> *texVerts; // Texture vertices
 	std::vector<Vec3D> *norms; // Normals
-	std::vector<Material> *mats; // Materials
+	std::map<std::string, Material> *mats; // Hashmap storing materials by name
 	
 	/* Methods */
 	int convToLongInt(const char* str, long int* out);
