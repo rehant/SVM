@@ -10,7 +10,7 @@
 
 int main()
 {
-	Mesh cube("Assets/cube.obj"); // Try to load the file
-	Mesh track("Assets/track.obj");
+	//Mesh cube("Assets/cube.obj"); // Try to load the file
+	Mesh track("Assets/track_triangulated.obj");
 	return 0;
 }

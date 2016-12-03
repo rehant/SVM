@@ -2,7 +2,7 @@
 #define FACE3D_H
 
 #include <vector>
-#include "Vertex3D.h"
+#include "Vec3D.hpp"
 using namespace std;
 
 class Face3D
@@ -12,19 +12,19 @@ class Face3D
 		/**
 		* Constructs a Face3D with the vertices in the given array.
 		**/
-		Face3D(vector<Vertex3D> uVerts);
+		Face3D(vector<Vec3D> uVerts);
 	
 		/**
 		* Destructor. Destroys a face.
 		*/
 		~Face3D();
 
-		vector<Vertex3D>* getVerts()
+		vector<Vec3D>* getVerts()
 		{
 			return verts;
 		}
 	
 	private:
-    		vector<Vertex3D> *verts; // List of vertices in the face
+    		vector<Vec3D> *verts; // List of vertices in the face
 };
 #endif

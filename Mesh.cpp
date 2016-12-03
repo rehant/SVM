@@ -23,12 +23,13 @@ Mesh::Mesh(string filename)
 	string line; // Line from file
 	stringstream* lsp; // Line splitter string stream
 	string com; // Current command
+	string curMaterial; // Current material name for a set of faces in the file
 
 	/* Create class vectors */
 	clog << "Mesh::Mesh: creating vectors" << endl;
-	faces = new vector<Face3D>();
+	//faces = new vector<Face3D>();
 	texVerts = new vector<Vertex2D>();
-	norms = new vector<Vec3D>();
+	norms = new vector<Vec3D>();	
 
 
 	if (meshStream.is_open())
@@ -48,7 +49,7 @@ Mesh::Mesh(string filename)
 			{
 				float x, y, z;
 
-				clog << "\tVertex" << endl;
+				clog << "\tDetected vertex coordinates" << endl;
 			
 				/* X */
 				*lsp >> com; // Read x
@@ -66,11 +67,6 @@ Mesh::Mesh(string filename)
 				clog << "\t\tz = " << z << endl;
 
 				verts.push_back(Vec3D(x, y, z)); // Create and add vertex to list
-			}
-
-			else if (com == "f") // Face
-			{
-				clog << "\tDetected face" << endl;
 			}
 
 			else if (com == "vt") // Texture vertex
@@ -94,7 +90,7 @@ Mesh::Mesh(string filename)
 
 			else if (com == "vn") // Normal
 			{
-				clog << "\tDetected normal" << endl;
+				clog << "\tDetected normal vector" << endl;
 
 				float x, y, z;
 			
@@ -110,14 +106,77 @@ Mesh::Mesh(string filename)
 				*lsp >> com;
 				convToFloat(com.c_str(), &z);
 
-				clog << "\tRead normal (" << x << ", " << y << ", " << z << ")" << endl;	
+				clog << "\t\tRead normal (" << x << ", " << y << ", " << z << ")" << endl;	
 				norms->push_back(Vec3D(x, y, z));
 			}
 
 			else if (com == "mtllib") // Material library
 			{
+				clog << "\tDetected material library" << endl;
 				*lsp >> com; // Read file name
-				clog << "Material file name: " << com << endl;
+				
+				clog << "\t\tMaterial file name: " << com << endl;
+			}
+
+			else if (com == "usemtl") // Sets current material id
+			{
+				clog << "\tDetected current material" << endl;
+
+				*lsp >> com; // Read name of current material
+				curMaterial = com; // Save current material of faces to use to create face objects
+				
+				clog << "\t\tCurrent material = " << curMaterial << endl;
+			}
+
+
+			else if (com == "f") // Faces; parses face lines and makes face objects via indices
+			{
+				clog << "\tDetected face" << endl;
+
+				float v1, v2, v3, t1, t2, t3, n1, n2, n3;
+				string space;
+
+				/* Read v1 */
+				getline(*lsp, com, '/');
+				convToFloat(com.c_str(), &v1);
+
+				/* Read v2 */
+				getline(*lsp, com, '/');
+				convToFloat(com.c_str(), &v2);
+
+				/* Read v3 */
+				/* KILL THE NASTY LITTLE SPACE */
+				getline(*lsp, com, ' ');
+				convToFloat(com.c_str(), &v3);
+
+				/* Read t1 */
+				getline(*lsp, com, '/');
+				convToFloat(com.c_str(), &t1);
+
+				/* Read t2 */
+				getline(*lsp, com, '/');
+				convToFloat(com.c_str(), &t2);
+
+				/* Read t3 */
+				/* KILL THE NASTY LITTLE SPACE */
+				getline(*lsp, com, ' ');
+				convToFloat(com.c_str(), &t3);
+
+				/* Read n1 */
+				getline(*lsp, com, '/');
+				convToFloat(com.c_str(), &n1);
+
+				/* Read n2 */
+				getline(*lsp, com, '/');
+				convToFloat(com.c_str(), &n2);
+
+				/* Read n3 */
+				/* KILL THE NASTY LITTLE SPACE */
+				getline(*lsp, com, ' ');
+				convToFloat(com.c_str(), &n3);
+
+				clog << "\t\tReadface (" << v1 << ", " << v2 << ", " << v3 << ", " << t1 << ", " << t2 << ", " << t3 << ", " << n1 << ", " << n2 << ", " << n3 << ", " << curMaterial << ")" << endl;
+
 			}
 
 			delete lsp;
@@ -140,7 +199,7 @@ Mesh::~Mesh()
 	clog << "Mesh::~Mesh: deleting vectors" << endl;
 	delete norms; // Delete normals vector
 	delete texVerts; // Delete texture vertices vector
-    delete faces; // Delete vector of faces
+    //delete faces; // Delete vector of faces
 }
 
 /**
