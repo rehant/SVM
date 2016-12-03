@@ -33,7 +33,7 @@ Mesh::Mesh(string filename)
 
 	/* Create class vectors */
 	cout << "Mesh::Mesh: creating vectors" << endl;
-	verts = new vector<Vec3D>(); // Internal vector. Vertices in here are added to faces
+	vector<Vec3D> verts; // Internal vector. Vertices in here are added to faces
 	texVerts = new vector<Vertex2D>();
 	norms = new vector<Vec3D>();
 	mats = new vector<Material>();
