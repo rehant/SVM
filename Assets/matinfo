@@ -1,5 +1,5 @@
 Kd = diffuse colour
 Ka = ambient colour
 Tf = transmission filter (only allows certain components of light to pass through this material)
-Ni = index of refraction
+Ni = index of refraction (shininess)
 illum = illumination model. 4 = glass

@@ -9,6 +9,7 @@
 #include <ios> // failure
 #include <stdexcept> // length_error
 #include <algorithm> // find
+#include <utility> // pair
 using namespace std;
 
 /* C includes */
@@ -36,7 +37,9 @@ Mesh::Mesh(string filename)
 	verts = new vector<Vec3D>(); // Internal vector. Vertices in here are added to faces
 	texVerts = new vector<Vertex2D>();
 	norms = new vector<Vec3D>();
-	mats = new map<string, Material>(); // Create material map
+	mats = new map<string, Material>(); // Create material index map
+	faces = new vector<Face3D>(); // Create vector of faces
+
 	string curMaterial; // Current material name for a set of faces in the file
 
 	if (meshStream.is_open())
@@ -57,7 +60,7 @@ Mesh::Mesh(string filename)
 				float x, y, z;
 
 				cout << "\tVertex" << endl;
-				clog << "\tDetected vertex coordinates" << endl;
+				cout << "\tDetected vertex coordinates" << endl;
 			
 				/* X */
 				*lsp >> com; // Read x
@@ -99,7 +102,7 @@ Mesh::Mesh(string filename)
 			else if (com == "vn") // Normal
 			{
 				cout << "\tDetected normal" << endl;
-				clog << "\tDetected normal vector" << endl;
+				cout << "\tDetected normal vector" << endl;
 
 				float x, y, z;
 			
@@ -116,35 +119,35 @@ Mesh::Mesh(string filename)
 				convToFloat(com.c_str(), &z);
 
 				cout << "\tRead normal (" << x << ", " << y << ", " << z << ")" << endl;	
-				clog << "\t\tRead normal (" << x << ", " << y << ", " << z << ")" << endl;	
+				cout << "\t\tRead normal (" << x << ", " << y << ", " << z << ")" << endl;	
 				norms->push_back(Vec3D(x, y, z));
 			}
 
 			else if (com == "mtllib") // Material library
 			{
-				clog << "\tDetected material library" << endl;
+				cout << "\tDetected material library" << endl;
 				*lsp >> com; // Read file name
 				cout << "Material file name: " << com << endl;
 				matFNameGen << dname << com; // Create path to materials file (taking directory into account)
-				//loadMats(matFNameGen.str()); // Load materials from material files
+				loadMats(matFNameGen.str()); // Load materials from material files
 				
-				clog << "\t\tMaterial file name: " << com << endl;
+				cout << "\t\tMaterial file name: " << com << endl;
 			}
 
 			else if (com == "usemtl") // Sets current material id
 			{
-				clog << "\tDetected current material" << endl;
+				cout << "\tDetected current material" << endl;
 
 				*lsp >> com; // Read name of current material
 				curMaterial = com; // Save current material of faces to use to create face objects
 				
-				clog << "\t\tCurrent material = " << curMaterial << endl;
+				cout << "\t\tCurrent material = " << curMaterial << endl;
 			}
 
 
 			else if (com == "f") // Faces; parses face lines and makes face objects via indices
 			{
-				clog << "\tDetected face" << endl;
+				cout << "\tDetected face" << endl;
 
 				float v1, v2, v3, t1, t2, t3, n1, n2, n3;
 				
@@ -190,7 +193,7 @@ Mesh::Mesh(string filename)
 				// Save face index parameters in a face object to vector of faces
 				faces->push_back(Face3D(v1, v2, v3, t1, t2, t3, n1, n2, n3, curMaterial));
 
-				clog << "\t\tReadface (" << v1 << ", " << v2 << ", " << v3 << ", " << t1 << ", " << t2 << ", " << t3 << ", " << n1 << ", " << n2 << ", " << n3 << ", " << curMaterial << ")" << endl;
+				cout << "\t\tReadface (" << v1 << ", " << v2 << ", " << v3 << ", " << t1 << ", " << t2 << ", " << t3 << ", " << n1 << ", " << n2 << ", " << n3 << ", " << curMaterial << ")" << endl;
 			}
 
 			delete lsp;
@@ -211,10 +214,11 @@ Mesh::Mesh(string filename)
 Mesh::~Mesh()
 {
 	cout << "Mesh::~Mesh: deleting vectors" << endl;
-	delete mats; // Delete map of names to materials
+	delete faces; // Delete vector of faces
+	delete mats; // Delete map of names to indices
 	delete norms; // Delete normals vector
 	delete texVerts; // Delete texture vertices vector
-    delete faces; // Delete vector of faces
+	delete verts; // Delete vector of vertices
 }
 
 /**
@@ -302,102 +306,136 @@ void Mesh::loadMats(string filename)
 {
 	ifstream f(filename.c_str()); // Create an object to read from the file
 	string line; // Holds a line
-	stringstream lsp; // Line splitter
+	stringstream *lsp; // Line splitter
 	string typ; // Type of data on a given line
 	float ar, ag, ab; // Red, green. and blue values for ambient colour
 	float dr, dg, db; // Red, green and blue for diffuse colour
-	bool matStarted = false; // Whether or not a material has been started
 	string matName; // Name of the current material
 	float shiny; // Shinyness
 	float sr, sg, sb; // Specular RGB
+	bool matInProgress = false; // Whether or not we are currently reading the values for a material
 
 	if (f.is_open()) // File opened
 	{
 		while (getline(f, line))
 		{
-			lsp.str(line); // Replace stringstream contents with line
-			cout << lsp.str() << endl; // Debuggin- print stringstream contents to ensure they're correct
-			lsp >> typ; // Read the string type
+			lsp = new stringstream(line); // Replace stringstream contents with line
+			cout << lsp->str() << endl; // Debuggin- print stringstream contents to ensure they're correct
+			*lsp >> typ; // Read type of data
 
-			if (typ == "Ka") // Ambient colour
+			if (typ == "newmtl") // Start of new material
 			{
-				/* Red comp */
-				lsp >> typ; // Read ared comp val
-				convToFloat(typ.c_str(), &ar); // Conveart to numabear
+				if (matInProgress) // We were already reading a material
+				{
+					cout << "Material in progress, saving it, starting new one" << endl;
+					/*mats->insert(pair<string, Material>(
+						matName,
+							Material(
+								255*ar,
+								255*ag,
+								255*ab,
+								255*dr,
+								255*dg,
+								255*db,
+								255*sr,
+								255*sg,
+								255*sb,
+								shiny,
+								matName
+							)
+						)
+					); // Insert it into the vector*/
+					matInProgress = false; // So that we'll start a new material next time
+				}
 
-				/* Gareen component */
-				lsp >> typ;
-				convToFloat(typ.c_str(), &ag);
-
-				/* Gareen component */
-				lsp >> typ;
-				convToFloat(typ.c_str(), &ab);
-	
-				cout << "Ambient colouar is (" << ar << ", " << ag << ", " << ab << ")" << endl;
+				else
+				{
+					cout << "New material" << endl;
+					matInProgress = true; // Mark this as in progress
+					matName = typ; // Save material name
+				}
 			}
 
-			else if (typ == "Kd") // Diffuse coloudr
+			else if (typ == "Kd") // Diffuse colour
 			{
-				/* Red comp */
-				lsp >> typ; // Read dred comp val
-				convToFloat(typ.c_str(), &dr); // Convedrt to numdbedr
+				/** Read info **/
 
-				/* Gdreen component */
-				lsp >> typ;
-				convToFloat(typ.c_str(), &dg);
+				/* Red */
+				*lsp >> typ; // Read red
+				convToFloat(typ.c_str(), &dr); // Convert it
 
-				/* Gdreen component */
-				lsp >> typ;
-				convToFloat(typ.c_str(), &db);
-	
-				cout << "Diffuse colour is (" << dr << ", " << dg << ", " << db << ")" << endl;
+				/* Green */
+				*lsp >> typ; // Read value
+				convToFloat(typ.c_str(), &dg); // Convert it
+		
+				/* Blue */
+				*lsp >> typ; // Read value
+				convToFloat(typ.c_str(), &db); // Convert it
+
+				cout << "Diffuse colour = (" << 255*dr << ", " << 255*dg << ", " << 255*db << ")" << endl;
+			}
+
+			else if (typ == "Ka") // Ambient colour
+			{
+				/** Read info **/
+
+				/* Red */
+				*lsp >> typ; // Read red
+				convToFloat(typ.c_str(), &ar); // Convert it
+
+				/* Green */
+				*lsp >> typ; // Read value
+				convToFloat(typ.c_str(), &ag); // Convert it
+		
+				/* Blue */
+				*lsp >> typ; // Read value
+				convToFloat(typ.c_str(), &ab); // Convert it
+
+				cout << "Ambient colour = (" << 255*ar << ", " << 255*ag << ", " << 255*ab << ")" << endl;
 			}
 
 			else if (typ == "Tf") // Specular
 			{
+				/** Read info **/
+
 				/* Red */
-				lsp >> typ;
-				convToFloat(typ.c_str(), &sr);
+				*lsp >> typ; // Read red
+				convToFloat(typ.c_str(), &sr); // Convert it
 
 				/* Green */
-				lsp >> typ;
-				convToFloat(typ.c_str(), &sg);
-	
+				*lsp >> typ; // Resd vslue
+				convToFloat(typ.c_str(), &sg); // Convert it
+		
 				/* Blue */
-				lsp >> typ;
-				convToFloat(typ.c_str(), &sb);
+				*lsp >> typ; // Resd vslue
+				convToFloat(typ.c_str(), &sb); // Convert it
 
-				cout << "Specular colour is: (" << sr << ", " << sg << ", " << sb << ")" << endl;
+				cout << "Specular colour = (" << 255*sr << ", " << 255*sg << ", " << 255*sb << ")" << endl;
 			}
 
-			else if (typ == "Ni") // Shinyness
+			else if (typ == "Ni") // Shininess
 			{
-				lsp >> typ; // Read shiny value
-				convToFloat(typ.c_str(), &shiny); // Convert to float
-				cout << "Shinyness = " << shiny << endl;
+				*lsp >> typ; // Read shininess
+				convToFloat(typ.c_str(), &shiny); // Convert it
+				cout << "Shininess = " << shiny << endl;
 			}
 
-			else if (typ == "newmtl") // New material name
+			else
 			{
-
-				/* Check if we have already started a material */
-				if (matStarted) // We were already parsing a material
-				{
-					// Need to create a material object and add it to the hashmap
-					Colour ambient(255*ar, 255*ag, 255*ab);
-					Colour diffuse(255*dr, 255*dg, 255*db);
-					Colour specular(255*sr, 255*sg, 255*sb);
-					Material m(ambient, diffuse, specular, shiny, matName); // Create the material
-					mats->insert(pair<string, Material>(matName, m)); // Insert the material and its name into the map
-				}
-
-				else // Material hasn't yet been started (beginning of file)
-				{
-					lsp >> matName; // Read material name
-					matStarted = true; // Set boolean for next loop, so that we know that a material has ended
-				}
-
+				cout << "typ = " << typ << endl;
 			}
+
+			delete lsp;
+		}
+		
+		if (matInProgress) // We were reading a material when the file ended
+		{
+			cout << "Material in progress at file end, creating it and adding it to map" << endl;
+			Colour amb(255*ar, 255*ag, 255*ab); // Ambient colour
+			Colour diff(255*dr, 255*dg, 255*db); // Diffuse colour
+			Colour spec(255*sr, 255*sg, 255*sb); // Specular colour
+			pair<string, Material> toInsert = make_pair(matName, Material(amb, diff, spec, shiny, matName));
+			mats->insert(toInsert);
 		}
 
 		f.close();
@@ -407,4 +445,59 @@ void Mesh::loadMats(string filename)
 	{
 		cerr << "Unable to open file " << filename << endl;
 	}
+}
+
+// Copy constructor
+Mesh::Mesh(Mesh& other)
+{
+	/* Copy data */
+	verts = new vector<Vec3D>(other.getVerts());
+	texVerts = new vector<Vertex2D>(other.getTexVerts());
+	norms = new vector<Vec3D>(other.getNorms());
+	faces = new vector<Face3D>(other.getFaces());
+	mats = new map<string, Material>(other.getMats());
+}
+
+vector<Vec3D> Mesh::getVerts()
+{
+	return *verts;
+}
+
+vector<Vertex2D> Mesh::getTexVerts()
+{
+	return *texVerts;
+}
+
+vector<Vec3D> Mesh::getNorms()
+{
+	return *norms;
+}
+
+map<string, Material> Mesh::getMats()
+{
+	return *mats;
+}
+
+vector<Face3D> Mesh::getFaces()
+{
+	return *faces;
+}
+
+/*void Mesh::operator=(const Mesh& other)
+{
+	/* Delete old vectors */
+/*	delete norms;
+	delete texVerts;
+	delete verts;
+	
+	/* Copy data */
+/*	this->verts = new vector<Vec3D>(other.getVerts());
+	this->texVerts = new vector<Vertex2D>(other.getTexVerts());
+	this->norms = new vector<Vec3D>(other.getNorms());
+	this->faces = new vector<Face3D>(other.getFaces());
+}*/
+
+Material Mesh::getMaterial(string name)
+{
+	return mats->at(name);
 }

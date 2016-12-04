@@ -8,7 +8,7 @@
 LDFLAGS = -lGL -lGLU -lglut -lm
 CFLAGS=-g -Wall -std=c++11
 CC=g++
-EXEEXT=
+EXEEXT=.x
 # Windows (cygwin)
 ifeq "$(OS)" "Windows_NT"
 	EXEEXT=.exe #on windows applications must have .exe extension
@@ -38,8 +38,8 @@ all: $(PROGRAM_NAME)
 #form a cpp source file and find it itself :)
 
 # Note: we don't need to add header-only classes (like Vector3D and Face3D) here. They don't have any code that needs to be compiled.
-$(PROGRAM_NAME): Vec3D.o Mesh.o Face3D.o Colour.o Material.o meshtest.o 
+$(PROGRAM_NAME): Vertex2D.o Vec3D.o Mesh.o Face3D.o Colour.o Material.o meshtest.o 
 	$(CC) -o $(PROGRAM_NAME)$(EXEEXT) $^ $(CFLAGS) $(LDFLAGS) 2>&1 | tee -a out
 
 clean:
-	$(RM) *.o *.$(EXEEXT) $(PROGRAM_NAME)
+	$(RM) *.o *$(EXEEXT) $(PROGRAM_NAME)

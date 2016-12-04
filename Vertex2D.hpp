@@ -1,18 +1,18 @@
 #ifndef VERTEX2D_HPP
 #define VERTEX2D_HPP
 
-struct Vertex2D
+class Vertex2D
 {
-	float x, y;
+	public:	
+		/**
+		* Constructs a Vertex2D with the given X, Y, Z->
+		**/
+		Vertex2D(float x, float y);
+		float getX();
+		float getY();
 
-	/**
-	* Constructs a Vertex2D with the given X, Y, Z->
-	**/
-	Vertex2D(float x, float y)
-	{
-	        this->x = x;
-	        this->y = y;
-	}
+	private:
+		float x, y;
 };
 
 #endif

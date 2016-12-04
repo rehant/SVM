@@ -10,16 +10,20 @@
 class Material
 {
 	public:
-		Colour getAmb();
-		Colour getDif();
-		Colour getSpec();
-		std::string getName();
+		Colour getAmb() const;
+		Colour getDif() const;
+		Colour getSpec() const;
+		std::string getName() const;
 		Material(Colour amb, Colour dif, Colour spec, int shine, std::string name);
 		~Material();
 		void setAmb(Colour newAmb);
 		void setDif(Colour newDif);
 		void setSpec(Colour newSpec);
-		int getShine();
+		void setName(std::string newname);
+		int getShine() const;
+		Material();
+		Material(float ambR, float ambG, float ambB, float difR, float difG, float difB, float specR, float specG, float specB, int shine, std::string name);
+		Material(const Material& other);
 
 	private:
 		Colour* amb; // Ambient colour
