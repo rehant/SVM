@@ -149,6 +149,7 @@ Mesh::Mesh(string filename)
 			{
 				cout << "\tDetected face" << endl;
 
+			//	float v1, v2, v3, t1, t2, t3, n1, n2, n3;
 				float v1, v2, v3, t1, t2, t3, n1, n2, n3;
 				
 				/* Read v1 */
