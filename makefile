@@ -25,6 +25,9 @@ endif
 #change the 't1' name to the name you want to call your application
 PROGRAM_NAME=mt
 
+# Other files to be cleaned
+EXTRAFILES=out
+
 #run target to compile and build, and then launch the executable
 run: $(PROGRAM_NAME)
 	./$(PROGRAM_NAME)$(EXEEXT)
@@ -42,4 +45,4 @@ $(PROGRAM_NAME): Vertex2D.o Vec3D.o Mesh.o Face3D.o Colour.o Material.o meshtest
 	$(CC) -o $(PROGRAM_NAME)$(EXEEXT) $^ $(CFLAGS) $(LDFLAGS) 2>&1 | tee -a out
 
 clean:
-	$(RM) *.o *$(EXEEXT) $(PROGRAM_NAME)
+	$(RM) *.o *$(EXEEXT) $(PROGRAM_NAME) $(EXTRAFILES)
