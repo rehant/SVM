@@ -8,10 +8,11 @@
 
 // My includes
 #include "Colour.hpp"
-#include "Vec3D.hpp"
+#include "Vertex3D.hpp"
 #include "Face3D.hpp"
 #include "Vertex2D.hpp"
 #include "Material.hpp"
+#include "Vec3D.hpp"
 
 class Mesh
 {
@@ -34,7 +35,7 @@ class Mesh
 	void operator=(const Mesh& other);
 
 	/*** Getters ***/
-	std::vector<Vec3D> getVerts();
+	std::vector<Vertex3D> getVerts();
 	std::vector<Vertex2D> getTexVerts();
 	std::vector<Vec3D> getNorms();
 	std::map<std::string, Material> getMats();
@@ -43,7 +44,7 @@ class Mesh
 
     private:
     	void loadMats(std::string filename); // Loads materials from material libraries
-        std::vector<Vec3D> *verts; // Vertex coordinates
+        std::vector<Vertex3D> *verts; // Vertex coordinates
         std::vector<Vertex2D> *texVerts; // Texture vertices
         std::vector<Vec3D> *norms; // Normals
         std::map<std::string, Material> *mats; // Maps material names to integers

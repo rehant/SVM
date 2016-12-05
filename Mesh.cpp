@@ -34,7 +34,7 @@ Mesh::Mesh(string filename)
 
 	/* Create class vectors */
 	cout << "Mesh::Mesh: creating vectors" << endl;
-	verts = new vector<Vec3D>(); // Internal vector. Vertices in here are added to faces
+	verts = new vector<Vertex3D>(); // Internal vector. Vertices in here are added to faces
 	texVerts = new vector<Vertex2D>();
 	norms = new vector<Vec3D>();
 	mats = new map<string, Material>(); // Create material index map
@@ -77,7 +77,7 @@ Mesh::Mesh(string filename)
 				convToFloat(com.c_str(), &z);	
 				cout << "\t\tz = " << z << endl;
 
-				verts->push_back(Vec3D(x, y, z)); // Create and add vertex to list
+				verts->push_back(Vertex3D(x, y, z)); // Create and add vertex to list
 			}
 
 			else if (com == "vt") // Texture vertex
@@ -432,7 +432,7 @@ void Mesh::loadMats(string filename)
 
 	else
 	{
-		cerr << "Unable to open file " << filename << endl;
+//		cerr << "Unable to open file " << filename << endl;
 	}
 }
 
@@ -440,14 +440,14 @@ void Mesh::loadMats(string filename)
 Mesh::Mesh(Mesh& other)
 {
 	/* Copy data */
-	verts = new vector<Vec3D>(other.getVerts());
+	verts = new vector<Vertex3D>(other.getVerts());
 	texVerts = new vector<Vertex2D>(other.getTexVerts());
 	norms = new vector<Vec3D>(other.getNorms());
 	faces = new vector<Face3D>(other.getFaces());
 	mats = new map<string, Material>(other.getMats());
 }
 
-vector<Vec3D> Mesh::getVerts()
+vector<Vertex3D> Mesh::getVerts()
 {
 	return *verts;
 }
@@ -480,9 +480,9 @@ vector<Face3D> Mesh::getFaces()
 	delete verts;
 	
 	/* Copy data */
-/*	this->verts = new vector<Vec3D>(other.getVerts());
+/*	this->verts = new vector<Vertex3D>(other.getVerts());
 	this->texVerts = new vector<Vertex2D>(other.getTexVerts());
-	this->norms = new vector<Vec3D>(other.getNorms());
+	this->norms = new vector<Vertex3D>(other.getNorms());
 	this->faces = new vector<Face3D>(other.getFaces());
 }*/
 
