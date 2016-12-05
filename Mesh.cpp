@@ -329,23 +329,11 @@ void Mesh::loadMats(string filename)
 				if (matInProgress) // We were already reading a material
 				{
 					cout << "Material in progress, saving it, starting new one" << endl;
-					/*mats->insert(pair<string, Material>(
-						matName,
-							Material(
-								255*ar,
-								255*ag,
-								255*ab,
-								255*dr,
-								255*dg,
-								255*db,
-								255*sr,
-								255*sg,
-								255*sb,
-								shiny,
-								matName
-							)
-						)
-					); // Insert it into the vector*/
+					Colour amb(255*ar, 255*ag, 255*ab); // Ambient colour
+					Colour diff(255*dr, 255*dg, 255*db); // Diffuse colour
+					Colour spec(255*sr, 255*sg, 255*sb); // Specular colour
+					pair<string, Material> toInsert = make_pair(matName, Material(amb, diff, spec, 128*shiny, matName)); // Shiny values are on 0-1 scale in file, but on 0-128 scale in OpenGL
+					mats->insert(toInsert);
 					matInProgress = false; // So that we'll start a new material next time
 				}
 
@@ -435,7 +423,7 @@ void Mesh::loadMats(string filename)
 			Colour amb(255*ar, 255*ag, 255*ab); // Ambient colour
 			Colour diff(255*dr, 255*dg, 255*db); // Diffuse colour
 			Colour spec(255*sr, 255*sg, 255*sb); // Specular colour
-			pair<string, Material> toInsert = make_pair(matName, Material(amb, diff, spec, shiny, matName));
+			pair<string, Material> toInsert = make_pair(matName, Material(amb, diff, spec, 128*shiny, matName)); // Shiny values are on 0-1 scale in file, but on 0-128 scale in OpenGL
 			mats->insert(toInsert);
 		}
 
