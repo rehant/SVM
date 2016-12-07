@@ -14,6 +14,7 @@ class Vertex3D
 		float getX();
 		float getY();
 		float getZ();
+		Vertex3D();
 };
 
 #endif

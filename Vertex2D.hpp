@@ -10,6 +10,7 @@ class Vertex2D
 		Vertex2D(float x, float y);
 		float getX();
 		float getY();
+		Vertex2D();
 
 	private:
 		float x, y;

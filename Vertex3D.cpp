@@ -24,3 +24,10 @@ float Vertex3D::getZ()
 {
 	return z;
 }
+
+Vertex3D::Vertex3D()
+{
+	x = 0;
+	y = 0;
+	z = 0;
+}

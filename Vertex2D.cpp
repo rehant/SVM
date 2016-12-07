@@ -18,3 +18,9 @@ float Vertex2D::getY()
 {
 	return y;
 }
+
+Vertex2D::Vertex2D()
+{
+	x = 0;
+	y = 0;
+}

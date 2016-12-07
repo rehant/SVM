@@ -154,41 +154,50 @@ Mesh::Mesh(string filename)
 				
 				/* Read v1 */
 				getline(*lsp, com, '/');
+				cout << "v1 str = \"" << com << "\"" << endl;
 				convToFloat(com.c_str(), &v1);
-
-				/* Read v2 */
-				getline(*lsp, com, '/');
-				convToFloat(com.c_str(), &v2);
-
-				/* Read v3 */
-				/* KILL THE NASTY LITTLE SPACE */
-				getline(*lsp, com, ' ');
-				convToFloat(com.c_str(), &v3);
 
 				/* Read t1 */
 				getline(*lsp, com, '/');
+				cout << "t1 str = \"" << com << "\"" << endl;
 				convToFloat(com.c_str(), &t1);
+
+				/* Read n1 */
+				/* KILL THE NASTY LITTLE SPACE */
+				getline(*lsp, com, ' ');
+				cout << "n1 str = \"" << com << "\"" << endl;
+				convToFloat(com.c_str(), &n1);
+
+				/* Read v2 */
+				getline(*lsp, com, '/');
+				cout << "v2 str = \"" << com << "\"" << endl;
+				convToFloat(com.c_str(), &v2);
 
 				/* Read t2 */
 				getline(*lsp, com, '/');
+				cout << "t2 str = \"" << com << "\"" << endl;
 				convToFloat(com.c_str(), &t2);
 
-				/* Read t3 */
+				/* Read n2 */
 				/* KILL THE NASTY LITTLE SPACE */
 				getline(*lsp, com, ' ');
-				convToFloat(com.c_str(), &t3);
-
-				/* Read n1 */
-				getline(*lsp, com, '/');
-				convToFloat(com.c_str(), &n1);
-
-				/* Read n2 */
-				getline(*lsp, com, '/');
+				cout << "n2 str = \"" << com << "\"" << endl;
 				convToFloat(com.c_str(), &n2);
+
+				/* Read v3 */
+				getline(*lsp, com, '/');
+				cout << "v3 str = \"" << com << "\"" << endl;
+				convToFloat(com.c_str(), &v3);
+
+				/* Read t3 */
+				getline(*lsp, com, '/');
+				cout << "t3 str = \"" << com << "\"" << endl;
+				convToFloat(com.c_str(), &t3);
 
 				/* Read n3 */
 				/* KILL THE NASTY LITTLE SPACE */
 				getline(*lsp, com, ' ');
+				cout << "n3 str = \"" << com << "\"" << endl;
 				convToFloat(com.c_str(), &n3);
 
 				// Save face index parameters in a face object to vector of faces
@@ -326,12 +335,15 @@ void Mesh::loadMats(string filename)
 
 			if (typ == "newmtl") // Start of new material
 			{
+				*lsp >> typ; // Read material name
+
 				if (matInProgress) // We were already reading a material
 				{
 					cout << "Material in progress, saving it, starting new one" << endl;
 					Colour amb(255*ar, 255*ag, 255*ab); // Ambient colour
 					Colour diff(255*dr, 255*dg, 255*db); // Diffuse colour
 					Colour spec(255*sr, 255*sg, 255*sb); // Specular colour
+					matName = typ;
 					pair<string, Material> toInsert = make_pair(matName, Material(amb, diff, spec, 128*shiny, matName)); // Shiny values are on 0-1 scale in file, but on 0-128 scale in OpenGL
 					mats->insert(toInsert);
 					matInProgress = false; // So that we'll start a new material next time
@@ -419,7 +431,7 @@ void Mesh::loadMats(string filename)
 		
 		if (matInProgress) // We were reading a material when the file ended
 		{
-			cout << "Material in progress at file end, creating it and adding it to map" << endl;
+			cout << "Material \"" << matName << "\" in progress at file end, creating it and adding it to map" << endl;
 			Colour amb(255*ar, 255*ag, 255*ab); // Ambient colour
 			Colour diff(255*dr, 255*dg, 255*db); // Diffuse colour
 			Colour spec(255*sr, 255*sg, 255*sb); // Specular colour

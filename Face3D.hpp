@@ -34,7 +34,7 @@ class Face3D
 		int getN3();
 
 		// Return current material id of face
-		std::string getMAT_ID();		
+		std::string getMatID();		
 };
 
 #endif
