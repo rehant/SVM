@@ -37,6 +37,7 @@ using namespace std;
 
 // Our classes
 #include "Mesh.hpp"
+#include "Material.hpp"
 
 /* Camera */
 float camPos[] = {0, 40, 10};	//where the camera is
@@ -82,34 +83,37 @@ void drawMesh(Mesh *m)
 		int ninds[3]; // Array of normal indices
 		int tinds[3]; // Array of texture indices
 		Face3D curFace = mfaces.at(f); // Fetch the current face
+		
 		cout << "\tFetched face" << endl;
 
 		if (curFace.getMatID() != curMatName) // Face uses a different material
-		{
+		{	
 			curMatName = curFace.getMatID(); // Fetch the material ID so that the comparison will fail the next time (and so that we can fetch the material object)
 			cout << "\tcurMatName = \"" << curMatName << "\"" << endl;
-			//faceMaterial = m->getMaterial(curMatName);
+			faceMaterial = m->getMaterial(curMatName);
 			cout << "\tFetched material " << curMatName << endl;
+		
+			/*
+			// Fetch mesh colours 
+			GLfloat m_amb[] = {faceMaterial.getAmb().getR(), faceMaterial.getAmb().getG(), faceMaterial.getAmb().getB(), 1.0};
+			GLfloat m_dif[] = {faceMaterial.getDif().getR(), faceMaterial.getDif().getG(), faceMaterial.getDif().getB(), 1.0};
+			GLfloat m_spec[] = {faceMaterial.getSpec().getR(), faceMaterial.getSpec().getG(), faceMaterial.getSpec().getB(), 1.0};
+			GLint shininess = faceMaterial.getShine();
 			
-			/* Fetch mesh colours */
-			/*double m_amb[] = {faceMaterial.getAmb().getR(), faceMaterial.getAmb().getG(), faceMaterial.getAmb().getB(), 1.0};
-			double m_dif[] = {faceMaterial.getDif().getR(), faceMaterial.getDif().getG(), faceMaterial.getDif().getB(), 1.0};
-			double m_spec[] = {faceMaterial.getSpec().getR(), faceMaterial.getSpec().getG(), faceMaterial.getSpec().getB(), 1.0};
-			int shininess = faceMaterial.getShine();
-			
-			/* Upload data to GPU */
-			/*glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, m_amb);
+			// Upload data to GPU 
+			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, m_amb);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m_dif);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_spec);
-			glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);*/
+			glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
+			*/
 		}
-
+		/*
 		else
 		{
 			cout << "\tNo need to fetch, material name = \"" << curMatName << "\"" << endl;
 		}
 			
-		/*vinds[0] = curFace.getV1();
+		vinds[0] = curFace.getV1();
 		vinds[1] = curFace.getV2();
 		vinds[2] = curFace.getV3();
 
@@ -125,38 +129,39 @@ void drawMesh(Mesh *m)
 		cout << "\tNormal indices = " << ninds[0] << ", " << ninds[1] << ", " << ninds[2] << endl;
 		cout << "\tTexture indices = " << tinds[0] << ", " << tinds[1] << ", " << tinds[2] << endl;
 
-		/** Draw vertex 1 **/
+		// Draw vertex 1 
 
-		/* Fetch data (subtract 1 because material indices start at 1) */
-		/*curVert = mverts.at(vinds[0]-1);
+		// Fetch data (subtract 1 because material indices start at 1) 
+		curVert = mverts.at(vinds[0]-1);
 		curNorm = mnorms.at(ninds[0]-1);
 		curTexVert = mtverts.at(tinds[0]-1);
 
-		/* Draw it */
-		/*glNormal3f(curNorm.getX(), curNorm.getY(), curNorm.getZ());
+		// Draw it 
+		glNormal3f(curNorm.getX(), curNorm.getY(), curNorm.getZ());
 		glVertex3f(curVert.getX(), curVert.getY(), curVert.getZ());
 
-		/** Draw vertex 2 **/
+		// Draw vertex 2
 
-		/* Fetch data */
-		/*curVert = mverts.at(vinds[1]-1);
+		// Fetch data 
+		curVert = mverts.at(vinds[1]-1);
 		curNorm = mnorms.at(ninds[1]-1);
 		curTexVert = mtverts.at(tinds[1]-1);
 
-		/* Draw it */
-		/*glNormal3f(curNorm.getX(), curNorm.getY(), curNorm.getZ());
+		// Draw it 
+		glNormal3f(curNorm.getX(), curNorm.getY(), curNorm.getZ());
 		glVertex3f(curVert.getX(), curVert.getY(), curVert.getZ());
 
-		/** Draw vertex 3 **/
+		// Draw vertex 3 
 
-		/* Fetch data */
-		/*`curVert = mverts.at(vinds[2]-1);
+		// Fetch data 
+		curVert = mverts.at(vinds[2]-1);
 		curNorm = mnorms.at(ninds[2]-1);
 		curTexVert = mtverts.at(tinds[2]-1);
 
-		/* Draw it */
-		/*glNormal3f(curNorm.getX(), curNorm.getY(), curNorm.getZ());
-		glVertex3f(curVert.getX(), curVert.getY(), curVert.getZ());*/
+		// Draw it 
+		glNormal3f(curNorm.getX(), curNorm.getY(), curNorm.getZ());
+		glVertex3f(curVert.getX(), curVert.getY(), curVert.getZ());
+		*/
 	}
 
 	glEnd(); // End triangles
