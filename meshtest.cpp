@@ -330,8 +330,6 @@ void init(void)
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, l2dif);
 	glLightfv(GL_LIGHT1, GL_AMBIENT, l2amb);
 	glLightfv(GL_LIGHT1, GL_SPECULAR, l2spc);
-	
-	callBacks(); // Register callbacks
 	track = new Mesh("Assets/track_triangulated.obj");
 }
 
@@ -346,6 +344,7 @@ int main(int argc, char** argv)
 	glutInitWindowPosition(50, 50);
 	glutCreateWindow("Space Racer");	//creates the window
 	init();
+	callBacks(); // Register callbacks
 
 	glutMainLoop();				//starts the event glutMainLoop
 	return(0);					//return may not be necessary on all compilers

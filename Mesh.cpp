@@ -217,7 +217,7 @@ Mesh::Mesh(string filename)
 /**
 * Destructor. Performs cleanup when mesh is deleted.
 */
-/*
+
 Mesh::~Mesh()
 {
 	cout << "Mesh::~Mesh: deleting vectors" << endl;
@@ -227,7 +227,7 @@ Mesh::~Mesh()
 	delete texVerts; // Delete texture vertices vector
 	delete verts; // Delete vector of vertices
 }
-*/
+
 
 /**
 * Converts a string to a floating-point number, returning a status.

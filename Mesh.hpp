@@ -25,7 +25,7 @@ class Mesh
         /**
         * Destructor. Performs cleanup when mesh is deleted.
         */
-        //~Mesh();
+        ~Mesh();
 
 	/**
 	* Copy constructor

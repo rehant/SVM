@@ -38,6 +38,7 @@ Material::~Material()
 	delete name;
 }
 
+
 void Material::setAmb(Colour newAmb)
 {
 	delete amb; // Destroy current amber colour
