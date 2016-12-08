@@ -29,7 +29,8 @@
 #endif
 
 // STL
-#include <iostream> // cout, cin
+#include <iostream>
+ // cout, cin
 #include <fstream> // ifstream
 #include <vector>
 using namespace std;
@@ -57,12 +58,12 @@ void keyboard(unsigned char key, int xIn, int yIn)
 	glutPostRedisplay();
 }
 
-void drawMesh(Mesh m)
+void drawMesh(Mesh *m)
 {
-	vector<Face3D> mfaces = m.getFaces(); // Get a list of the mesh's faces
-	vector<Vertex3D> mverts = m.getVerts(); // Fetch vertices
-	vector<Vertex2D> mtverts = m.getTexVerts(); // Fetch texture vertices
-	vector<Vec3D> mnorms = m.getNorms(); // Normals
+	vector<Face3D> mfaces = m->getFaces(); // Get a list of the mesh's faces
+	vector<Vertex3D> mverts = m->getVerts(); // Fetch vertices
+	vector<Vertex2D> mtverts = m->getTexVerts(); // Fetch texture vertices
+	vector<Vec3D> mnorms = m->getNorms(); // Normals
 	Material faceMaterial; // Stores the face's material
 	string curMatName = ""; // Stores the name of the current material (to avoid fetching materials which we're already using)
 	Vertex3D curVert;
@@ -87,7 +88,7 @@ void drawMesh(Mesh m)
 		{
 			curMatName = curFace.getMatID(); // Fetch the material ID so that the comparison will fail the next time (and so that we can fetch the material object)
 			cout << "\tcurMatName = \"" << curMatName << "\"" << endl;
-			faceMaterial = m.getMaterial(curMatName);
+			//faceMaterial = m->getMaterial(curMatName);
 			cout << "\tFetched material " << curMatName << endl;
 			
 			/* Fetch mesh colours */
@@ -176,7 +177,7 @@ void display(void)
 	glRotatef(-camRot[1], 0.0, 1.0, 0.0);
 	glRotatef(-camRot[2], 0.0, 0.0, 1.0);*/
 
-	drawMesh(*track);
+	drawMesh(track);
 
 	glutSwapBuffers();
 }
