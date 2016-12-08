@@ -28,12 +28,12 @@ Mesh::Mesh(string filename)
 	
 	// Extract directory name
 	dname.erase(find(dname.rbegin(), dname.rend(), '/').base(), dname.end()); // Get directory name
-	cout << "Mesh directory name = " << dname << endl;
+	//cout << "Mesh directory name = " << dname << endl;
 
 	stringstream matFNameGen; // Stringstream used to create the material file name
 
 	/* Create class vectors */
-	cout << "Mesh::Mesh: creating vectors" << endl;
+	//cout << "Mesh::Mesh: creating vectors" << endl;
 	verts = new vector<Vertex3D>(); // Internal vector. Vertices in here are added to faces
 	texVerts = new vector<Vertex2D>();
 	norms = new vector<Vec3D>();
@@ -44,65 +44,65 @@ Mesh::Mesh(string filename)
 
 	if (meshStream.is_open())
 	{
-		cout << "Opened mesh file \"" << filename << "\"" << endl;
+		//cout << "Opened mesh file \"" << filename << "\"" << endl;
 
 		while (getline(meshStream, line)) // Read from file
 		{
-			cout << "Current line:" << line << endl;
+			//cout << "Current line:" << line << endl;
 			lsp = new stringstream(line); // Put the current line into the stringstream
-			std::cout << "lsp = \"" << lsp->str() << "\"" << endl;
+			//std::cout << "lsp = \"" << lsp->str() << "\"" << endl;
 			*lsp >> com; // Read the command
-			cout << "\tCommand = \"" << com << "\"" << endl;
+			//cout << "\tCommand = \"" << com << "\"" << endl;
 
 			/* Handle commands */
 			if (com == "v") // Vertex
 			{
 				float x, y, z;
 
-				cout << "\tVertex" << endl;
+				/*cout << "\tVertex" << endl;
 				cout << "\tDetected vertex coordinates" << endl;
 			
 				/* X */
 				*lsp >> com; // Read x
 				convToFloat(com.c_str(), &x);	
-				cout << "\t\tx = " << x << endl;
+				//cout << "\t\tx = " << x << endl;
 	
 				/* Y */
 				*lsp >> com; // Read y
 				convToFloat(com.c_str(), &y);	
-				cout << "\t\ty = " << y << endl;
+				//cout << "\t\ty = " << y << endl;
 
 				/* Z */
 				*lsp >> com; // Read z
 				convToFloat(com.c_str(), &z);	
-				cout << "\t\tz = " << z << endl;
+				//cout << "\t\tz = " << z << endl;
 
 				verts->push_back(Vertex3D(x, y, z)); // Create and add vertex to list
 			}
 
 			else if (com == "vt") // Texture vertex
 			{
-				cout << "\tDetected texture vertex" << endl;
+				//cout << "\tDetected texture vertex" << endl;
 
 				float u, v; // U and V coords for vertices
 				
 				/* Read U */
 				*lsp >> com;
 				convToFloat(com.c_str(), &u);
-				cout << "\t\tu = " << u << endl;
+				//cout << "\t\tu = " << u << endl;
 
 				/* Read V */
 				*lsp >> com;
 				convToFloat(com.c_str(), &v);
-				cout << "\t\tv = " << v << endl;
+				//cout << "\t\tv = " << v << endl;
 
 				texVerts->push_back(Vertex2D(u, v)); // Add texture vertex
 			}
 
 			else if (com == "vn") // Normal
 			{
-				cout << "\tDetected normal" << endl;
-				cout << "\tDetected normal vector" << endl;
+				/*cout << "\tDetected normal" << endl;
+				cout << "\tDetected normal vector" << endl;*/
 
 				float x, y, z;
 			
@@ -118,8 +118,8 @@ Mesh::Mesh(string filename)
 				*lsp >> com;
 				convToFloat(com.c_str(), &z);
 
-				cout << "\tRead normal (" << x << ", " << y << ", " << z << ")" << endl;	
-				cout << "\t\tRead normal (" << x << ", " << y << ", " << z << ")" << endl;	
+				/*cout << "\tRead normal (" << x << ", " << y << ", " << z << ")" << endl;	
+				cout << "\t\tRead normal (" << x << ", " << y << ", " << z << ")" << endl;	*/
 				norms->push_back(Vec3D(x, y, z));
 			}
 
@@ -130,17 +130,13 @@ Mesh::Mesh(string filename)
 				cout << "Material file name: " << com << endl;
 				matFNameGen << dname << com; // Create path to materials file (taking directory into account)
 				loadMats(matFNameGen.str()); // Load materials from material files
-				
-				cout << "\t\tMaterial file name: " << com << endl;
 			}
 
 			else if (com == "usemtl") // Sets current material id
 			{
 				cout << "\tDetected current material" << endl;
-
 				*lsp >> com; // Read name of current material
 				curMaterial = com; // Save current material of faces to use to create face objects
-				
 				cout << "\t\tCurrent material = " << curMaterial << endl;
 			}
 
@@ -436,7 +432,10 @@ void Mesh::loadMats(string filename)
 			Colour diff(255*dr, 255*dg, 255*db); // Diffuse colour
 			Colour spec(255*sr, 255*sg, 255*sb); // Specular colour
 			pair<string, Material> toInsert = make_pair(matName, Material(amb, diff, spec, 128*shiny, matName)); // Shiny values are on 0-1 scale in file, but on 0-128 scale in OpenGL
+			cout << "pair = (" << toInsert.first << ", " << toInsert.second.getName() << ")" << endl;
 			mats->insert(toInsert);
+			cout << "Name of material in map = " << mats->at(matName).getName() << endl;
+			//*mats[matName] = Material(amb, diff, spec, 128*shiny, matName);
 		}
 
 		f.close();
@@ -500,7 +499,6 @@ vector<Face3D> Mesh::getFaces()
 
 Material Mesh::getMaterial(string name)
 {
-	//return mats->at(name);
-	Material m;
-	return m;
+	clog << (mats->find(name) != mats->end()) << endl;
+	return mats->at(name);
 }
