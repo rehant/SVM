@@ -1,2 +1,3 @@
 #!/bin/bash
+rm -rf out
 make 2>&1 > out | tee -a out
