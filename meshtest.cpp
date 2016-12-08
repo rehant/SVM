@@ -63,7 +63,6 @@ void drawMesh(Mesh m)
 	vector<Vertex3D> mverts = m.getVerts(); // Fetch vertices
 	vector<Vertex2D> mtverts = m.getTexVerts(); // Fetch texture vertices
 	vector<Vec3D> mnorms = m.getNorms(); // Normals
-	map<string, Material> mmats = m.getMats(); // Materials	
 	Material faceMaterial; // Stores the face's material
 	string curMatName = ""; // Stores the name of the current material (to avoid fetching materials which we're already using)
 	Vertex3D curVert;
@@ -88,13 +87,13 @@ void drawMesh(Mesh m)
 		{
 			curMatName = curFace.getMatID(); // Fetch the material ID so that the comparison will fail the next time (and so that we can fetch the material object)
 			cout << "\tcurMatName = \"" << curMatName << "\"" << endl;
-			faceMaterial = mmats.at(curMatName); // Fetch the material
-			cout << "Fetched material" << endl;
+			faceMaterial = m.getMaterial(curMatName);
+			cout << "\tFetched material " << curMatName << endl;
 			
 			/* Fetch mesh colours */
-			float m_amb[] = {faceMaterial.getAmb().getR(), faceMaterial.getAmb().getG(), faceMaterial.getAmb().getB(), 1.0};
-			float m_dif[] = {faceMaterial.getDif().getR(), faceMaterial.getDif().getG(), faceMaterial.getDif().getB(), 1.0};
-			float m_spec[] = {faceMaterial.getSpec().getR(), faceMaterial.getSpec().getG(), faceMaterial.getSpec().getB(), 1.0};
+			/*double m_amb[] = {faceMaterial.getAmb().getR(), faceMaterial.getAmb().getG(), faceMaterial.getAmb().getB(), 1.0};
+			double m_dif[] = {faceMaterial.getDif().getR(), faceMaterial.getDif().getG(), faceMaterial.getDif().getB(), 1.0};
+			double m_spec[] = {faceMaterial.getSpec().getR(), faceMaterial.getSpec().getG(), faceMaterial.getSpec().getB(), 1.0};
 			int shininess = faceMaterial.getShine();
 			
 			/* Upload data to GPU */
@@ -103,8 +102,13 @@ void drawMesh(Mesh m)
 			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_spec);
 			glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);*/
 		}
+
+		else
+		{
+			cout << "\tNo need to fetch, material name = \"" << curMatName << "\"" << endl;
+		}
 			
-		vinds[0] = curFace.getV1();
+		/*vinds[0] = curFace.getV1();
 		vinds[1] = curFace.getV2();
 		vinds[2] = curFace.getV3();
 
@@ -168,9 +172,9 @@ void display(void)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// Rotate camera
-	glRotatef(-camRot[0], 1.0, 0.0, 0.0);
+	/*glRotatef(-camRot[0], 1.0, 0.0, 0.0);
 	glRotatef(-camRot[1], 0.0, 1.0, 0.0);
-	glRotatef(-camRot[2], 0.0, 0.0, 1.0);
+	glRotatef(-camRot[2], 0.0, 0.0, 1.0);*/
 
 	drawMesh(*track);
 

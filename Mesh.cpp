@@ -500,5 +500,7 @@ vector<Face3D> Mesh::getFaces()
 
 Material Mesh::getMaterial(string name)
 {
-	return mats->at(name);
+	//return mats->at(name);
+	Material m;
+	return m;
 }
