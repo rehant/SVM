@@ -2,6 +2,7 @@
 #define __BOUNDINGSPHERE_HPP__
 
 #include "Point3D.hpp"
+#include "Mesh.hpp"
 
 class BoundingSphere
 {
@@ -11,6 +12,7 @@ class BoundingSphere
 		bool collidingWith(BoundingSphere other); // Whether or not this bounding sphere is colliding with another bounding sphere
 		Point3D getCentre();
 		double getRadius();
+		BoundingSphere(Mesh m); // Create the bounding sphere based on the mesh
 
 	private:
 		Point3D* centre; // Centre point of sphere
