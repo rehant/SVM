@@ -1,4 +1,4 @@
 #!/bin/bash
 rm -rf out
 make
-`cat ../valcom`
+`cat ../valcom` 2>&1 > out

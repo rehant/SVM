@@ -509,8 +509,15 @@ Material Mesh::getMaterial(string name)
 
 void Mesh::calcBBox() // Calculates the bounding box of the mesh
 {
-	float lbbx, lbby, lbbz; // Left bottom back
-	float rtfx, rtfy, rtfz; // RIght top front
+	/* Left bottom back */
+	float lbbx = 0;
+	float lbby = 0;
+	float lbbz = 0;
+	
+	/* Right top front */
+	float rtfx = 0;
+	float rtfy = 0;
+	float rtfz = 0;
 
 	/* Search list of points */
 	for (int i = 0; i < verts->size(); i++)
