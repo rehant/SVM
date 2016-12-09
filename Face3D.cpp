@@ -2,11 +2,12 @@
 #include "Vec3D.hpp"
 #include <vector>
 #include <string>
+#include <iostream>
 
 /**
 * Constructs a Face3D with vertex, vertex texture, normal vector indices and material ids
 **/
-Face3D::Face3D(int &v1, int &v2, int &v3, int &t1, int &t2, int &t3, int &n1, int &n2, int &n3, std::string &mat_id)
+Face3D::Face3D(int v1, int v2, int v3, int t1, int t2, int t3, int n1, int n2, int n3, std::string mat_id)
 {
 	// Vertex indices
 	this->v1 = v1;
@@ -25,6 +26,8 @@ Face3D::Face3D(int &v1, int &v2, int &v3, int &t1, int &t2, int &t3, int &n1, in
 
 	// Identifier for current material
 	this->mat_id = mat_id;
+
+	std::cout << "Vertices = " << v1 << ", " << v2 << ", " << v3 << "; Texture vertices = " << t1 << ", " << t2 << ", " << t3 << "; " << "Normal = (" << n1 << ", " << n2 << ", " << n3 <<")" << std::endl;
 }
 
 
@@ -83,7 +86,7 @@ int Face3D::getN3()
 }
 
 // Material id of face
-std::string Face3D::getMAT_ID()
+std::string Face3D::getMatID()
 {
 	return mat_id;
 }

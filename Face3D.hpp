@@ -16,7 +16,7 @@ class Face3D
 		/**
 		* Constructs a Face3D using parsed index data from a triangulated .obj file
 		**/
-		Face3D(int &v1, int &v2, int &v3, int &t1, int &t2, int &t3, int &n1, int &n2, int &n3, std::string &mat_id);
+		Face3D(int v1, int v2, int v3, int t1, int t2, int t3, int n1, int n2, int n3, std::string mat_id);
 
 		// Vertex indices
 		int getV1();
@@ -34,7 +34,7 @@ class Face3D
 		int getN3();
 
 		// Return current material id of face
-		std::string getMAT_ID();		
+		std::string getMatID();		
 };
 
 #endif

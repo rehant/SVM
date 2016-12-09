@@ -24,3 +24,10 @@ float Vec3D::getZ()
 {
 	return z;
 }
+
+Vec3D::Vec3D()
+{
+	x = 0;
+	y = 0;
+	z = 0;
+}
