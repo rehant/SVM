@@ -221,7 +221,6 @@ Mesh::Mesh(string filename)
 Mesh::~Mesh()
 {
 	cout << "Mesh::~Mesh: deleting vectors" << endl;
-	delete bsp; // Delete bounding sphere
 	delete faces; // Delete vector of faces
 	delete mats; // Delete map of names to indices
 	delete norms; // Delete normals vector
