@@ -34,8 +34,8 @@ Mesh::Mesh(string filename)
 
 	/* Create class vectors */
 	//cout << "Mesh::Mesh: creating vectors" << endl;
-	verts = new vector<Vertex3D>(); // Internal vector. Vertices in here are added to faces
-	texVerts = new vector<Vertex2D>();
+	verts = new vector<Point3D>(); // Internal vector. Vertices in here are added to faces
+	texVerts = new vector<Point2D>();
 	norms = new vector<Vec3D>();
 	mats = new map<string, Material>(); // Create material index map
 	faces = new vector<Face3D>(); // Create vector of faces
@@ -77,7 +77,7 @@ Mesh::Mesh(string filename)
 				convToFloat(com.c_str(), &z);	
 				//cout << "\t\tz = " << z << endl;
 
-				verts->push_back(Vertex3D(x, y, z)); // Create and add vertex to list
+				verts->push_back(Point3D(x, y, z)); // Create and add vertex to list
 			}
 
 			else if (com == "vt") // Texture vertex
@@ -96,7 +96,7 @@ Mesh::Mesh(string filename)
 				convToFloat(com.c_str(), &v);
 				//cout << "\t\tv = " << v << endl;
 
-				texVerts->push_back(Vertex2D(u, v)); // Add texture vertex
+				texVerts->push_back(Point2D(u, v)); // Add texture vertex
 			}
 
 			else if (com == "vn") // Normal
@@ -206,6 +206,7 @@ Mesh::Mesh(string filename)
 		}
 
 		meshStream.close();
+		calcBBox(); // Find this mesh's bounding box
 	}
 
 	else
@@ -221,6 +222,7 @@ Mesh::Mesh(string filename)
 Mesh::~Mesh()
 {
 	cout << "Mesh::~Mesh: deleting vectors" << endl;
+	delete bbox; // Delete bounding box
 	delete faces; // Delete vector of faces
 	delete mats; // Delete map of names to indices
 	delete norms; // Delete normals vector
@@ -453,19 +455,19 @@ void Mesh::loadMats(string filename)
 Mesh::Mesh(Mesh& other)
 {
 	/* Copy data */
-	verts = new vector<Vertex3D>(other.getVerts());
-	texVerts = new vector<Vertex2D>(other.getTexVerts());
+	verts = new vector<Point3D>(other.getVerts());
+	texVerts = new vector<Point2D>(other.getTexVerts());
 	norms = new vector<Vec3D>(other.getNorms());
 	faces = new vector<Face3D>(other.getFaces());
 	mats = new map<string, Material>(other.getMats());
 }
 
-vector<Vertex3D> Mesh::getVerts()
+vector<Point3D> Mesh::getVerts()
 {
 	return *verts;
 }
 
-vector<Vertex2D> Mesh::getTexVerts()
+vector<Point2D> Mesh::getTexVerts()
 {
 	return *texVerts;
 }
@@ -494,7 +496,7 @@ vector<Face3D> Mesh::getFaces()
 	
 	/* Copy data */
 /*	this->verts = new vector<Vertex3D>(other.getVerts());
-	this->texVerts = new vector<Vertex2D>(other.getTexVerts());
+	this->texVerts = new vector<Point2D>(other.getTexVerts());
 	this->norms = new vector<Vertex3D>(other.getNorms());
 	this->faces = new vector<Face3D>(other.getFaces());
 }*/
@@ -503,4 +505,53 @@ Material Mesh::getMaterial(string name)
 {
 	clog << (mats->find(name) != mats->end()) << endl;
 	return mats->at(name);
+}
+
+void Mesh::calcBBox() // Calculates the bounding box of the mesh
+{
+	float lbbx, lbby, lbbz; // Left bottom back
+	float rtfx, rtfy, rtfz; // RIght top front
+
+	/* Search list of points */
+	for (int i = 0; i < verts->size(); i++)
+	{
+		Point3D pt = verts->at(i);
+		float curX = pt.getX();
+		float curY = pt.getY();
+		float curZ = pt.getZ();
+
+		if (curX < lbbx) // FUrther left
+		{
+			lbbx = curX;
+		}
+
+		if (curX > rtfx) // Further right
+		{
+			rtfx = curX;
+		}
+
+		if (curY < lbby) // Further down
+		{
+			lbby = curY;
+		}
+
+		if (curY > rtfy) // Futher up
+		{
+			rtfy = curY;
+		}
+
+		if (curZ < lbbz) // Further back
+		{
+			lbbz = curZ;
+		}
+
+		if (curZ > rtfz) // Further front
+		{
+			rtfz = curZ;
+		}
+	}
+
+	Point3D botBackLeft(lbbx, lbby, lbbz); // Bottom back left point
+	Point3D topFrontRight(rtfx, rtfy, rtfz); // Top front right point
+	bbox = new BoundingBox(botBackLeft, topFrontRight);
 }

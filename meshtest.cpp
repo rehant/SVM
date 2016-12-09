@@ -38,6 +38,10 @@ using namespace std;
 // Our classes
 #include "Mesh.hpp"
 #include "Material.hpp"
+#include "Point3D.hpp"
+#include "Face3D.hpp"
+#include "Vec3D.hpp"
+#include "Point2D.hpp"
 
 /* Camera */
 float camPos[] = {0, 40, 10};	//where the camera is
@@ -54,6 +58,53 @@ void keyboard(unsigned char key, int xIn, int yIn)
 {
 	switch (key)
 	{
+		// Move in neg dir on X axis
+		case 'A':
+		case 'a':
+		{
+			camPos[0] -= camSpeed;
+			break;
+		}
+
+		// Move in pos. dir. on x axis
+		case 'd':
+		case 'D':
+		{
+			camPos[0] += camSpeed;
+			break;
+		}
+
+		// Move in pos. dir. on y axis
+		case 'w':
+		case 'W':
+		{
+			camPos[1] += camSpeed;
+			break;
+		}
+
+		// Move in neg. dir. on y axis
+		case 's':
+		case 'S':
+		{
+			camPos[1] -= camSpeed;
+			break;
+		}
+
+		// Move in neg. dir on z axis
+		case 'q':
+		case 'Q':
+		{
+			camPos[2] -= camSpeed;
+			break;
+		}
+
+		// Move in pos. dir. on z axis
+		case 'e':
+		case 'E':
+		{
+			camPos[2] += camSpeed;
+			break;
+		}	
 	}
 
 	glutPostRedisplay();
@@ -62,36 +113,42 @@ void keyboard(unsigned char key, int xIn, int yIn)
 void drawMesh(Mesh *m)
 {
 	vector<Face3D> mfaces = m->getFaces(); // Get a list of the mesh's faces
-	vector<Vertex3D> mverts = m->getVerts(); // Fetch vertices
-	vector<Vertex2D> mtverts = m->getTexVerts(); // Fetch texture vertices
+	vector<Point3D> mverts = m->getVerts(); // Fetch vertices
+	vector<Point2D> mtverts = m->getTexVerts(); // Fetch texture vertices
 	vector<Vec3D> mnorms = m->getNorms(); // Normals
-	Material *faceMaterial; // Stores the face's material
+	Material *faceMaterial = NULL; // Stores the face's material
 	string curMatName = ""; // Stores the name of the current material (to avoid fetching materials which we're already using)
-	Vertex3D curVert;
+	Point3D curVert;
 	Vec3D curNorm;
-	Vertex2D curTexVert;
+	Point2D curTexVert;
 	
-	cout << "Fetched mesh data" << endl;
+	//cout << "Fetched mesh data" << endl;
 
 	glBegin(GL_TRIANGLES); // Start drawing triangles
 
 	for (int f = 0; f < mfaces.size(); f++)
 	{
-		cout << "Face #" << f+1 << endl;
+		//cout << "Face #" << f+1 << endl;
 
 		int vinds[3]; // Array of vertex indices
 		int ninds[3]; // Array of normal indices
 		int tinds[3]; // Array of texture indices
 		Face3D curFace = mfaces.at(f); // Fetch the current face
 		
-		cout << "\tFetched face" << endl;
+		//cout << "\tFetched face" << endl;
 
 		if (curFace.getMatID() != curMatName) // Face uses a different material
-		{	
+		{
+			if (faceMaterial != NULL) // Material was previously allocated
+			{
+				delete faceMaterial;
+				faceMaterial = NULL;
+			}
+
 			curMatName = curFace.getMatID(); // Fetch the material ID so that the comparison will fail the next time (and so that we can fetch the material object)
-			cout << "\tcurMatName = \"" << curMatName << "\"" << endl;
+			//cout << "\tcurMatName = \"" << curMatName << "\"" << endl;
 			faceMaterial = new Material(m->getMaterial(curMatName));
-			cout << "\tFetched material " << curMatName << endl;
+			//cout << "\tFetched material " << curMatName << endl;
 		
 			
 			// Fetch mesh colours 
@@ -110,7 +167,7 @@ void drawMesh(Mesh *m)
 		
 		else
 		{
-			cout << "\tNo need to fetch, material name = \"" << curMatName << "\"" << endl;
+			//cout << "\tNo need to fetch, material name = \"" << curMatName << "\"" << endl;
 		}
 			
 		vinds[0] = curFace.getV1();
@@ -125,9 +182,9 @@ void drawMesh(Mesh *m)
 		tinds[1] = curFace.getT2();
 		tinds[2] = curFace.getT3();
 
-		cout << "\tVertex indices = " << vinds[0] << ", " << vinds[1] << ", " << vinds[2] << endl;
-		cout << "\tNormal indices = " << ninds[0] << ", " << ninds[1] << ", " << ninds[2] << endl;
-		cout << "\tTexture indices = " << tinds[0] << ", " << tinds[1] << ", " << tinds[2] << endl;
+		//cout << "\tVertex indices = " << vinds[0] << ", " << vinds[1] << ", " << vinds[2] << endl;
+		//cout << "\tNormal indices = " << ninds[0] << ", " << ninds[1] << ", " << ninds[2] << endl;
+		//cout << "\tTexture indices = " << tinds[0] << ", " << tinds[1] << ", " << tinds[2] << endl;
 
 		// Draw vertex 1 
 
@@ -163,7 +220,7 @@ void drawMesh(Mesh *m)
 		glVertex3f(curVert.getX(), curVert.getY(), curVert.getZ());
 
 		}
-		delete faceMaterial;
+		//delete faceMaterial;
 
 	glEnd(); // End triangles
 }
@@ -192,53 +249,8 @@ void special(int key, int x, int y)
 {
 	switch (key)
 	{
-		case GLUT_KEY_UP:
-		{
-			if (camRot[0] < 180) // Don't let camera rotate more than 180 degrees
-			{
-				camRot[0] += camRotDelta;
-			}
-			break;
-		}
-
-		case GLUT_KEY_DOWN:
-		{
-			if (camRot[0] > -180)
-			{
-				camRot[0] -= camRotDelta;
-			}
-
-			break;
-		}
-
-		case GLUT_KEY_LEFT:
-		{
-			camRot[1] -= camRotDelta;
-			break;
-		}
-
-		case GLUT_KEY_RIGHT:
-		{
-			camRot[1] += camRotDelta;
-			break;
-		}
-
-		case 'z':
-		case 'Z':
-		{
-			camRot[2] -= camRotDelta;
-			break;
-		}
-
-		case 'x':
-		case 'X':
-		{
-			camRot[2] += camRotDelta;
-			break;
-		}
 	}
 
-	shouldRotate = true;
 	glutPostRedisplay();
 }
 
@@ -295,7 +307,6 @@ void instructions()
 
 void init(void)
 {
-	instructions(); // SHow instructions
 
 	/* Graphics setup */
 	glClearColor(0, 0, 0, 0);
@@ -344,6 +355,7 @@ int main(int argc, char** argv)
 	glutInitWindowSize(400, 400);
 	glutInitWindowPosition(50, 50);
 	glutCreateWindow("Space Racer");	//creates the window
+	instructions(); // SHow instructions
 	init();
 	callBacks(); // Register callbacks
 
