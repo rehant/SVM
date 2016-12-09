@@ -65,7 +65,7 @@ void drawMesh(Mesh *m)
 	vector<Vertex3D> mverts = m->getVerts(); // Fetch vertices
 	vector<Vertex2D> mtverts = m->getTexVerts(); // Fetch texture vertices
 	vector<Vec3D> mnorms = m->getNorms(); // Normals
-	Material faceMaterial; // Stores the face's material
+	Material *faceMaterial; // Stores the face's material
 	string curMatName = ""; // Stores the name of the current material (to avoid fetching materials which we're already using)
 	Vertex3D curVert;
 	Vec3D curNorm;
@@ -90,22 +90,22 @@ void drawMesh(Mesh *m)
 		{	
 			curMatName = curFace.getMatID(); // Fetch the material ID so that the comparison will fail the next time (and so that we can fetch the material object)
 			cout << "\tcurMatName = \"" << curMatName << "\"" << endl;
-			faceMaterial = m->getMaterial(curMatName);
+			faceMaterial = new Material(m->getMaterial(curMatName));
 			cout << "\tFetched material " << curMatName << endl;
 		
-			/*
+			
 			// Fetch mesh colours 
-			GLfloat m_amb[] = {faceMaterial.getAmb().getR(), faceMaterial.getAmb().getG(), faceMaterial.getAmb().getB(), 1.0};
-			GLfloat m_dif[] = {faceMaterial.getDif().getR(), faceMaterial.getDif().getG(), faceMaterial.getDif().getB(), 1.0};
-			GLfloat m_spec[] = {faceMaterial.getSpec().getR(), faceMaterial.getSpec().getG(), faceMaterial.getSpec().getB(), 1.0};
-			GLint shininess = faceMaterial.getShine();
+			GLfloat m_amb[] = {faceMaterial->getAmb().getR(), faceMaterial->getAmb().getG(), faceMaterial->getAmb().getB(), 1.0};
+			GLfloat m_dif[] = {faceMaterial->getDif().getR(), faceMaterial->getDif().getG(), faceMaterial->getDif().getB(), 1.0};
+			GLfloat m_spec[] = {faceMaterial->getSpec().getR(), faceMaterial->getSpec().getG(), faceMaterial->getSpec().getB(), 1.0};
+			GLint shininess = faceMaterial->getShine();
 			
 			// Upload data to GPU 
 			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, m_amb);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m_dif);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_spec);
 			glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
-			*/
+			
 		}
 		/*
 		else
@@ -162,7 +162,9 @@ void drawMesh(Mesh *m)
 		glNormal3f(curNorm.getX(), curNorm.getY(), curNorm.getZ());
 		glVertex3f(curVert.getX(), curVert.getY(), curVert.getZ());
 		*/
-	}
+
+		}
+		delete faceMaterial;
 
 	glEnd(); // End triangles
 }
