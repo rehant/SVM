@@ -17,6 +17,9 @@ using namespace std;
 #include <cmath> // HUGE_VAL
 #include <cerrno> // errno
 
+/* My includes */
+#include "funcs.hpp" // dist
+
 Mesh::Mesh(string filename)
 {
 	/* Internal vars */
@@ -206,7 +209,7 @@ Mesh::Mesh(string filename)
 		}
 
 		meshStream.close();
-		calcBBox(); // Find this mesh's bounding box
+		createBoundingSphere();
 	}
 
 	else
@@ -222,7 +225,7 @@ Mesh::Mesh(string filename)
 Mesh::~Mesh()
 {
 	cout << "Mesh::~Mesh: deleting vectors" << endl;
-	delete bbox; // Delete bounding box
+	delete bsp; // Delete bounding sphere
 	delete faces; // Delete vector of faces
 	delete mats; // Delete map of names to indices
 	delete norms; // Delete normals vector
@@ -507,58 +510,49 @@ Material Mesh::getMaterial(string name)
 	return mats->at(name);
 }
 
-void Mesh::calcBBox() // Calculates the bounding box of the mesh
+void Mesh::createBoundingSphere()
 {
-	/* Left bottom back */
-	float lbbx = 0;
-	float lbby = 0;
-	float lbbz = 0;
-	
-	/* Right top front */
-	float rtfx = 0;
-	float rtfy = 0;
-	float rtfz = 0;
+	/*
+	* ALGORITHM
+	* ---------
+	* Initialize 2 furthest points (p1, p2) and maximum distance (diameter)
+	* 
+	* For every point in the mesh as a:
+	*	For every point in the mesh as b:
+	*		curDist = distance(a, b) # Find distance between points
+	*		
+	*		if curDist > diameter: # Distance between these 2 points is greater than maximum distance
+	*			p1, p2 = a, b # Store the points
+	*			diameter = curDist # Store the new maximum distance
+	*
+	* double radius = diameter / 2
+	* Point3D midpoint = ((p1.x+p2.x)/2, (p1.y+p2.y)/2, (p1.z+p2.z)/2) # Find the midpoint of the line (sphere's centre)
+	* bsp = new BoundingSphere(midpoint, radius) // Create the bounding sphere
+	*/
 
-	/* Search list of points */
-	for (int i = 0; i < verts->size(); i++)
+	double diam = 0.0; // Sphere diameter
+	double curRad = 0.0; // Radius between 2 points currently being checked
+	int p1Ind, p2Ind = 0, 0; // Index of 2 points on diameter line
+
+	/* Find diamterically opposing points and sphere's diameter */
+	for (int i = 0; i < verts->size(); i++) // Outer loop through vertices
 	{
-		Point3D pt = verts->at(i);
-		float curX = pt.getX();
-		float curY = pt.getY();
-		float curZ = pt.getZ();
-
-		if (curX < lbbx) // FUrther left
+		for (int j = 0; j < verts->size(); j++) // Inner loop through vertices
 		{
-			lbbx = curX;
-		}
+			curRad = dist(verts->at(i), verts->at(j)); // Find the distance between the 2 points	
 
-		if (curX > rtfx) // Further right
-		{
-			rtfx = curX;
-		}
-
-		if (curY < lbby) // Further down
-		{
-			lbby = curY;
-		}
-
-		if (curY > rtfy) // Futher up
-		{
-			rtfy = curY;
-		}
-
-		if (curZ < lbbz) // Further back
-		{
-			lbbz = curZ;
-		}
-
-		if (curZ > rtfz) // Further front
-		{
-			rtfz = curZ;
+			if (curRad > diam) // Distance between current 2 points > current diameter, need to update
+			{
+				p1Ind = i; // Store index of first point
+				p2Ind = j; // Store index of second point
+				diam = curRad; // Update diameter
+			}
 		}
 	}
 
-	Point3D botBackLeft(lbbx, lbby, lbbz); // Bottom back left point
-	Point3D topFrontRight(rtfx, rtfy, rtfz); // Top front right point
-	bbox = new BoundingBox(botBackLeft, topFrontRight);
+	double rad = diam / 2; // Sphere radius
+	Point3D p1 = verts->at(p1Ind); // Fetch first point on diameter
+	Point3D p2 = verts->at(p2Ind); // Fetch second point on diameter
+	Point3D mid((p1.getX()+p2.getX())/2, (p1.getY()+p2.getY())/2, (p1.getZ()+p2.getZ())/2); // Midpoint (centre point of sphere)
+	bsp = new BoundingSphere(mid, rad); // Create the sphere with its midpoint and radius
 }

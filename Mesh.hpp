@@ -13,7 +13,7 @@
 #include "Point2D.hpp"
 #include "Material.hpp"
 #include "Vec3D.hpp"
-#include "BoundingBox.hpp"
+#include "BoundingSphere.hpp"
 
 class Mesh
 {
@@ -50,12 +50,12 @@ class Mesh
         std::vector<Vec3D> *norms; // Normals
         std::map<std::string, Material> *mats; // Maps material names to integers
         std::vector<Face3D> *faces; // Mesh faces
-	BoundingBox* bbox; // Bounding box for this mesh
+	BoundingSphere* bsp; // Bounding sphere for this mesh
 	
     	/* Methods */
     	int convToLongInt(const char* str, long int* out);
     	int convToFloat(const char* str, float* out);
-	void calcBBox(); // Calculates the bounding box of the mesh
+	void createBoundingSphere();
 };
 
 #endif // VERTEX3D_H
