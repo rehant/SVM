@@ -356,16 +356,6 @@ void init(void)
 // Entry point of the project
 int main(int argc, char** argv)
 {
-<<<<<<< HEAD:meshtest.cpp
-	glutInit(&argc, argv);		//starts up GLUT
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH); // RGBA colspace & double buffering & depth channel enabled
-
-    	/* Main window */
-	glutInitWindowSize(1280, 1280);
-	glutInitWindowPosition(50, 50);
-	glutCreateWindow("Space Racer");	//creates the window
-	instructions(); // SHow instructions
-=======
 /*================================================
 				GLUT COMMANDS BEGIN
 ================================================*/
@@ -389,7 +379,6 @@ int main(int argc, char** argv)
 	instructions();
 
 	// Set initial state of GLUT
->>>>>>> rehan:main.cpp
 	init();
 
 	// Calls all callback functions for the program.
