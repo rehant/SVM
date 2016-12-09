@@ -27,7 +27,7 @@ Face3D::Face3D(int v1, int v2, int v3, int t1, int t2, int t3, int n1, int n2, i
 	// Identifier for current material
 	this->mat_id = mat_id;
 
-	std::cout << "Vertices = " << v1 << ", " << v2 << ", " << v3 << "; Texture vertices = " << t1 << ", " << t2 << ", " << t3 << "; " << "Normal = (" << n1 << ", " << n2 << ", " << n3 <<")" << std::endl;
+	//std::cout << "Vertices = " << v1 << ", " << v2 << ", " << v3 << "; Texture vertices = " << t1 << ", " << t2 << ", " << t3 << "; " << "Normal = (" << n1 << ", " << n2 << ", " << n3 <<")" << std::endl;
 }
 
 

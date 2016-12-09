@@ -23,7 +23,7 @@ else
 endif
 
 #change the 't1' name to the name you want to call your application
-PROGRAM_NAME=mt
+PROGRAM_NAME=SpaceRacer
 
 # Other files to be cleaned
 EXTRAFILES=out valout
@@ -41,7 +41,7 @@ all: $(PROGRAM_NAME)
 #form a cpp source file and find it itself :)
 
 # Note: we don't need to add header-only classes (like Vector3D and Face3D) here. They don't have any code that needs to be compiled.
-$(PROGRAM_NAME)$(EXEEXT): Point2D.o Vec3D.o Point3D.o Face3D.o Colour.o Material.o BoundingBox.o Mesh.o meshtest.o 
+$(PROGRAM_NAME)$(EXEEXT): Point2D.o Vec3D.o Point3D.o Face3D.o Colour.o Material.o BoundingBox.o Mesh.o main.o 
 	$(CC) -o $(PROGRAM_NAME)$(EXEEXT) $^ $(CFLAGS) $(LDFLAGS) 2>&1 | tee -a out
 
 clean:
