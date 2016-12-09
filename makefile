@@ -8,7 +8,7 @@
 LDFLAGS = -lGL -lGLU -lglut -lm
 CFLAGS=-g -Wall -std=c++11
 CC=g++
-EXEEXT=.x
+EXEEXT=
 # Windows (cygwin)
 ifeq "$(OS)" "Windows_NT"
 	EXEEXT=.exe #on windows applications must have .exe extension
