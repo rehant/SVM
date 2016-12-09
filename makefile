@@ -26,7 +26,7 @@ endif
 PROGRAM_NAME=mt
 
 # Other files to be cleaned
-EXTRAFILES=out
+EXTRAFILES=out valout
 
 #run target to compile and build, and then launch the executable
 run: $(PROGRAM_NAME)$(EXEEXT)

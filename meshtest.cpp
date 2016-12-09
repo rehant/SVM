@@ -107,7 +107,7 @@ void drawMesh(Mesh *m)
 			glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
 			
 		}
-		/*
+		
 		else
 		{
 			cout << "\tNo need to fetch, material name = \"" << curMatName << "\"" << endl;
@@ -161,7 +161,6 @@ void drawMesh(Mesh *m)
 		// Draw it 
 		glNormal3f(curNorm.getX(), curNorm.getY(), curNorm.getZ());
 		glVertex3f(curVert.getX(), curVert.getY(), curVert.getZ());
-		*/
 
 		}
 		delete faceMaterial;
