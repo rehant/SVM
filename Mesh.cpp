@@ -120,7 +120,8 @@ Mesh::Mesh(string filename)
 
 				/*cout << "\tRead normal (" << x << ", " << y << ", " << z << ")" << endl;	
 				cout << "\t\tRead normal (" << x << ", " << y << ", " << z << ")" << endl;	*/
-				norms->push_back(Vec3D(x, y, z));
+				Vec3D a(x, y, z);
+				norms->push_back(a);
 			}
 
 			else if (com == "mtllib") // Material library
