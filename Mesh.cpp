@@ -503,7 +503,7 @@ vector<Face3D> Mesh::getFaces()
 
 Material Mesh::getMaterial(string name)
 {
-	clog << (mats->find(name) != mats->end()) << endl;
+	//clog << (mats->find(name) != mats->end()) << endl;
 	return mats->at(name);
 }
 

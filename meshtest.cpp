@@ -352,7 +352,7 @@ int main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH); // RGBA colspace & double buffering & depth channel enabled
 
     	/* Main window */
-	glutInitWindowSize(400, 400);
+	glutInitWindowSize(1280, 1280);
 	glutInitWindowPosition(50, 50);
 	glutCreateWindow("Space Racer");	//creates the window
 	instructions(); // SHow instructions
