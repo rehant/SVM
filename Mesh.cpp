@@ -206,7 +206,6 @@ Mesh::Mesh(string filename)
 		}
 
 		meshStream.close();
-		calcBBox(); // Find this mesh's bounding box
 	}
 
 	else
@@ -222,7 +221,7 @@ Mesh::Mesh(string filename)
 Mesh::~Mesh()
 {
 	cout << "Mesh::~Mesh: deleting vectors" << endl;
-	delete bbox; // Delete bounding box
+	delete bsp; // Delete bounding sphere
 	delete faces; // Delete vector of faces
 	delete mats; // Delete map of names to indices
 	delete norms; // Delete normals vector
@@ -505,60 +504,4 @@ Material Mesh::getMaterial(string name)
 {
 	//clog << (mats->find(name) != mats->end()) << endl;
 	return mats->at(name);
-}
-
-void Mesh::calcBBox() // Calculates the bounding box of the mesh
-{
-	/* Left bottom back */
-	float lbbx = 0;
-	float lbby = 0;
-	float lbbz = 0;
-	
-	/* Right top front */
-	float rtfx = 0;
-	float rtfy = 0;
-	float rtfz = 0;
-
-	/* Search list of points */
-	for (int i = 0; i < verts->size(); i++)
-	{
-		Point3D pt = verts->at(i);
-		float curX = pt.getX();
-		float curY = pt.getY();
-		float curZ = pt.getZ();
-
-		if (curX < lbbx) // FUrther left
-		{
-			lbbx = curX;
-		}
-
-		if (curX > rtfx) // Further right
-		{
-			rtfx = curX;
-		}
-
-		if (curY < lbby) // Further down
-		{
-			lbby = curY;
-		}
-
-		if (curY > rtfy) // Futher up
-		{
-			rtfy = curY;
-		}
-
-		if (curZ < lbbz) // Further back
-		{
-			lbbz = curZ;
-		}
-
-		if (curZ > rtfz) // Further front
-		{
-			rtfz = curZ;
-		}
-	}
-
-	Point3D botBackLeft(lbbx, lbby, lbbz); // Bottom back left point
-	Point3D topFrontRight(rtfx, rtfy, rtfz); // Top front right point
-	bbox = new BoundingBox(botBackLeft, topFrontRight);
 }
