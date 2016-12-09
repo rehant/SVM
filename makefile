@@ -45,4 +45,4 @@ $(PROGRAM_NAME)$(EXEEXT): Point2D.o Vec3D.o Point3D.o Face3D.o Colour.o Material
 	$(CC) -o $(PROGRAM_NAME)$(EXEEXT) $^ $(CFLAGS) $(LDFLAGS) 2>&1 | tee -a out
 
 clean:
-	$(RM) *.o *$(EXEEXT) $(PROGRAM_NAME) $(EXTRAFILES)
+	$(RM) *.o *.x *.exe $(PROGRAM_NAME) $(EXTRAFILES)
