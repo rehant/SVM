@@ -33,12 +33,12 @@ Point3D BoundingSphere::getCentre()
 	return *centre;
 }
 
-double getRadius()
+double BoundingSphere::getRadius()
 {
 	return rad;
 }
 
-void BoundingSphere::BoundingSphere(Mesh m) // Create bounding sphere based on a mesh
+BoundingSphere::BoundingSphere(Mesh m) // Create bounding sphere based on a mesh
 {
 	/*
 	* ALGORITHM
@@ -60,7 +60,8 @@ void BoundingSphere::BoundingSphere(Mesh m) // Create bounding sphere based on a
 
 	double diam = 0.0; // Sphere diameter
 	double curRad = 0.0; // Radius between 2 points currently being checked
-	int p1Ind, p2Ind = 0, 0; // Index of 2 points on diameter line
+	int p1Ind = 0;
+	int p2Ind = 0;
 	vector<Point3D> verts = m.getVerts(); // Fetch vertices from mesh
 
 	/* Find diamterically opposing points and sphere's diameter */
