@@ -36,51 +36,6 @@ TrackingCamera::~TrackingCamera()
 	delete dVec; // Delete distance vector
 }
 
-float TrackingCamera::getPosX()
-{
-	return pos->getX();
-}
-
-float TrackingCamera::getPosY()
-{
-	return pos->getY();
-}
-
-float TrackingCamera::getPosZ()
-{
-	return pos->getZ();
-}
-
-float TrackingCamera::getUpX()
-{
-	return up->getX();
-}
-
-float TrackingCamera::getUpY()
-{
-	return up->getY();
-}
-
-float TrackingCamera::getUpZ()
-{
-	return up->getZ();
-}
-
-float TrackingCamera::getTargX()
-{
-	return target->getX();
-}
-
-float TrackingCamera::getTargY()
-{
-	return target->getY();
-}
-
-float TrackingCamera::getTargZ()
-{
-	return target->getZ();
-}
-
 void TrackingCamera::move(float xAmt, float yAmt, float zAmt)
 {
 	/* Move position */

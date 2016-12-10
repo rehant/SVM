@@ -14,3 +14,49 @@ Camera::~Camera()
 	delete target;
 	delete pos;
 }
+
+float Camera::getPosX()
+{
+	return pos->getX();
+}
+
+float Camera::getPosY()
+{
+	return pos->getY();
+}
+
+float Camera::getPosZ()
+{
+	return pos->getZ();
+}
+
+float Camera::getUpX()
+{
+	return up->getX();
+}
+
+float Camera::getUpY()
+{
+	return up->getY();
+}
+
+float Camera::getUpZ()
+{
+	return up->getZ();
+}
+
+float Camera::getTargX()
+{
+	return target->getX();
+}
+
+float Camera::getTargY()
+{
+	return target->getY();
+}
+
+float Camera::getTargZ()
+{
+	return target->getZ();
+}
+

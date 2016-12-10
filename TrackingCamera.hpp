@@ -14,17 +14,6 @@ class TrackingCamera : public Camera
 		void update(); // Updates target to track player
 		~TrackingCamera(); // Destructor
 		
-		/** Getters **/
-		float getPosX();
-		float getPosY();
-		float getPosZ();
-		float getUpX();
-		float getUpY();
-		float getUpZ();
-		float getTargX();
-		float getTargY();
-		float getTargZ();
-
 		/** Camera control **/
 		void move(float xAmt, float yAmt, float zAmt);
 

@@ -44,6 +44,7 @@ int winSize[2] = {800, 600};
 bool keysDown[256]; // Boolean array for keys
 float alpha = 7.5;	// Angle of ship rotation along y-axis
 
+/* First person cam */
 float camPos[] 	= {0, 75, 10};		// Position of camera
 float tarPos[] = {0, 0, 0};			//where that camera is pointed at
 float camUp[] = {0, 1, 0};
@@ -101,8 +102,18 @@ BoundingSphere powerup1Bound = BoundingSphere(70, 1, 0, 1);
 BoundingSphere powerup2Bound = BoundingSphere(110, 1, 70, 1);
 BoundingSphere powerup3Bound = BoundingSphere(50, 1, 85, 1);
 
+/* GUI */
 HUD hud;
-TrackingCamera* tCam = NULL; // Camera which tracks the player
+
+/* First person camera */
+float firstCamPos[] = {0, 1, 0};
+
+/* Cameras */
+TrackingCamera* thirdPersonCam = NULL; // Camera which tracks the player
+TrackingCamera* firstPersonCam = NULL;
+vector<TrackingCamera*> cameras; // Vector of cameras
+int curCamInd = 0; // Index of camera to use (defaults to third-person cam)
+
 //menu
 string option;
 //int option2;
@@ -409,15 +420,21 @@ void cleanup()
 		player = NULL;
 	}
 
-	if (tCam != NULL)
+	if (thirdPersonCam != NULL)
 	{
-		delete tCam;
-		tCam = NULL;
+		delete thirdPersonCam;
+		thirdPersonCam = NULL;
 	}
 	if (playerBound != NULL)
 	{
 		delete playerBound;
 		playerBound = NULL;
+	}
+
+	if (firstPersonCam != NULL)
+	{
+		delete firstPersonCam;
+		firstPersonCam = NULL;
 	}
 }
 
@@ -465,6 +482,15 @@ void keyboard(unsigned char key, int xIn, int yIn)
 			player->decHealth();
 			break;
 		}
+
+		case 'c': // Switch between cameras
+		case 'C':
+		{
+			cout << "Camera index before shift: " << curCamInd << endl;
+			curCamInd = (curCamInd+1)%cameras.size(); // Move to next camera index (or beginning)
+			cout << "Camera index after shift: " << curCamInd << endl;
+			break;
+		}
 	}
 
 	
@@ -480,37 +506,37 @@ void special(int key, int x, int y)
 		// Move camera in positive z direction
 		case GLUT_KEY_UP:
 			//camPos[2] += 2;
-			tCam->move(0, 0, 2);
+			thirdPersonCam->move(0, 0, 2);
 			break;
 
 		// Move camera in negative z direction
 		case GLUT_KEY_DOWN:
 			//camPos[2] -= 2;
-			tCam->move(0, 0, -2);
+			thirdPersonCam->move(0, 0, -2);
 			break;
 
 		// Move camera in negative x direction
 		case GLUT_KEY_LEFT:
 			//camPos[0] -= 2;
-			tCam->move(-2, 0, 0);
+			thirdPersonCam->move(-2, 0, 0);
 			break;
 
 		// Move camera in positive x direction
 		case GLUT_KEY_RIGHT:
 			//camPos[0] += 2;
-			tCam->move(2, 0, 0);
+			thirdPersonCam->move(2, 0, 0);
 			break;
 
 		// Move camera in negative y direction
 		case GLUT_KEY_PAGE_DOWN:
 			//camPos[1] -= 1;
-			tCam->move(0, -1, 0);
+			thirdPersonCam->move(0, -1, 0);
 			break;
 
 		// Move camera in positive y direction
 		case GLUT_KEY_PAGE_UP:
 			//camPos[1] += 1;
-			tCam->move(0, 1, 0);
+			thirdPersonCam->move(0, 1, 0);
 			break;
 	}
 
@@ -520,6 +546,14 @@ void special(int key, int x, int y)
 void mouse(int btn, int state, int x, int y)
 {
 
+}
+
+void updateCams()
+{
+	for (int i = 0; i < cameras.size(); i++)
+	{
+		cameras.at(i)->update();
+	}
 }
 
 void display(void)
@@ -533,11 +567,13 @@ void display(void)
 	// Reset current modelview matrix stack
 	glLoadIdentity(); // Load an identity
 
+	TrackingCamera* curCam = cameras.at(curCamInd); // Fetch current camera
+
 	// Set where we're looking at
 	//gluLookAt(camPos[0], camPos[1], camPos[2], tarPos[0], tarPos[1], tarPos[2], camUp[0], camUp[1], camUp[2]);
-	gluLookAt(tCam->getPosX(), tCam->getPosY(), tCam->getPosZ(),  // Position
-		tCam->getTargX(), tCam->getTargY(), tCam->getTargZ(), // Target
-		tCam->getUpX(), tCam->getUpY(), tCam->getUpZ()); // Up vector
+	gluLookAt(curCam->getPosX(), curCam->getPosY(), curCam->getPosZ(),  // Position
+		curCam->getTargX(), curCam->getTargY(), curCam->getTargZ(), // Target
+		curCam->getUpX(), curCam->getUpY(), curCam->getUpZ()); // Up vector
 
 	// Sets how polygons are drawn
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -554,7 +590,8 @@ void display(void)
 		// Renders Ship
 		renderShip();
 		player->velocity();
-		tCam->update(); // Update camera with new position
+
+		updateCams();
 
 		// Draws power ups
 		powerup1.draw();
@@ -614,7 +651,13 @@ void init(void)
 
 	playerBound->collidingWith(obstacle1Bound);
 
-	tCam = new TrackingCamera(Point3D(camPos[0], camPos[1], camPos[2]), player, Vec3D(camUp[0], camUp[1], camUp[2])); // Create the tracking camera
+	/** Camera setup **/
+	thirdPersonCam = new TrackingCamera(Point3D(camPos[0], camPos[1], camPos[2]), player, Vec3D(camUp[0], camUp[1], camUp[2])); // Create the third-person cam
+	firstPersonCam = new TrackingCamera(Point3D(firstCamPos[0], firstCamPos[1], firstCamPos[2]), player, Vec3D(camUp[0], camUp[1], camUp[2])); // Create the first-person cam
+
+	/* Add cameras to array */
+	cameras.push_back(thirdPersonCam);
+	cameras.push_back(firstPersonCam);
 
 	// Sets default color to black
 	glClearColor(0, 0, 0, 0);

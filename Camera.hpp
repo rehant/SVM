@@ -10,6 +10,17 @@ class Camera // Camera with a fixed target
 		Camera(Point3D pos, Point3D target, Vec3D up);
 		~Camera();
 
+		/** Getters **/
+		float getPosX();
+		float getPosY();
+		float getPosZ();
+		float getUpX();
+		float getUpY();
+		float getUpZ();
+		float getTargX();
+		float getTargY();
+		float getTargZ();
+
 	protected:
 		Point3D* pos; // Position
 		Point3D* target; // Target
