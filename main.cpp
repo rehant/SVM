@@ -2,6 +2,7 @@
 
 // INCLUDING LOCAL FILES
 #include "Mesh.hpp"
+#include "Player.hpp"
 #include "Material.hpp"
 #include "Point3D.hpp"
 #include "Face3D.hpp"
@@ -37,7 +38,10 @@ using namespace std;
 int winPos[2] = {50, 50};
 int winSize[2] = {800, 600};
 
-float camPos[] 	= {0, 40, 10};		// Position of camera
+bool keysDown[256]; // Boolean array for keys
+float alpha = 7.5;	// Angle of ship rotation along y-axis
+
+float camPos[] 	= {0, 75, 10};		// Position of camera
 float tarPos[] = {0, 0, 0};			//where that camera is pointed at
 float camUp[] = {0, 1, 0};
 
@@ -56,7 +60,7 @@ float xangle = 0;
 
 // Init track pointer
 Mesh* track = NULL;
-Mesh* ship = NULL;
+Player* player = NULL;
 
 // Class Object Instances 
 obstacle obstacle1 = obstacle(70, 4);
@@ -95,7 +99,7 @@ void setLights(void)
 }
 
 // Draws the object
-void drawMesh(Mesh *m)
+void drawMesh(Mesh* m)
 {
 	vector<Face3D> mfaces = m->getFaces(); // Get a list of the mesh's faces
 	vector<Point3D> mverts = m->getVerts(); // Fetch vertices
@@ -209,6 +213,22 @@ void drawMesh(Mesh *m)
 	glEnd(); // End triangles
 }
 
+void renderShip()
+{
+	// SHIP CODE
+	glPushMatrix();
+		// Set initial position of our ship to origin on top of track
+		glTranslatef(player->getX(), 0, player->getZ());
+
+		// Enable rotation of rot[1] degrees at the origin along the y-axis for the ship
+		glRotatef(player->getRotY(), 0, 1, 0);
+		//glRotatef(90,0,1,0);
+
+		// Draws ship from player object
+		drawMesh(player->getShip());
+	glPopMatrix();
+}
+
 // Deletes objects on exit
 void cleanup()
 {
@@ -216,6 +236,11 @@ void cleanup()
 	{
 		delete track;
 		track = NULL;
+	}
+	if (player != NULL)
+	{
+		delete player;
+		player = NULL;
 	}
 }
 
@@ -225,7 +250,19 @@ void cleanup()
 
 void keyboard(unsigned char key, int xIn, int yIn)
 {
-	float alpha = 0.5; // Number of radians to rotate by
+	keysDown[(int)key] = true; // If true then this key is down
+
+	if (keysDown[97] && keysDown[119]) // If A & W are true then both keys are pressed
+	{
+		player->velocity();
+		player->setRotY(alpha);
+	}
+
+	if (keysDown[100] && keysDown[119]) // If D & W are true then both keys are pressed
+	{
+		player->velocity();
+		player->setRotY(-alpha);
+	}
 
 	switch(key)
 	{
@@ -233,33 +270,29 @@ void keyboard(unsigned char key, int xIn, int yIn)
 			exit(0);
 			break;
 
-		case 'd':
-		case 'D':
-		{
-			angle++;
-			break;
-		}
-
+		// Rotates player left
 		case 'a':
 		case 'A':
-		{
-			angle--;
+			player->setRotY(alpha);
+			//cout << player->getRotY() << endl;
 			break;
-		}
 
+		// Rotates player right
+		case 'd':
+		case 'D':
+			player->setRotY(-alpha);
+			//cout << player->getRotY() << endl;
+			break;
+
+		// Moves player forward by updating {x,z} along their angle
 		case 'w':
 		case 'W':
-		{
-			trackPos[0]++;
+			player->velocity();
 			break;
-		}
 
 		case 's':
 		case 'S':
-		{
-			trackPos[0]--;
 			break;
-		}
 	}
 
 	glutPostRedisplay();
@@ -328,34 +361,40 @@ void display(void)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	glPushMatrix();
+		/* Rotate track */
+		//glTranslatef(tarPos[0], tarPos[1], tarPos[2]);
+		//glRotatef(angle, 0.0, 1.0, 0.0);
+		//glTranslatef(-tarPos[0], -tarPos[1], -tarPos[2]);
 
-	/* Rotate track */
-	glTranslatef(tarPos[0], tarPos[1], tarPos[2]);
-	glRotatef(angle, 0.0, 1.0, 0.0);
-	glTranslatef(-tarPos[0], -tarPos[1], -tarPos[2]);
+		// Draws track
+		drawMesh(track);
+		//glRotatef(90,0,1,0);
 
-	// Draws track
-	drawMesh(track);
-	powerup1.draw();
-	powerup2.draw();
-	powerup3.draw();
-	
-	obstacle1.draw();
-	obstacle2.draw();
-	obstacle3.draw();
-	obstacle4.draw();
-	obstacle5.draw();
-	obstacle6.draw();
-	obstacle7.draw();
-	obstacle8.draw();
-	obstacle9.draw();
+		// Renders Ship
+		renderShip();
+
+		// Draws power ups
+		powerup1.draw();
+		powerup2.draw();
+		powerup3.draw();
+		
+		// Draws obstacles
+		obstacle1.draw();
+		obstacle2.draw();
+		obstacle3.draw();
+		obstacle4.draw();
+		obstacle5.draw();
+		obstacle6.draw();
+		obstacle7.draw();
+		obstacle8.draw();
+		obstacle9.draw();
 	glPopMatrix();
 
 	// Swap into back buffer on each call to display 
 	glutSwapBuffers();
 
 	// Redisplay the screen
-	//glutPostRedisplay();
+	glutPostRedisplay();
 }
 
 void callBacks(void)
@@ -376,33 +415,13 @@ void callBacks(void)
 	atexit(cleanup);
 }
 
-void instructions()
-{
-	std::ifstream readmeStream("README", std::ifstream::in); // Open README file
-	char c;
-
-	if (readmeStream.is_open()) // Stream opened
-	{
-		while (readmeStream.good())
-		{
-			c = readmeStream.get();
-			std::cout << c;
-		}	
-		
-		readmeStream.close();
-		std::cout << std::endl;
-	}
-
-	else // Error
-	{
-		std::cerr << "Couldn't open README file to show instructions. Please read the README file for instructions" << std::endl;
-	}
-}
-
 void init(void)
 {
 	// Applies mesh data to track
 	track = new Mesh("Assets/track_triangulated.obj");
+
+	// Applies mesh data to ship, and creates a player using ship object
+	player = new Player(1, 1, -5, 5, "Assets/ship_triangulated.obj");
 
 	// Sets default color to black
 	glClearColor(0, 0, 0, 0);
@@ -431,6 +450,29 @@ void init(void)
 
 	// Set camera perspective
 	gluPerspective(45, 1, 1, 500);
+}
+
+void instructions()
+{
+	std::ifstream readmeStream("README", std::ifstream::in); // Open README file
+	char c;
+
+	if (readmeStream.is_open()) // Stream opened
+	{
+		while (readmeStream.good())
+		{
+			c = readmeStream.get();
+			std::cout << c;
+		}	
+		
+		readmeStream.close();
+		std::cout << std::endl;
+	}
+
+	else // Error
+	{
+		std::cerr << "Couldn't open README file to show instructions. Please read the README file for instructions" << std::endl;
+	}
 }
 
 // Entry point of the project

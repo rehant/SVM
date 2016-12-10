@@ -41,10 +41,10 @@ void player::draw(){
 		glTranslatef(x, 1, z);
 		glRotatef(prot[1],0,1,0);
 
-		glPushMatrix();
+		//glPushMatrix();
 			glRotatef(90,0,1,0);
 			glutSolidTeapot(0.5);
-		glPopMatrix();
+		//glPopMatrix();
 	glPopMatrix();
 	}
 }

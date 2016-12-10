@@ -135,7 +135,7 @@ void keyboard(unsigned char key, int x, int y)
 			if(pos[0] > -4.4)
 				pos[0] -= 0.5;
 				player1.prot[1]+=7.5;
-			rot[1] = 180;
+			//rot[1] = 180;
 			break;
 
 		case 'w':
@@ -143,15 +143,13 @@ void keyboard(unsigned char key, int x, int y)
 			if(pos[2] > -18)
 				pos[2] -= 0.5;
 				player1.velocity();
-			rot[1] = 180;
+			//rot[1] = 180;
 			break;
 
 		case 'd':
 		case 'D':
 			if(pos[0] < 4.4)
-				pos[0]+=0.5;
-				player1.prot[1]-=7.5;
-			rot[1] = 180;
+				rot[1] = 180;
 			break;
 
 		case 's':
@@ -159,7 +157,7 @@ void keyboard(unsigned char key, int x, int y)
 			if(pos[2] < 4.4)
 				pos[2] += 0.5;
 				
-			rot[1] = 0;
+			//rot[1] = 0;
 			break;
 
 		case 'y':

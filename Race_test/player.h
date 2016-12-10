@@ -16,7 +16,7 @@ public:
 //	void rotate(x1);
 
 	float x, z, track_sizeL, track_sizeR, posX, posZ, trackL, trackR,x1;
-	float prot[3] ;
+	float prot[3];
 	bool stillRacing;
 	int penaltyCounter, health;
 	Vector4D amount4;
