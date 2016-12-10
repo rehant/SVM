@@ -105,8 +105,10 @@ void Player::velocity()
 {
 	if(stillRacing)
 	{
-		x += (cos(rot[1]*M_PI/180)*0.2);
-		z -= (sin(rot[1]*M_PI/180)*0.2);
+		/*x += (cos(rot[1]*M_PI/180)*0.2);
+		z -= (sin(rot[1]*M_PI/180)*0.2);*/
+		x += (cos(rot[1]*M_PI/180)*0.5);
+		z -= (sin(rot[1]*M_PI/180)*0.5);
 	}
 }
 
