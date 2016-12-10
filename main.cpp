@@ -7,6 +7,8 @@
 #include "Face3D.hpp"
 #include "Vec3D.hpp"
 #include "Point2D.hpp"
+#include "obstacle.h"
+#include "powerup.h"
 
 // INCLUDING SYSTEM LIBRARIES
 #include <stdio.h>
@@ -54,6 +56,23 @@ float xangle = 0;
 
 // Init track pointer
 Mesh* track = NULL;
+Mesh* ship = NULL;
+
+// Class Object Instances 
+obstacle obstacle1 = obstacle(70, 4);
+obstacle obstacle2 = obstacle(70, -4);
+obstacle obstacle3 = obstacle(102, 70);
+obstacle obstacle4 = obstacle(106, 70);
+obstacle obstacle5 = obstacle(50, 90);
+obstacle obstacle6 = obstacle(50, 94);
+obstacle obstacle7 = obstacle(-29.5, 30);
+obstacle obstacle8 = obstacle(-33.5, 30);
+obstacle obstacle9 = obstacle(-37.5, 30);
+
+powerup powerup1 = powerup(70, 0);
+powerup powerup2 = powerup(110, 70);
+powerup powerup3 = powerup(50, 86);
+
 
 /*================================================
 				DRAW METHODS
@@ -254,22 +273,22 @@ void special(int key, int x, int y)
 	{
 		// Move camera in positive z direction
 		case GLUT_KEY_UP:
-			camPos[2] += 1;
+			camPos[2] += 2;
 			break;
 
 		// Move camera in negative z direction
 		case GLUT_KEY_DOWN:
-			camPos[2] -= 1;
+			camPos[2] -= 2;
 			break;
 
 		// Move camera in negative x direction
 		case GLUT_KEY_LEFT:
-			camPos[0] -= 1;
+			camPos[0] -= 2;
 			break;
 
 		// Move camera in positive x direction
 		case GLUT_KEY_RIGHT:
-			camPos[0] += 1;
+			camPos[0] += 2;
 			break;
 
 		// Move camera in negative y direction
@@ -317,6 +336,19 @@ void display(void)
 
 	// Draws track
 	drawMesh(track);
+	powerup1.draw();
+	powerup2.draw();
+	powerup3.draw();
+	
+	obstacle1.draw();
+	obstacle2.draw();
+	obstacle3.draw();
+	obstacle4.draw();
+	obstacle5.draw();
+	obstacle6.draw();
+	obstacle7.draw();
+	obstacle8.draw();
+	obstacle9.draw();
 	glPopMatrix();
 
 	// Swap into back buffer on each call to display 

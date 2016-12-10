@@ -99,13 +99,28 @@ void keyUp(unsigned char key, int x, int y)
 
 void keyboard(unsigned char key, int x, int y)
 {	
-	float dt = 10;
+	
 	keysDown[(int)key] = true; // This key is down
 
 	if (keysDown[97] && keysDown[119]) // A & W are true, both are down
 	{
+		player1.velocity();
+		player1.prot[1]+=7.5;
+		
+		
 		printf("W & A down\n");
 	}
+		//keysDown[97] = false;
+		//keysDown[119] = false;
+	if (keysDown[100] && keysDown[119]) // A & W are true, both are down
+	{
+		player1.velocity();
+		player1.prot[1]-=7.5;
+		
+		printf("W & D down\n");
+	}
+		//keysDown[100] = false;
+		//keysDown[119] = false;
 
 	/* key presses move the cube, if it isn't at the extents (hard-coded here) */
 	switch (key)

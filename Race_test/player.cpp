@@ -60,8 +60,8 @@ void player::wallPenalty(){
 
 void player::velocity(){
 	if(stillRacing){
-		z -= (cos(prot[1]*M_PI/(180))*0.1); 
-		x -= (sin(prot[1]*M_PI/(180))*0.1);
+		z -= (cos(prot[1]*M_PI/(180))*0.2); 
+		x -= (sin(prot[1]*M_PI/(180))*0.2);
 	}
 }
 
