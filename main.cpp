@@ -656,11 +656,11 @@ void instructions()
 		while (readmeStream.good())
 		{
 			c = readmeStream.get();
-			//std::cout << c;
+			std::cout << c;
 		}	
 		
 		readmeStream.close();
-		//std::cout << std::endl;
+		std::cout << std::endl;
 	}
 
 	else // Error
@@ -714,7 +714,7 @@ int main(int argc, char** argv)
 	}
 	if(option == "2"){
 		instructions();
-		cout<<"ENTER ANY KEY TO GO BACK TO MAIN MENU"<<endl;
+		cout<<"ENTER ANY KEY THEN ENTER TO GO BACK TO MAIN MENU"<<endl;
 		cin>>option;
 	}
 	else{
