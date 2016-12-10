@@ -21,7 +21,7 @@
 #include <fstream> // ifstream
 #include <vector>
 #include <math.h>
-
+#include <string>
 // INCLUDING OPENGL LIBRARIES
 #ifdef __APPLE__
 #  include <OpenGL/gl.h>
@@ -103,7 +103,10 @@ BoundingSphere powerup3Bound = BoundingSphere(50, 1, 85, 1);
 
 HUD hud;
 TrackingCamera* tCam = NULL; // Camera which tracks the player
-
+//menu
+string option;
+//int option2;
+bool run;
 
 /*================================================
 				DRAW METHODS
@@ -430,17 +433,7 @@ void keyboard(unsigned char key, int xIn, int yIn)
 {
 	keysDown[(int)key] = true; // If true then this key is down
 
-	if (keysDown[97] && keysDown[119]) // If A & W are true then both keys are pressed
-	{
-		player->velocity();
-		player->setRotY(alpha);
-	}
-
-	if (keysDown[100] && keysDown[119]) // If D & W are true then both keys are pressed
-	{
-		player->velocity();
-		player->setRotY(-alpha);
-	}
+	
 
 	switch(key)
 	{
@@ -462,12 +455,6 @@ void keyboard(unsigned char key, int xIn, int yIn)
 			//cout << player->getRotY() << endl;
 			break;
 
-		// Moves player forward by updating {x,z} along their angle
-		case 'w':
-		case 'W':
-			player->velocity();
-			break;
-
 		case 's':
 		case 'S':
 			break;
@@ -480,7 +467,7 @@ void keyboard(unsigned char key, int xIn, int yIn)
 		}
 	}
 
-	tCam->update(); // Update camera with new position
+	
 	glutPostRedisplay();
 }
 
@@ -566,6 +553,8 @@ void display(void)
 
 		// Renders Ship
 		renderShip();
+		player->velocity();
+		tCam->update(); // Update camera with new position
 
 		// Draws power ups
 		powerup1.draw();
@@ -687,6 +676,14 @@ int main(int argc, char** argv)
 				GLUT COMMANDS BEGIN
 ================================================*/
 
+	run = true;
+	while (run){
+	cout<<"MAIN MENU"<<endl;
+	cout<<"Option 1 - Game"<<endl;
+	cout<<"Option 2 - Instructions"<<endl;
+	cin>>option;
+	
+	if(option == "1"){
 	// Initiates GLUT
 	glutInit(&argc, argv);
 
@@ -702,9 +699,6 @@ int main(int argc, char** argv)
 	// Creates window
 	glutCreateWindow("Space Racer");
 
-	// Prints instructions from README
-	instructions();
-
 	// Set initial state of GLUT
 	init();
 
@@ -713,9 +707,20 @@ int main(int argc, char** argv)
 
 	// Fixes z-buffer
 	glEnable(GL_DEPTH_TEST);
-
 	// Enters the GLUT event processing loop
 	glutMainLoop();
+	return 0;
 
+	}
+	if(option == "2"){
+		instructions();
+		cout<<"ENTER ANY KEY TO GO BACK TO MAIN MENU"<<endl;
+		cin>>option;
+	}
+	else{
+		cout<<"Invalid number pick 1 or 2"<< endl;
+		
+	}
+	}
 	return 0;
 }
