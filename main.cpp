@@ -365,6 +365,10 @@ void cleanup()
 /*================================================
 			OPENGL & GLUT DEFINED METHODS
 ================================================*/
+void keyUp(unsigned char key, int x, int y)
+{
+	keysDown[key] = false;
+}
 
 void keyboard(unsigned char key, int xIn, int yIn)
 {
@@ -522,6 +526,9 @@ void callBacks(void)
 
 	// Runs keyboard callback function. Allows for keyboard input
 	glutKeyboardFunc(keyboard);
+
+	// Releases key presses
+	glutKeyboardUpFunc(keyUp);
 
 	// Runs special callback function. Allows for special keyboard inputs
 	glutSpecialFunc(special);
