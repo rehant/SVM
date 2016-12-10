@@ -36,3 +36,18 @@ Colour::Colour(Colour& other) // Copy constructor
 	g = other.getG()*255;
 	b = other.getB()*255;
 }
+
+void Colour::setR(float nr)
+{
+	r = nr;
+}
+
+void Colour::setG(float ng)
+{
+	g = ng;
+}
+
+void Colour::setB(float nb)
+{
+	b = nb;
+}

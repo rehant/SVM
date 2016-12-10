@@ -18,6 +18,9 @@ public:
 	bool stillRacing;
 	int penaltyCounter, health;
 	Vector4D amount4;
+	int getHealth();
+	int getMaxHealth();
+	void decHealth();
 private:
 	
 };

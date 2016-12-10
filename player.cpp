@@ -68,4 +68,18 @@ void player::healthBar(){
 		stillRacing = false;
 	}
 }
-		
+
+int player::getHealth()
+{
+	return health;
+}
+
+int player::getMaxHealth()
+{
+	return 5;
+}
+
+void player::decHealth()
+{
+	health -= 0.1;
+}
