@@ -14,6 +14,8 @@
 #  include <GL/freeglut.h>
 #endif
 
+#include <iostream>
+
 using namespace std;
 
 Player::Player(float x, float z, float trackL, float trackR, std::string ship)
@@ -129,4 +131,11 @@ int Player::getHealth()
 int Player::getMaxHealth() const
 {
 	return 100;
+}
+
+void Player::decHealth()
+{
+	clog << "Old health = " << health << endl;
+	health--;
+	clog << "New health = " << health << endl;
 }

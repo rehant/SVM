@@ -126,7 +126,11 @@ void drawHealthBar()
 {
 	Point2D topLeft(600, 540);
 	Point2D botLeft(600, 520);
-	float pHP = 100*(player->getHealth()/player->getMaxHealth()); // "P"layer "h"ealth "p"ercentage
+	float pHealth = player->getHealth();
+	float pMaxHealth = player->getMaxHealth();
+	clog << "main: pHealth = " << pHealth << ", pMaxHealth = " << pMaxHealth << endl;
+	float pHP = 100*pHealth/pMaxHealth;
+	clog << "main: pHP = " << pHP << endl;
 	Point2D topRight(600+pHP, 540);
 	Point2D botRight(600+pHP, 520);
 	Colour pCol; // Colour to use for health bar (depends on percentage of player health)
@@ -411,6 +415,13 @@ void keyboard(unsigned char key, int xIn, int yIn)
 		case 's':
 		case 'S':
 			break;
+
+		case 'p':
+		case 'P': // Test - decrement player health and update hud
+		{
+			player->decHealth();
+			break;
+		}
 	}
 
 	glutPostRedisplay();
@@ -507,6 +518,8 @@ void display(void)
 		obstacle8.draw();
 		obstacle9.draw();
 	glPopMatrix();
+
+	drawHUD();
 
 	// Swap into back buffer on each call to display 
 	glutSwapBuffers();

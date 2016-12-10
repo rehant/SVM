@@ -38,6 +38,7 @@ public:
 	Mesh* getShip() const;
 	int getHealth();
 	int getMaxHealth() const;	
+	void decHealth();
 };
 
 
