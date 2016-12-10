@@ -12,6 +12,7 @@
 #include "powerup.h"
 #include "HUD.hpp"
 #include "TrackingCamera.hpp"
+#include "BoundingSphere.hpp"
 
 // INCLUDING SYSTEM LIBRARIES
 #include <stdio.h>
@@ -69,6 +70,7 @@ float xangle = 0;
 // Init track pointer
 Mesh* track = NULL;
 Player* player = NULL;
+BoundingSphere* playerBound;
 
 // Class Object Instances 
 obstacle obstacle1 = obstacle(70, 4);
@@ -84,6 +86,20 @@ obstacle obstacle9 = obstacle(-37.5, 30);
 powerup powerup1 = powerup(70, 0);
 powerup powerup2 = powerup(110, 70);
 powerup powerup3 = powerup(50, 86);
+
+BoundingSphere obstacle1Bound = BoundingSphere(70, 1, 4, 1);
+BoundingSphere obstacle2Bound = BoundingSphere(70, 1, -4, 1);
+BoundingSphere obstacle3Bound = BoundingSphere(102, 1, 70, 1);
+BoundingSphere obstacle4Bound = BoundingSphere(106, 1, 70, 1);
+BoundingSphere obstacle5Bound = BoundingSphere(50, 1, 90, 1);
+BoundingSphere obstacle6Bound = BoundingSphere(50, 1, 94, 1);
+BoundingSphere obstacle7Bound = BoundingSphere(-29.5, 1, 30, 1);
+BoundingSphere obstacle8Bound = BoundingSphere(-33.5, 1, 30, 1);
+BoundingSphere obstacle9Bound = BoundingSphere(-37.5, 1, 30, 1);
+
+BoundingSphere powerup1Bound = BoundingSphere(70, 1, 0, 1);
+BoundingSphere powerup2Bound = BoundingSphere(110, 1, 70, 1);
+BoundingSphere powerup3Bound = BoundingSphere(50, 1, 85, 1);
 
 HUD hud;
 TrackingCamera* tCam = NULL; // Camera which tracks the player
@@ -371,7 +387,7 @@ void renderShip()
 
 		// Draws ship from player object
 		drawMesh(player->getShip());
-		setHeadLight(player->getX(), 1, player->getZ());
+		setHeadLight(player->getX(), 2, player->getZ());
 	glPopMatrix();
 }
 
@@ -394,6 +410,11 @@ void cleanup()
 	{
 		delete tCam;
 		tCam = NULL;
+	}
+	if (playerBound != NULL)
+	{
+		delete playerBound;
+		playerBound = NULL;
 	}
 }
 
@@ -600,6 +621,9 @@ void init(void)
 
 	// Applies mesh data to ship, and creates a player using ship object
 	player = new Player(1, 1, -5, 5, "Assets/ship_triangulated.obj");	
+	playerBound = new BoundingSphere(*player->getShip());	
+
+	playerBound->collidingWith(obstacle1Bound);
 
 	tCam = new TrackingCamera(Point3D(camPos[0], camPos[1], camPos[2]), player, Vec3D(camUp[0], camUp[1], camUp[2])); // Create the tracking camera
 
