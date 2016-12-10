@@ -231,21 +231,17 @@ void setLights(void)
 // Enables headlight
 void setHeadLight(float x, float y, float z)
 {
-	glPushMatrix();	
-		// Initialize a headlight at specified postion;
-		headlight[0] = x;
-		headlight[1] = y;
-		headlight[2] = z;
-		headlight[3] = 1;
+	// Initialize a headlight at specified postion;
+	headlight[0] = x;
+	headlight[1] = y;
+	headlight[2] = z;
+	headlight[3] = 1;
 
-		// Enable the light to turn on
-		glEnable(GL_LIGHTING);
-		glEnable(GL_LIGHT2);
-		glLightfv(GL_LIGHT2, GL_POSITION, headlight);
-		glLightfv(GL_LIGHT2, GL_AMBIENT, amb_h);
-		glLightfv(GL_LIGHT2, GL_DIFFUSE, diff_h);
-		glLightfv(GL_LIGHT2, GL_SPECULAR, spec_h);
-	glPopMatrix();
+	// LIGHT2 PARAMETERS
+	glLightfv(GL_LIGHT2, GL_POSITION, headlight);
+	glLightfv(GL_LIGHT2, GL_AMBIENT, amb_h);
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, diff_h);
+	glLightfv(GL_LIGHT2, GL_SPECULAR, spec_h);
 }
 
 // Draws the object
@@ -375,6 +371,7 @@ void renderShip()
 
 		// Draws ship from player object
 		drawMesh(player->getShip());
+		setHeadLight(player->getX(), 2, player->getZ());
 	glPopMatrix();
 }
 
@@ -448,7 +445,6 @@ void keyboard(unsigned char key, int xIn, int yIn)
 		case 'w':
 		case 'W':
 			player->velocity();
-			setHeadLight(player->getX(), 2, player->getZ());
 			break;
 
 		case 's':
@@ -463,7 +459,7 @@ void keyboard(unsigned char key, int xIn, int yIn)
 		}
 	}
 
-	//tCam->update(); // Update camera with new position
+	tCam->update(); // Update camera with new position
 	glutPostRedisplay();
 }
 
@@ -546,7 +542,6 @@ void display(void)
 
 		// Draws track
 		drawMesh(track);
-		//glRotatef(90,0,1,0);
 
 		// Renders Ship
 		renderShip();
@@ -619,8 +614,9 @@ void init(void)
 
 	// Enables lights 0 & 1
 	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
+	//glEnable(GL_LIGHT0);
 	//glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHT2);
 	setLights();
 
 	// Enable backface culling
