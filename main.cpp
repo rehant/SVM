@@ -49,6 +49,7 @@ float camUp[] = {0, 1, 0};
 
 float lightPos0[] = {2, 10, 2, 1};		// Position of light0
 float lightPos1[] = {100, 200, -60, 1};	// Position of light1
+float headlight[4];						// Position of headlight
 
 // Overhead light paramter arrays (RGBA)
 float amb_l[]	= {1, 1, 1, 1};
@@ -230,15 +231,21 @@ void setLights(void)
 // Enables headlight
 void setHeadLight(float x, float y, float z)
 {
-	// Initialize a headlight at specified postion
-	float headlight[] = {x, y, z, 1};
-	// Enable the light to turn on
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT2);
-	glLightfv(GL_LIGHT2, GL_POSITION, headlight);
-	glLightfv(GL_LIGHT2, GL_AMBIENT, amb_h);
-	glLightfv(GL_LIGHT2, GL_DIFFUSE, diff_h);
-	glLightfv(GL_LIGHT2, GL_SPECULAR, spec_h);
+	glPushMatrix();	
+		// Initialize a headlight at specified postion;
+		headlight[0] = x;
+		headlight[1] = y;
+		headlight[2] = z;
+		headlight[3] = 1;
+
+		// Enable the light to turn on
+		glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHT2);
+		glLightfv(GL_LIGHT2, GL_POSITION, headlight);
+		glLightfv(GL_LIGHT2, GL_AMBIENT, amb_h);
+		glLightfv(GL_LIGHT2, GL_DIFFUSE, diff_h);
+		glLightfv(GL_LIGHT2, GL_SPECULAR, spec_h);
+	glPopMatrix();
 }
 
 // Draws the object
@@ -368,11 +375,6 @@ void renderShip()
 
 		// Draws ship from player object
 		drawMesh(player->getShip());
-
-		// Draws cube to represent headlight
-		setHeadLight(player->getX(), player->getY(), player->getZ());
-		glTranslatef(1,2,0);
-		glutSolidCube(0.2f);
 	glPopMatrix();
 }
 
@@ -446,6 +448,7 @@ void keyboard(unsigned char key, int xIn, int yIn)
 		case 'w':
 		case 'W':
 			player->velocity();
+			setHeadLight(player->getX(), 2, player->getZ());
 			break;
 
 		case 's':
@@ -616,7 +619,7 @@ void init(void)
 
 	// Enables lights 0 & 1
 	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
+	//glEnable(GL_LIGHT0);
 	//glEnable(GL_LIGHT1);
 	setLights();
 
