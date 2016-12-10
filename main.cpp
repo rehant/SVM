@@ -231,6 +231,14 @@ void drawHUD()
 	drawHealthBar();
 }
 
+void drawSky()
+{
+	glPushMatrix();
+		glTranslatef(30,0,30);
+		glutSolidCube(180);
+	glPopMatrix();
+}
+
 // Sets the created lights
 void setLights(void)
 {
@@ -542,6 +550,8 @@ void display(void)
 	// Sets how polygons are drawn
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+	drawSky();
+
 	glPushMatrix();
 		/* Rotate track */
 		//glTranslatef(tarPos[0], tarPos[1], tarPos[2]);
@@ -554,7 +564,7 @@ void display(void)
 		// Renders Ship
 		renderShip();
 		player->velocity();
-		tCam->update(); // Update camera with new position
+		//tCam->update(); // Update camera with new position
 
 		// Draws power ups
 		powerup1.draw();
