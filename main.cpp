@@ -681,6 +681,7 @@ int main(int argc, char** argv)
 	cout<<"MAIN MENU"<<endl;
 	cout<<"Option 1 - Game"<<endl;
 	cout<<"Option 2 - Instructions"<<endl;
+	cout << "Option 3 - Quit" << endl;
 	cin>>option;
 	
 	if(option == "1"){
@@ -717,10 +718,16 @@ int main(int argc, char** argv)
 		cout<<"ENTER ANY KEY THEN ENTER TO GO BACK TO MAIN MENU"<<endl;
 		cin>>option;
 	}
-	else{
-		cout<<"Invalid number pick 1 or 2"<< endl;
-		
+		if (option == "3")
+		{
+			run = false;
+		}
+
+		else
+		{
+			cout << "Invalid option" << endl;
+		}
 	}
-	}
+
 	return 0;
 }
