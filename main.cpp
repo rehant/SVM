@@ -340,7 +340,6 @@ void renderShip()
 
 		// Enable rotation of rot[1] degrees at the origin along the y-axis for the ship
 		glRotatef(player->getRotY(), 0, 1, 0);
-		glRotatef(90,0,1,0);
 
 		// Draws ship from player object
 		drawMesh(player->getShip());
