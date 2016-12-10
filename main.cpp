@@ -102,9 +102,9 @@ void drawHealthBar()
 {
 	Point2D topLeft(600, 540);
 	Point2D botLeft(600, 520);
-	int pHP = 100*(player.getHealth()/player.getMaxHealth()); // "P"layer "h"ealth "p"ercentage
-	Point2D topRight(600+100*pHP, 540);
-	Point2D botRight(600+100*pHP, 520);
+	float pHP = 100*(player.getHealth()/player.getMaxHealth()); // "P"layer "h"ealth "p"ercentage
+	Point2D topRight(600+pHP, 540);
+	Point2D botRight(600+pHP, 520);
 	Colour pCol; // Colour to use for health bar (depends on percentage of player health)
 
 	/* Determine colour to use based on percentage of health remaining */

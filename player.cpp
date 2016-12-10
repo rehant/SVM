@@ -69,17 +69,19 @@ void player::healthBar(){
 	}
 }
 
-int player::getHealth()
+float player::getHealth()
 {
 	return health;
 }
 
-int player::getMaxHealth()
+float player::getMaxHealth()
 {
+	//printf("getMaxHealth called\n");
 	return 5;
 }
 
 void player::decHealth()
 {
 	health -= 0.1;
+	//printf("decHealth called\n");
 }

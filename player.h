@@ -16,10 +16,11 @@ public:
 
 	float x, z, track_sizeL, track_sizeR, posX, posZ, trackL, trackR,x1, speed;
 	bool stillRacing;
-	int penaltyCounter, health;
+	int penaltyCounter;
+	float health;
 	Vector4D amount4;
-	int getHealth();
-	int getMaxHealth();
+	float getHealth();
+	float getMaxHealth();
 	void decHealth();
 private:
 	
