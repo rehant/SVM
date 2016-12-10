@@ -7,6 +7,7 @@
 #include "Face3D.hpp"
 #include "Vec3D.hpp"
 #include "Point2D.hpp"
+#include "HUD.hpp"
 
 // INCLUDING SYSTEM LIBRARIES
 #include <stdio.h>
@@ -54,6 +55,55 @@ float xangle = 0;
 
 // Init track pointer
 Mesh* track = NULL;
+HUD hud; // Data for HUD
+
+/**
+* Draws a string in OpenGL.
+* @param s The string to draw
+* @param x X position
+* @param y Y position
+*/
+void drawString(int x, int y, string s)
+{
+	void* font = GLUT_BITMAP_9_BY_15;
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0.0, winSize[0], 0.0, winSize[1]);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();	
+	glColor3f(0.0, 1.0, 0.0); // Font colours (green)
+	glDisable(GL_LIGHTING);
+
+	glRasterPos2i(x, y); // Set text position
+
+	for (string::iterator i = s.begin(); i != s.end(); ++i)
+	{
+		//glutStrokeCharacter(GLUT_STROKE_ROMAN, *c); // Draw the character
+		glutBitmapCharacter(font, *i);
+	}
+
+	/* Restore matrices */
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glEnable(GL_LIGHTING);
+}
+
+void drawHUD()
+{
+	string tmstr = hud.getTimeString();
+	int slen = tmstr.length();
+	int mod = 4;
+	int sx = 600;
+	int sy = 550;
+	//cout << "String pos = (" << sx << ", " << sy << ")" << endl;
+	drawString(sx, sy, tmstr);
+}
 
 /*================================================
 				DRAW METHODS
@@ -318,6 +368,8 @@ void display(void)
 	// Draws track
 	drawMesh(track);
 	glPopMatrix();
+
+	drawHUD();
 
 	// Swap into back buffer on each call to display 
 	glutSwapBuffers();
