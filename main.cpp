@@ -463,7 +463,7 @@ void keyboard(unsigned char key, int xIn, int yIn)
 		}
 	}
 
-	tCam->update(); // Update camera with new position
+	//tCam->update(); // Update camera with new position
 	glutPostRedisplay();
 }
 
@@ -619,7 +619,7 @@ void init(void)
 
 	// Enables lights 0 & 1
 	glEnable(GL_LIGHTING);
-	//glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT0);
 	//glEnable(GL_LIGHT1);
 	setLights();
 
