@@ -1,4 +1,6 @@
 #include "BoundingSphere.hpp" // Class definition
+#include <iostream>
+using namespace std; 
 
 /* My includes */
 #include "funcs.hpp" // dist, fdist
@@ -22,9 +24,10 @@ bool BoundingSphere::collidingWith(BoundingSphere other) // Whether or not this 
 	
 	if (sqDist <= sqRadSum) // Collision occurred
 	{
+		cout << "success";
 		return true;
 	}
-
+	cout << "no success";
 	return false;
 }
 
@@ -84,4 +87,11 @@ BoundingSphere::BoundingSphere(Mesh m) // Create bounding sphere based on a mesh
 	Point3D p1 = verts.at(p1Ind); // Fetch first point on diameter
 	Point3D p2 = verts.at(p2Ind); // Fetch second point on diameter
 	centre = new Point3D((p1.getX()+p2.getX())/2, (p1.getY()+p2.getY())/2, (p1.getZ()+p2.getZ())/2); // Midpoint (centre point of sphere)
+}
+
+BoundingSphere::BoundingSphere(float posX, float posY, float posZ, float size)
+{
+	float diam = size;
+	rad = diam/2;
+	centre = new Point3D(posX, posY, posZ);
 }

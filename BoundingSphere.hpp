@@ -18,6 +18,7 @@ class BoundingSphere
 		Point3D getCentre();
 		double getRadius();
 		BoundingSphere(Mesh m); // Create the bounding sphere based on the mesh
+		BoundingSphere(float posX, float posY, float posZ, float size);
 
 	private:
 		Point3D* centre; // Centre point of sphere
