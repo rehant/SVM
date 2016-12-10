@@ -128,9 +128,9 @@ void drawHealthBar()
 	Point2D botLeft(600, 520);
 	float pHealth = player->getHealth();
 	float pMaxHealth = player->getMaxHealth();
-	clog << "main: pHealth = " << pHealth << ", pMaxHealth = " << pMaxHealth << endl;
+	//clog << "main: pHealth = " << pHealth << ", pMaxHealth = " << pMaxHealth << endl;
 	float pHP = 100*pHealth/pMaxHealth;
-	clog << "main: pHP = " << pHP << endl;
+	//clog << "main: pHP = " << pHP << endl;
 	Point2D topRight(600+pHP, 540);
 	Point2D botRight(600+pHP, 520);
 	Colour pCol; // Colour to use for health bar (depends on percentage of player health)
@@ -599,11 +599,11 @@ void instructions()
 		while (readmeStream.good())
 		{
 			c = readmeStream.get();
-			std::cout << c;
+			//std::cout << c;
 		}	
 		
 		readmeStream.close();
-		std::cout << std::endl;
+		//std::cout << std::endl;
 	}
 
 	else // Error

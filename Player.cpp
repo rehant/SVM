@@ -135,7 +135,7 @@ int Player::getMaxHealth() const
 
 void Player::decHealth()
 {
-	clog << "Old health = " << health << endl;
+	//clog << "Old health = " << health << endl;
 	health--;
-	clog << "New health = " << health << endl;
+	//clog << "New health = " << health << endl;
 }
