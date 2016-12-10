@@ -16,6 +16,9 @@ class Point3D
 		float getZ() const;
 		Point3D();
 		Point3D(const Point3D& other);
+		void setX(float nx);
+		void setY(float ny);
+		void setZ(float nz);
 };
 
 #endif

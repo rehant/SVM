@@ -11,6 +11,7 @@
 #include "obstacle.h"
 #include "powerup.h"
 #include "HUD.hpp"
+#include "TrackingCamera.hpp"
 
 // INCLUDING SYSTEM LIBRARIES
 #include <stdio.h>
@@ -84,6 +85,7 @@ powerup powerup2 = powerup(110, 70);
 powerup powerup3 = powerup(50, 86);
 
 HUD hud;
+TrackingCamera* tCam = NULL; // Camera which tracks the player
 
 
 /*================================================
@@ -382,10 +384,17 @@ void cleanup()
 		delete track;
 		track = NULL;
 	}
+	
 	if (player != NULL)
 	{
 		delete player;
 		player = NULL;
+	}
+
+	if (tCam != NULL)
+	{
+		delete tCam;
+		tCam = NULL;
 	}
 }
 
@@ -451,6 +460,7 @@ void keyboard(unsigned char key, int xIn, int yIn)
 		}
 	}
 
+	tCam->update(); // Update camera with new position
 	glutPostRedisplay();
 }
 
@@ -462,32 +472,38 @@ void special(int key, int x, int y)
 	{
 		// Move camera in positive z direction
 		case GLUT_KEY_UP:
-			camPos[2] += 2;
+			//camPos[2] += 2;
+			tCam->move(0, 0, 2);
 			break;
 
 		// Move camera in negative z direction
 		case GLUT_KEY_DOWN:
-			camPos[2] -= 2;
+			//camPos[2] -= 2;
+			tCam->move(0, 0, -2);
 			break;
 
 		// Move camera in negative x direction
 		case GLUT_KEY_LEFT:
-			camPos[0] -= 2;
+			//camPos[0] -= 2;
+			tCam->move(-2, 0, 0);
 			break;
 
 		// Move camera in positive x direction
 		case GLUT_KEY_RIGHT:
-			camPos[0] += 2;
+			//camPos[0] += 2;
+			tCam->move(2, 0, 0);
 			break;
 
 		// Move camera in negative y direction
 		case GLUT_KEY_PAGE_DOWN:
-			camPos[1] -= 1;
+			//camPos[1] -= 1;
+			tCam->move(0, -1, 0);
 			break;
 
 		// Move camera in positive y direction
 		case GLUT_KEY_PAGE_UP:
-			camPos[1] += 1;
+			//camPos[1] += 1;
+			tCam->move(0, 1, 0);
 			break;
 	}
 
@@ -511,7 +527,10 @@ void display(void)
 	glLoadIdentity(); // Load an identity
 
 	// Set where we're looking at
-	gluLookAt(camPos[0], camPos[1], camPos[2], tarPos[0], tarPos[1], tarPos[2], camUp[0], camUp[1], camUp[2]);
+	//gluLookAt(camPos[0], camPos[1], camPos[2], tarPos[0], tarPos[1], tarPos[2], camUp[0], camUp[1], camUp[2]);
+	gluLookAt(tCam->getPosX(), tCam->getPosY(), tCam->getPosZ(),  // Position
+		tCam->getTargX(), tCam->getTargY(), tCam->getTargZ(), // Target
+		tCam->getUpX(), tCam->getUpY(), tCam->getUpZ()); // Up vector
 
 	// Sets how polygons are drawn
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -583,6 +602,8 @@ void init(void)
 
 	// Applies mesh data to ship, and creates a player using ship object
 	player = new Player(1, 1, -5, 5, "Assets/ship_triangulated.obj");	
+
+	tCam = new TrackingCamera(Point3D(camPos[0], camPos[1], camPos[2]), player, Vec3D(camUp[0], camUp[1], camUp[2])); // Create the tracking camera
 
 	// Sets default color to black
 	glClearColor(0, 0, 0, 0);

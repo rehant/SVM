@@ -38,3 +38,18 @@ Point3D::Point3D(const Point3D& other)
 	this->y = other.getY();
 	this->z = other.getZ();
 }
+
+void Point3D::setX(float nx)
+{
+	this->x = nx;
+}
+
+void Point3D::setY(float ny)
+{
+	this->y = ny;
+}
+
+void Point3D::setZ(float nz)
+{
+	this->z = nz;
+}
