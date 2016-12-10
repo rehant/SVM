@@ -1,6 +1,11 @@
 #ifndef __BOUNDINGSPHERE_HPP__
 #define __BOUNDINGSPHERE_HPP__
 
+/* STL includes */
+#include <vector>
+using namespace std;
+
+/* Our includes */
 #include "Point3D.hpp"
 #include "Mesh.hpp"
 
@@ -17,6 +22,6 @@ class BoundingSphere
 	private:
 		Point3D* centre; // Centre point of sphere
 		double rad; // Radius
-}
+};
 
 #endif

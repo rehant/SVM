@@ -10,7 +10,7 @@ class Vec3D
 		/**
 		* Constructs a Vec3D with the given X, Y, Z.
 		**/
-		Vec3D(float &x, float &y, float &z);
+		Vec3D(float x, float y, float z);
 		Vec3D();
 		float getX();
 		float getY();
