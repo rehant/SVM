@@ -371,7 +371,7 @@ void renderShip()
 
 		// Draws ship from player object
 		drawMesh(player->getShip());
-		setHeadLight(player->getX(), 2, player->getZ());
+		setHeadLight(player->getX(), 1, player->getZ());
 	glPopMatrix();
 }
 
@@ -614,8 +614,8 @@ void init(void)
 
 	// Enables lights 0 & 1
 	glEnable(GL_LIGHTING);
-	//glEnable(GL_LIGHT0);
-	//glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
 	glEnable(GL_LIGHT2);
 	setLights();
 
