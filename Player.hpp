@@ -36,6 +36,8 @@ public:
 	void wallPenalty();
 	void healthBar();
 	Mesh* getShip() const;
+	int getHealth();
+	int getMaxHealth() const;	
 };
 
 

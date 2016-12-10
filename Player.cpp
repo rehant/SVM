@@ -24,7 +24,7 @@ Player::Player(float x, float z, float trackL, float trackR, std::string ship)
 	this->trackR = trackR;
 	this->ship = new Mesh(ship);
 	penaltyCounter = 0;
-	health = 5;
+	health = 100;
 	rot[0] = 0;
 	rot[1] = 0;
 	rot[2] = 0;
@@ -120,4 +120,13 @@ void Player::healthBar()
 	{
 		stillRacing = false;
 	}
+}
+int Player::getHealth()
+{
+	return health;
+}
+
+int Player::getMaxHealth() const
+{
+	return 100;
 }

@@ -10,6 +10,7 @@
 #include "Point2D.hpp"
 #include "obstacle.h"
 #include "powerup.h"
+#include "HUD.hpp"
 
 // INCLUDING SYSTEM LIBRARIES
 #include <stdio.h>
@@ -77,10 +78,127 @@ powerup powerup1 = powerup(70, 0);
 powerup powerup2 = powerup(110, 70);
 powerup powerup3 = powerup(50, 86);
 
+HUD hud;
+
 
 /*================================================
 				DRAW METHODS
 ================================================*/
+
+/**
+* Draws a string in OpenGL.
+* @param s The string to draw
+* @param x X position
+* @param y Y position
+*/
+void drawString(int x, int y, string s)
+{
+	void* font = GLUT_BITMAP_9_BY_15;
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0.0, winSize[0], 0.0, winSize[1]);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();	
+	glColor3f(0.0, 1.0, 0.0); // Font colours (green)
+	glDisable(GL_LIGHTING);
+
+	glRasterPos2i(x, y); // Set text position
+
+	for (string::iterator i = s.begin(); i != s.end(); ++i)
+	{
+		//glutStrokeCharacter(GLUT_STROKE_ROMAN, *c); // Draw the character
+		glutBitmapCharacter(font, *i);
+	}
+
+	/* Restore matrices */
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glEnable(GL_LIGHTING);
+}
+
+void drawHealthBar()
+{
+	Point2D topLeft(600, 540);
+	Point2D botLeft(600, 520);
+	float pHP = 100*(player->getHealth()/player->getMaxHealth()); // "P"layer "h"ealth "p"ercentage
+	Point2D topRight(600+pHP, 540);
+	Point2D botRight(600+pHP, 520);
+	Colour pCol; // Colour to use for health bar (depends on percentage of player health)
+
+	/* Determine colour to use based on percentage of health remaining */
+	if (pHP > 66) // > 2/3 left
+	{
+		/* Green */
+		pCol.setR(0);
+		pCol.setG(255);
+		pCol.setB(0);
+	}
+
+	else if (pHP > 33) // > 1/3 left
+	{
+		/* Orange */
+		pCol.setR(255);
+		pCol.setG(140);
+		pCol.setB(0);
+	}
+
+	else // < 1/3 left
+	{
+		/* Red */
+		pCol.setR(255);
+		pCol.setG(0);
+		pCol.setB(0);
+	}
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0.0, winSize[0], 0.0, winSize[1]);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glColor3f(0.0, 1.0, 0.0);
+	glDisable(GL_LIGHTING);
+	
+	glBegin(GL_QUADS);
+		glColor3f(pCol.getR(), pCol.getG(), pCol.getB());
+		glVertex2f(botRight.getX(), botRight.getY());
+		glVertex2f(topRight.getX(), topRight.getY());
+		glVertex2f(topLeft.getX(), topLeft.getY());
+		glVertex2f(botLeft.getX(), botLeft.getY());
+		/*glVertex2f(700, 520);
+		glVertex2f(700, 540);
+		glVertex2f(600, 540);
+		glVertex2f(600, 520);*/
+	glEnd();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glEnable(GL_LIGHTING);
+}
+
+void drawHUD()
+{
+	/* Draw time */
+	string tmstr = hud.getTimeString();
+	int slen = tmstr.length();
+	int mod = 4;
+	int sx = 600;
+	int sy = 550;
+	//cout << "String pos = (" << sx << ", " << sy << ")" << endl;
+	drawString(sx, sy, tmstr);
+
+	drawHealthBar();
+}
 
 // Sets the created lights
 void setLights(void)

@@ -15,6 +15,9 @@ class Colour
 		float getR();
 		float getG();
 		float getB();
+		void setR(float nr);
+		void setG(float ng);
+		void setB(float nb);
 };
 
 #endif
