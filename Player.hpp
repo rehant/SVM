@@ -15,7 +15,7 @@ private:
 	Mesh* ship;
 	bool stillRacing;
 	int penaltyCounter, health;
-	float x, z, trackL, trackR;
+	float x, y, z, trackL, trackR;
 	float rot[3];
 
 public:
@@ -23,6 +23,7 @@ public:
 	~Player();
 	
 	float getX();
+	float getY();
 	float getZ();
 	float getTrackL();
 	float getTrackR();

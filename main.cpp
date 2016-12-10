@@ -46,13 +46,18 @@ float camPos[] 	= {0, 75, 10};		// Position of camera
 float tarPos[] = {0, 0, 0};			//where that camera is pointed at
 float camUp[] = {0, 1, 0};
 
-float lightPos0[] = {2, 10, 2, 1};	// Position of light0
+float lightPos0[] = {2, 10, 2, 1};		// Position of light0
 float lightPos1[] = {100, 200, -60, 1};	// Position of light1
 
-// Light paramter arrays (RGBA)
+// Overhead light paramter arrays (RGBA)
 float amb_l[]	= {1, 1, 1, 1};
 float diff_l[]	= {1, 1, 1, 1};
 float spec_l[]	= {1, 1, 1, 1};
+
+// Headlight parameter arrays (RGBA)
+float amb_h[]	= {0, 0, 1, 1};
+float diff_h[]	= {0, 0, 1, 1};
+float spec_h[]	= {0, 0, 1, 1};
 
 /* Track */
 float trackPos[] = {0, 0, 0};
@@ -220,6 +225,20 @@ void setLights(void)
 	glLightfv(GL_LIGHT1, GL_SPECULAR, spec_l);
 }
 
+// Enables headlight
+void setHeadLight(float x, float y, float z)
+{
+	// Initialize a headlight at specified postion
+	float headlight[] = {x, y, z, 1};
+	// Enable the light to turn on
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT2);
+	glLightfv(GL_LIGHT2, GL_POSITION, headlight);
+	glLightfv(GL_LIGHT2, GL_AMBIENT, amb_h);
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, diff_h);
+	glLightfv(GL_LIGHT2, GL_SPECULAR, spec_h);
+}
+
 // Draws the object
 void drawMesh(Mesh* m)
 {
@@ -347,6 +366,13 @@ void renderShip()
 
 		// Draws ship from player object
 		drawMesh(player->getShip());
+
+		// Draws the headlight
+		glPushMatrix();
+			setHeadLight(player->getX(), player->getY(), player->getZ());
+		glPopMatrix();
+
+		// Draw headlight
 	glPopMatrix();
 }
 

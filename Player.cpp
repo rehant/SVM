@@ -44,6 +44,11 @@ float Player::getX()
 	return x;
 }
 
+float Player::getY()
+{
+	return y;
+}
+
 float Player::getZ()
 {
 	return z;
