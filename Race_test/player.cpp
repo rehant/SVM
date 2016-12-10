@@ -29,24 +29,22 @@ player::player(float posX, float posZ, float trackR, float trackL){	//constructo
 void player::draw(){
 	if (stillRacing){
 	glPushMatrix();
-	float m_amb[] = {0.0,0.0,0.0,1.0};
-	float m_diff[] = {0.1,0.1,0.1,1.0};
-	float m_spec[] = {0.5,0.5,0.5,1.0};
-	float shiny = 0.25 * 128;
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, m_amb);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m_diff);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_spec);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shiny);
-	glScalef(3, 0.8f, 3);
-	glTranslatef(x, 1, z);
+		float m_amb[] = {0.0,0.0,0.0,1.0};
+		float m_diff[] = {0.1,0.1,0.1,1.0};
+		float m_spec[] = {0.5,0.5,0.5,1.0};
+		float shiny = 0.25 * 128;
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, m_amb);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m_diff);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_spec);
+		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shiny);
+		glScalef(3, 0.8f, 3);
+		glTranslatef(x, 1, z);
+		glRotatef(prot[1],0,1,0);
 
-	
-	glTranslatef(-x,-1,-z);
-	glRotatef(prot[1],0,0,1);
-	glTranslatef(x,1,z);
-	
-
-	glutSolidCube(1);
+		glPushMatrix();
+			glRotatef(90,0,1,0);
+			glutSolidTeapot(0.5);
+		glPopMatrix();
 	glPopMatrix();
 	}
 }
@@ -62,6 +60,7 @@ void player::wallPenalty(){
 
 void player::velocity(){
 	if(stillRacing){
+	
 		z -= 0.2;
 	}
 }
