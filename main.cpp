@@ -368,11 +368,9 @@ void renderShip()
 		drawMesh(player->getShip());
 
 		// Draws the headlight
-		glPushMatrix();
-			setHeadLight(player->getX(), player->getY(), player->getZ());
-		glPopMatrix();
-
-		// Draw headlight
+		setHeadLight(1,2,0);
+		glTranslatef(1,2,0);
+		glutSolidCube(0.2f);
 	glPopMatrix();
 }
 
@@ -597,8 +595,8 @@ void init(void)
 
 	// Enables lights 0 & 1
 	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHT1);
+	//glEnable(GL_LIGHT0);
+	//glEnable(GL_LIGHT1);
 	setLights();
 
 	// Enable backface culling
