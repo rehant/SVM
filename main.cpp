@@ -367,8 +367,8 @@ void renderShip()
 		// Draws ship from player object
 		drawMesh(player->getShip());
 
-		// Draws the headlight
-		setHeadLight(1,2,0);
+		// Draws cube to represent headlight
+		setHeadLight(player->getX(), player->getY(), player->getZ());
 		glTranslatef(1,2,0);
 		glutSolidCube(0.2f);
 	glPopMatrix();
@@ -582,7 +582,7 @@ void init(void)
 	track = new Mesh("Assets/track_triangulated.obj");
 
 	// Applies mesh data to ship, and creates a player using ship object
-	player = new Player(1, 1, -5, 5, "Assets/ship_triangulated.obj");
+	player = new Player(1, 1, -5, 5, "Assets/ship_triangulated.obj");	
 
 	// Sets default color to black
 	glClearColor(0, 0, 0, 0);
@@ -595,7 +595,7 @@ void init(void)
 
 	// Enables lights 0 & 1
 	glEnable(GL_LIGHTING);
-	//glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT0);
 	//glEnable(GL_LIGHT1);
 	setLights();
 
