@@ -14,6 +14,7 @@
 #include <iostream>
 #include <fstream> // ifstream
 #include <vector>
+#include <math.h>
 
 // INCLUDING OPENGL LIBRARIES
 #ifdef __APPLE__
@@ -45,6 +46,11 @@ float lightPos1[] = {100, 200, -60, 1};	// Position of light1
 float amb_l[]	= {1, 1, 1, 1};
 float diff_l[]	= {1, 1, 1, 1};
 float spec_l[]	= {1, 1, 1, 1};
+
+/* Track */
+float trackPos[] = {0, 0, 0};
+int angle = 0;
+float xangle = 0;
 
 // Init track pointer
 Mesh* track = NULL;
@@ -200,12 +206,44 @@ void cleanup()
 
 void keyboard(unsigned char key, int xIn, int yIn)
 {
+	float alpha = 0.5; // Number of radians to rotate by
+
 	switch(key)
 	{
 		case 27:
 			exit(0);
 			break;
+
+		case 'd':
+		case 'D':
+		{
+			angle++;
+			break;
+		}
+
+		case 'a':
+		case 'A':
+		{
+			angle--;
+			break;
+		}
+
+		case 'w':
+		case 'W':
+		{
+			trackPos[0]++;
+			break;
+		}
+
+		case 's':
+		case 'S':
+		{
+			trackPos[0]--;
+			break;
+		}
 	}
+
+	glutPostRedisplay();
 }
 
 
@@ -244,6 +282,8 @@ void special(int key, int x, int y)
 			camPos[1] += 1;
 			break;
 	}
+
+	glutPostRedisplay();
 }
 
 void mouse(int btn, int state, int x, int y)
@@ -268,14 +308,22 @@ void display(void)
 	// Sets how polygons are drawn
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+	glPushMatrix();
+
+	/* Rotate track */
+	glTranslatef(tarPos[0], tarPos[1], tarPos[2]);
+	glRotatef(angle, 0.0, 1.0, 0.0);
+	glTranslatef(-tarPos[0], -tarPos[1], -tarPos[2]);
+
 	// Draws track
 	drawMesh(track);
+	glPopMatrix();
 
 	// Swap into back buffer on each call to display 
 	glutSwapBuffers();
 
 	// Redisplay the screen
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
 
 void callBacks(void)
