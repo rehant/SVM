@@ -16,7 +16,7 @@ class HUD // Contains data for heads-up display
 		void convTime(); // Creates time string from seconds value
 
 		/* Properties */
-		float secTime; // Elapsed time in seconds
+		float mSecTime; // Elapsed time in milliseconds
 		string timeStr; // Time as a string
 };
 

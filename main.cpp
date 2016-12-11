@@ -21,7 +21,7 @@
 #include <fstream> // ifstream
 #include <vector>
 #include <math.h>
-
+#include <string>
 // INCLUDING OPENGL LIBRARIES
 #ifdef __APPLE__
 #  include <OpenGL/gl.h>
@@ -44,6 +44,7 @@ int winSize[2] = {800, 600};
 bool keysDown[256]; // Boolean array for keys
 float alpha = 7.5;	// Angle of ship rotation along y-axis
 
+/* First person cam */
 float camPos[] 	= {0, 75, 10};		// Position of camera
 float tarPos[] = {0, 0, 0};			//where that camera is pointed at
 float camUp[] = {0, 1, 0};
@@ -101,9 +102,22 @@ BoundingSphere powerup1Bound = BoundingSphere(70, 1, 0, 1);
 BoundingSphere powerup2Bound = BoundingSphere(110, 1, 70, 1);
 BoundingSphere powerup3Bound = BoundingSphere(50, 1, 85, 1);
 
+/* GUI */
 HUD hud;
-TrackingCamera* tCam = NULL; // Camera which tracks the player
 
+/* First person camera */
+float firstCamPos[] = {0, 1, 0};
+
+/* Cameras */
+TrackingCamera* thirdPersonCam = NULL; // Camera which tracks the player
+TrackingCamera* firstPersonCam = NULL;
+vector<TrackingCamera*> cameras; // Vector of cameras
+int curCamInd = 0; // Index of camera to use (defaults to third-person cam)
+
+//menu
+string option;
+//int option2;
+bool run;
 
 /*================================================
 				DRAW METHODS
@@ -226,6 +240,14 @@ void drawHUD()
 	drawString(sx, sy, tmstr);
 
 	drawHealthBar();
+}
+
+void drawSky()
+{
+	glPushMatrix();
+		glTranslatef(30,0,30);
+		glutSolidCube(180);
+	glPopMatrix();
 }
 
 // Sets the created lights
@@ -406,15 +428,21 @@ void cleanup()
 		player = NULL;
 	}
 
-	if (tCam != NULL)
+	if (thirdPersonCam != NULL)
 	{
-		delete tCam;
-		tCam = NULL;
+		delete thirdPersonCam;
+		thirdPersonCam = NULL;
 	}
 	if (playerBound != NULL)
 	{
 		delete playerBound;
 		playerBound = NULL;
+	}
+
+	if (firstPersonCam != NULL)
+	{
+		delete firstPersonCam;
+		firstPersonCam = NULL;
 	}
 }
 
@@ -430,17 +458,7 @@ void keyboard(unsigned char key, int xIn, int yIn)
 {
 	keysDown[(int)key] = true; // If true then this key is down
 
-	if (keysDown[97] && keysDown[119]) // If A & W are true then both keys are pressed
-	{
-		player->velocity();
-		player->setRotY(alpha);
-	}
-
-	if (keysDown[100] && keysDown[119]) // If D & W are true then both keys are pressed
-	{
-		player->velocity();
-		player->setRotY(-alpha);
-	}
+	
 
 	switch(key)
 	{
@@ -462,12 +480,6 @@ void keyboard(unsigned char key, int xIn, int yIn)
 			//cout << player->getRotY() << endl;
 			break;
 
-		// Moves player forward by updating {x,z} along their angle
-		case 'w':
-		case 'W':
-			player->velocity();
-			break;
-
 		case 's':
 		case 'S':
 			break;
@@ -478,9 +490,18 @@ void keyboard(unsigned char key, int xIn, int yIn)
 			player->decHealth();
 			break;
 		}
+
+		case 'c': // Switch between cameras
+		case 'C':
+		{
+			cout << "Camera index before shift: " << curCamInd << endl;
+			curCamInd = (curCamInd+1)%cameras.size(); // Move to next camera index (or beginning)
+			cout << "Camera index after shift: " << curCamInd << endl;
+			break;
+		}
 	}
 
-	tCam->update(); // Update camera with new position
+	
 	glutPostRedisplay();
 }
 
@@ -493,37 +514,37 @@ void special(int key, int x, int y)
 		// Move camera in positive z direction
 		case GLUT_KEY_UP:
 			//camPos[2] += 2;
-			tCam->move(0, 0, 2);
+			thirdPersonCam->move(0, 0, 2);
 			break;
 
 		// Move camera in negative z direction
 		case GLUT_KEY_DOWN:
 			//camPos[2] -= 2;
-			tCam->move(0, 0, -2);
+			thirdPersonCam->move(0, 0, -2);
 			break;
 
 		// Move camera in negative x direction
 		case GLUT_KEY_LEFT:
 			//camPos[0] -= 2;
-			tCam->move(-2, 0, 0);
+			thirdPersonCam->move(-2, 0, 0);
 			break;
 
 		// Move camera in positive x direction
 		case GLUT_KEY_RIGHT:
 			//camPos[0] += 2;
-			tCam->move(2, 0, 0);
+			thirdPersonCam->move(2, 0, 0);
 			break;
 
 		// Move camera in negative y direction
 		case GLUT_KEY_PAGE_DOWN:
 			//camPos[1] -= 1;
-			tCam->move(0, -1, 0);
+			thirdPersonCam->move(0, -1, 0);
 			break;
 
 		// Move camera in positive y direction
 		case GLUT_KEY_PAGE_UP:
 			//camPos[1] += 1;
-			tCam->move(0, 1, 0);
+			thirdPersonCam->move(0, 1, 0);
 			break;
 	}
 
@@ -533,6 +554,14 @@ void special(int key, int x, int y)
 void mouse(int btn, int state, int x, int y)
 {
 
+}
+
+void updateCams()
+{
+	for (int i = 0; i < cameras.size(); i++)
+	{
+		cameras.at(i)->update();
+	}
 }
 
 void display(void)
@@ -546,14 +575,18 @@ void display(void)
 	// Reset current modelview matrix stack
 	glLoadIdentity(); // Load an identity
 
+	TrackingCamera* curCam = cameras.at(curCamInd); // Fetch current camera
+
 	// Set where we're looking at
 	//gluLookAt(camPos[0], camPos[1], camPos[2], tarPos[0], tarPos[1], tarPos[2], camUp[0], camUp[1], camUp[2]);
-	gluLookAt(tCam->getPosX(), tCam->getPosY(), tCam->getPosZ(),  // Position
-		tCam->getTargX(), tCam->getTargY(), tCam->getTargZ(), // Target
-		tCam->getUpX(), tCam->getUpY(), tCam->getUpZ()); // Up vector
+	gluLookAt(curCam->getPosX(), curCam->getPosY(), curCam->getPosZ(),  // Position
+		curCam->getTargX(), curCam->getTargY(), curCam->getTargZ(), // Target
+		curCam->getUpX(), curCam->getUpY(), curCam->getUpZ()); // Up vector
 
 	// Sets how polygons are drawn
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	drawSky();
 
 	glPushMatrix();
 		/* Rotate track */
@@ -566,6 +599,9 @@ void display(void)
 
 		// Renders Ship
 		renderShip();
+		player->velocity();
+		updateCams();
+		//tCam->update(); // Update camera with new position
 
 		// Draws power ups
 		powerup1.draw();
@@ -593,6 +629,12 @@ void display(void)
 	glutPostRedisplay();
 }
 
+void addScore(int dt) // Adds to player's time for every second they stay alive
+{
+	hud.addTime(dt); // Add 1 millisecond
+	glutTimerFunc(1000, addScore, 1);
+}
+
 void callBacks(void)
 {
 	// Runs display callback function
@@ -612,6 +654,9 @@ void callBacks(void)
 
 	// Cleans up memory
 	atexit(cleanup);
+
+	// Adds 1 to player's score for every millisecond
+	glutTimerFunc(1000, addScore, 1);
 }
 
 void init(void)
@@ -625,7 +670,13 @@ void init(void)
 
 	playerBound->collidingWith(obstacle1Bound);
 
-	tCam = new TrackingCamera(Point3D(camPos[0], camPos[1], camPos[2]), player, Vec3D(camUp[0], camUp[1], camUp[2])); // Create the tracking camera
+	/** Camera setup **/
+	thirdPersonCam = new TrackingCamera(Point3D(camPos[0], camPos[1], camPos[2]), player, Vec3D(camUp[0], camUp[1], camUp[2])); // Create the third-person cam
+	firstPersonCam = new TrackingCamera(Point3D(firstCamPos[0], firstCamPos[1], firstCamPos[2]), player, Vec3D(camUp[0], camUp[1], camUp[2])); // Create the first-person cam
+
+	/* Add cameras to array */
+	cameras.push_back(thirdPersonCam);
+	cameras.push_back(firstPersonCam);
 
 	// Sets default color to black
 	glClearColor(0, 0, 0, 0);
@@ -667,11 +718,11 @@ void instructions()
 		while (readmeStream.good())
 		{
 			c = readmeStream.get();
-			//std::cout << c;
+			std::cout << c;
 		}	
 		
 		readmeStream.close();
-		//std::cout << std::endl;
+		std::cout << std::endl;
 	}
 
 	else // Error
@@ -687,6 +738,15 @@ int main(int argc, char** argv)
 				GLUT COMMANDS BEGIN
 ================================================*/
 
+	run = true;
+	while (run){
+	cout<<"MAIN MENU"<<endl;
+	cout<<"Option 1 - Game"<<endl;
+	cout<<"Option 2 - Instructions"<<endl;
+	cout << "Option 3 - Quit" << endl;
+	cin>>option;
+	
+	if(option == "1"){
 	// Initiates GLUT
 	glutInit(&argc, argv);
 
@@ -702,9 +762,6 @@ int main(int argc, char** argv)
 	// Creates window
 	glutCreateWindow("Space Racer");
 
-	// Prints instructions from README
-	instructions();
-
 	// Set initial state of GLUT
 	init();
 
@@ -713,9 +770,26 @@ int main(int argc, char** argv)
 
 	// Fixes z-buffer
 	glEnable(GL_DEPTH_TEST);
-
 	// Enters the GLUT event processing loop
 	glutMainLoop();
+	return 0;
+
+	}
+	if(option == "2"){
+		instructions();
+		cout<<"ENTER ANY KEY THEN ENTER TO GO BACK TO MAIN MENU"<<endl;
+		cin>>option;
+	}
+		if (option == "3")
+		{
+			run = false;
+		}
+
+		else
+		{
+			cout << "Invalid option" << endl;
+		}
+	}
 
 	return 0;
 }

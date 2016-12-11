@@ -1,4 +1,6 @@
 #include "BoundingSphere.hpp" // Class definition
+#include <iostream>
+using namespace std; 
 
 /* My includes */
 #include "funcs.hpp" // dist, fdist
@@ -17,20 +19,36 @@ BoundingSphere::~BoundingSphere()
 
 bool BoundingSphere::collidingWith(BoundingSphere other) // Whether or not this bounding sphere is colliding with another bounding sphere
 {
-	double sqDist = fdist(*centre, other.getCentre()); // Get squared distance between sphere centres
+	double sqDist = fdist(Point3D(x, y, z), other.getCentre()); // Get squared distance between sphere centres
 	double sqRadSum = (rad+other.getRadius())*(rad+other.getRadius()); // Squared sum of both radii
 	
 	if (sqDist <= sqRadSum) // Collision occurred
 	{
+		cout << "success";
 		return true;
 	}
-
+	cout << "no success";
 	return false;
 }
 
 Point3D BoundingSphere::getCentre()
 {
 	return *centre;
+}
+
+float BoundingSphere::getX()
+{
+	return x;
+}
+
+float BoundingSphere::getY()
+{
+	return y;
+}
+
+float BoundingSphere::getZ()
+{
+	return z;
 }
 
 double BoundingSphere::getRadius()
@@ -83,5 +101,16 @@ BoundingSphere::BoundingSphere(Mesh m) // Create bounding sphere based on a mesh
 	rad = diam / 2; // Store sphere radius
 	Point3D p1 = verts.at(p1Ind); // Fetch first point on diameter
 	Point3D p2 = verts.at(p2Ind); // Fetch second point on diameter
-	centre = new Point3D((p1.getX()+p2.getX())/2, (p1.getY()+p2.getY())/2, (p1.getZ()+p2.getZ())/2); // Midpoint (centre point of sphere)
+	this->x = (p1.getX()+p2.getX())/2;
+	this->y = (p1.getY()+p2.getY())/2;
+	this->z = (p1.getZ()+p2.getZ())/2; // Midpoint (centre point of sphere)
+}
+
+BoundingSphere::BoundingSphere(float posX, float posY, float posZ, float size)
+{	
+	float diam = size;
+	rad = diam/2;
+	this->x = posX;
+	this->y = posY;
+	this->z = posZ;
 }
