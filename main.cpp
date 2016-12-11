@@ -803,7 +803,7 @@ int main(int argc, char** argv)
 	}
 	if(option == "2"){
 		instructions();
-		cout<<"ENTER ANY KEY THEN ENTER TO GO BACK TO MAIN MENU"<<endl;
+		cout<<"ENTER ANY KEY OTHER THAN (1-3). THEN ENTER. TO GO BACK TO MAIN MENU"<<endl;
 		cin>>option;
 	}
 		if (option == "3")
