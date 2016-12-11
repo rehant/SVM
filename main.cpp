@@ -104,6 +104,9 @@ BoundingSphere powerup1Bound = BoundingSphere(70, 1, 0, 1);
 BoundingSphere powerup2Bound = BoundingSphere(110, 1, 70, 1);
 BoundingSphere powerup3Bound = BoundingSphere(50, 1, 85, 1);
 
+BoundingSphere bounds[] = {obstacle1Bound, obstacle2Bound, obstacle3Bound, obstacle4Bound, obstacle5Bound, obstacle6Bound, obstacle7Bound, obstacle8Bound, obstacle9Bound,
+	powerup1Bound, powerup2Bound, powerup3Bound};
+
 BoundingSphere* playerBound;
 
 /* First person camera */
@@ -623,8 +626,14 @@ void display(void)
 		obstacle7.draw();
 		obstacle8.draw();
 		obstacle9.draw();
-	cout << playerBound->collidingWith(obstacle1Bound);
 	glPopMatrix();
+
+	/* Collision check */
+	/*for (int i = 0; i < 12; i++) // Loop through bounds
+	{
+		cout << playerBound->collidingWith(bounds[i]); // Check for collision with this  collider
+	}*/
+	cout << playerBound->collidingWith(obstacle1Bound);
 
 	drawHUD();
 
