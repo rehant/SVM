@@ -10,7 +10,6 @@ BoundingSphere::BoundingSphere(Point3D c, double r)
 	/* Copy values */
 	centre = new Point3D(c); // Copy centre
 	rad = r; // Copy radius
-	//stillColliding = false;
 }
 
 BoundingSphere::~BoundingSphere()
@@ -29,17 +28,13 @@ bool BoundingSphere::collidingWith(BoundingSphere other) // Whether or not this 
 	double sqDist = unsquaredDist(myX, myY, myZ, otherX, otherY, otherZ); // Get squared distance between sphere centres
 	double sqRadSum = (rad+other.getRadius())*(rad+other.getRadius()); // Squared sum of both radii
 
-	//cout << "sqDist = " << sqDist << ", sqRadSum = " << sqRadSum << endl;
-	
 	if (sqDist <= sqRadSum) // Collision occurred
 	{	
 		
 		//stillColliding = true;
-		cout << "success!!!!!!!!!" << endl;
 		return true;
 	}
 
-	//cout << "no success::::::::::::" << endl;
 	return false;
 }
 
