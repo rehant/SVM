@@ -179,4 +179,5 @@ void Player::reset()
 {
 	speed = 1;
 	stillRacing = true;
+	health = 100;
 }
