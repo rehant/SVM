@@ -30,7 +30,7 @@ bool BoundingSphere::collidingWith(BoundingSphere other) // Whether or not this 
 
 	//cout << "sqDist = " << sqDist << ", sqRadSum = " << sqRadSum << endl;
 	
-	if (sqDist <= 8*sqRadSum) // Collision occurred
+	if (sqDist <= sqRadSum) // Collision occurred
 	{
 		cout << "success!!!!!!!!!" << endl;
 		return true;

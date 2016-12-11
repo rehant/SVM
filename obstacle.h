@@ -7,14 +7,10 @@ using namespace std;
 
 class obstacle{
 public:
-	obstacle(float posX, float posZ /*player* player*/);	//constructor
+	obstacle(float posX, float posZ );	//constructor
 	void draw();
-	//void collision();
-	//void speedDrop();
 
 	float posX, posZ, drop, x, z;
-	bool collided;
-	//player* player1;
 
 
 private:

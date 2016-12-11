@@ -31,6 +31,8 @@ Player::Player(float x, float z, float trackL, float trackR, std::string ship)
 	rot[1] = 0;
 	rot[2] = 0;
 	stillRacing = true;
+	collided = false;
+	speed = 1;
 }
 
 Player::~Player()
@@ -155,4 +157,29 @@ void Player::decHealth()
 void Player::setBoundingSphere(BoundingSphere* sp)
 {
 	bsp = sp;
+}
+
+void Player::speedBoost(){
+	speed++;
+	//collidedP = true;
+	//if (collidedP = true){
+	//	speed += 1;
+	//	collidedP = false;
+	//}
+}
+
+void Player::speedDrop(){
+	if(speed <= 1)
+	{
+		cout << "Keep Going!!!!";
+	}
+	if(speed > 1)
+	{	
+	speed--;
+	}
+	//collidedO = true;
+	//if (collidedO = true){
+	//	speed -= 1;
+	//	collidedO = false;
+	//}
 }
