@@ -109,13 +109,11 @@ void Player::velocity()
 		z -= (sin(rot[1]*M_PI/180)*0.2);*/
 		/*x += (cos(rot[1]*M_PI/180)*0.05);
 		z -= (sin(rot[1]*M_PI/180)*0.05);*/
-		float xAmt = cos(rot[1]*M_PI/180)*0.1;
-		float zAmt = sin(rot[1]*M_PI/180)*0.1;
-		x += (cos(rot[1]*M_PI/180)*0.1);
-		z -= (sin(rot[1]*M_PI/180)*0.1);
+		x += (cos(rot[1]*M_PI/180)*0.3);
+		z -= (sin(rot[1]*M_PI/180)*0.3);
 		//x += xAmt;
 		//z += zAmt;
-		bsp->move(cos(rot[1]*M_PI/180)*0.1, 0, sin(rot[1]*M_PI/180)*0.13);
+		bsp->move(cos(rot[1]*M_PI/180)*0.3, 0, sin(rot[1]*M_PI/180)*0.3);
 	}
 }
 

@@ -90,7 +90,7 @@ powerup powerup3 = powerup(50, 86);
 /* GUI */
 HUD hud;
 
-BoundingSphere obstacle1Bound = BoundingSphere(70, 1, 4, 1);
+BoundingSphere obstacle1Bound = BoundingSphere(70, 1, 4, 0.5);
 BoundingSphere obstacle2Bound = BoundingSphere(70, 1, -4, 1);
 BoundingSphere obstacle3Bound = BoundingSphere(102, 1, 70, 1);
 BoundingSphere obstacle4Bound = BoundingSphere(106, 1, 70, 1);
@@ -100,7 +100,7 @@ BoundingSphere obstacle7Bound = BoundingSphere(-29.5, 1, 30, 1);
 BoundingSphere obstacle8Bound = BoundingSphere(-33.5, 1, 30, 1);
 BoundingSphere obstacle9Bound = BoundingSphere(-37.5, 1, 30, 1);
 
-BoundingSphere powerup1Bound = BoundingSphere(70, 1, 0, 1);
+BoundingSphere powerup1Bound = BoundingSphere(70, 1, 0, 0.5);
 BoundingSphere powerup2Bound = BoundingSphere(110, 1, 70, 1);
 BoundingSphere powerup3Bound = BoundingSphere(50, 1, 85, 1);
 
@@ -140,6 +140,19 @@ bool run;
 void collide()
 {
 
+}
+
+void drawBoundingSphere(BoundingSphere bsp)
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glColor3f(0, 0, 1);
+	cout << "Drawing bounding sphere @ (" << bsp.getX() << ", " << bsp.getY() << ", " << bsp.getZ() << ")" << endl;
+	glTranslatef(bsp.getX(), bsp.getY(), bsp.getZ());
+	cout << "Sphere radius is: " << bsp.getRadius() << endl;
+	glutSolidSphere(20*bsp.getRadius(), 100, 100);
+	glPopMatrix();
 }
 
 void drawString(int x, int y, string s)
@@ -634,6 +647,12 @@ void display(void)
 		obstacle8.draw();
 		obstacle9.draw();
 	glPopMatrix();
+
+	/* Draw bounds */
+	for (int b = 0; b < 12; b++)
+	{
+		drawBoundingSphere(bounds[b]);
+	}
 
 	/* Collision check */
 	for (int i = 0; i < 12; i++) // Loop through bounds
