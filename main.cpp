@@ -90,8 +90,27 @@ powerup powerup3 = powerup(50, 86);
 /* GUI */
 HUD hud;
 
+BoundingSphere obstacle1Bound = BoundingSphere(70, 1, 4, 1);
+BoundingSphere obstacle2Bound = BoundingSphere(70, 1, -4, 1);
+BoundingSphere obstacle3Bound = BoundingSphere(102, 1, 70, 1);
+BoundingSphere obstacle4Bound = BoundingSphere(106, 1, 70, 1);
+BoundingSphere obstacle5Bound = BoundingSphere(50, 1, 90, 1);
+BoundingSphere obstacle6Bound = BoundingSphere(50, 1, 94, 1);
+BoundingSphere obstacle7Bound = BoundingSphere(-29.5, 1, 30, 1);
+BoundingSphere obstacle8Bound = BoundingSphere(-33.5, 1, 30, 1);
+BoundingSphere obstacle9Bound = BoundingSphere(-37.5, 1, 30, 1);
+
+BoundingSphere powerup1Bound = BoundingSphere(70, 1, 0, 1);
+BoundingSphere powerup2Bound = BoundingSphere(110, 1, 70, 1);
+BoundingSphere powerup3Bound = BoundingSphere(50, 1, 85, 1);
+
+BoundingSphere* playerBound;
+
 /* First person camera */
 float firstCamPos[] = {0, 1, 0};
+
+/* Bounding volumes */
+
 
 /* Cameras */
 TrackingCamera* thirdPersonCam = NULL; // Camera which tracks the player
