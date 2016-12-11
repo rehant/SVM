@@ -3,6 +3,7 @@
 
 // INCLUDING LOCAL FILES
 #include "Mesh.hpp"
+#include "BoundingSphere.hpp"
 
 // INCLUDING SYSTEM LIBRARIES
 #include <math.h>
@@ -17,6 +18,7 @@ private:
 	int penaltyCounter, health;
 	float x, y, z, trackL, trackR;
 	float rot[3];
+	BoundingSphere* bsp;
 
 public:
 	Player(float posX, float posZ, float trackL, float trackR, std::string ship);
@@ -40,6 +42,7 @@ public:
 	int getHealth();
 	int getMaxHealth() const;	
 	void decHealth();
+	void setBoundingSphere(BoundingSphere* sp);
 };
 
 

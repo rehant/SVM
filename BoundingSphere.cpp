@@ -19,15 +19,24 @@ BoundingSphere::~BoundingSphere()
 
 bool BoundingSphere::collidingWith(BoundingSphere other) // Whether or not this bounding sphere is colliding with another bounding sphere
 {
-	double sqDist = fdist(Point3D(x, y, z), other.getCentre()); // Get squared distance between sphere centres
+	float otherX = other.getX();
+	float otherY = other.getY();
+	float otherZ = other.getZ();
+	float myX = x;
+	float myY = y;
+	float myZ = z;
+	double sqDist = unsquaredDist(myX, myY, myZ, otherX, otherY, otherZ); // Get squared distance between sphere centres
 	double sqRadSum = (rad+other.getRadius())*(rad+other.getRadius()); // Squared sum of both radii
+
+	cout << "sqDist = " << sqDist << ", sqRadSum = " << sqRadSum << endl;
 	
-	if (sqDist <= sqRadSum) // Collision occurred
+	if (sqDist <= 8*sqRadSum) // Collision occurred
 	{
-		cout << "success";
+		cout << "success!!!!!!!!!" << endl;
 		return true;
 	}
-	cout << "no success";
+
+	cout << "no success::::::::::::" << endl;
 	return false;
 }
 
@@ -113,4 +122,11 @@ BoundingSphere::BoundingSphere(float posX, float posY, float posZ, float size)
 	this->x = posX;
 	this->y = posY;
 	this->z = posZ;
+}
+
+void BoundingSphere::move(float x, float y, float z)
+{
+	this->x +=x;
+	this->y += y;
+	this->z += z;
 }
