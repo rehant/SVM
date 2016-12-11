@@ -654,21 +654,6 @@ void display(void)
 		obstacle9.draw();
 	glPopMatrix();
 
-<<<<<<< HEAD
-	/* Draw bounds */
-	for (int b = 0; b < 12; b++)
-	{
-		drawBoundingSphere(bounds[b]);
-	}
-
-	/* Collision check */
-	for (int i = 0; i < 12; i++) // Loop through bounds
-	{
-		if (playerBound->collidingWith(bounds[i])) // Check for collision with this  collider
-		{
-			cout << "Collided with object #" << i << endl;
-			player->stop();
-=======
 	 //Collision check 
 	for (int i = 0; i < 9; i++) // Loop through bounds
 	{
