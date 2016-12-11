@@ -115,7 +115,7 @@ void Player::velocity()
 		z -= (sin(rot[1]*M_PI/180)*0.3);
 		//x += xAmt;
 		//z += zAmt;
-		bsp->move(cos(rot[1]*M_PI/180)*0.3, 0, sin(rot[1]*M_PI/180)*0.3);
+		bsp->move(cos(rot[1]*M_PI/180)*0.1, 0, sin(rot[1]*M_PI/180)*0.1);
 	}
 }
 
@@ -160,12 +160,13 @@ void Player::setBoundingSphere(BoundingSphere* sp)
 }
 
 void Player::speedBoost(){
-	speed++;
-	//collidedP = true;
-	//if (collidedP = true){
-	//	speed += 1;
-	//	collidedP = false;
-	//}
+	if(speed >= 2){
+		cout << "Whoa there";
+	}
+	else
+	{ 
+	speed += 0.02;
+	}
 }
 
 void Player::speedDrop(){
@@ -175,11 +176,6 @@ void Player::speedDrop(){
 	}
 	if(speed > 1)
 	{	
-	speed--;
+	speed -= 0.05;
 	}
-	//collidedO = true;
-	//if (collidedO = true){
-	//	speed -= 1;
-	//	collidedO = false;
-	//}
 }
