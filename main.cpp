@@ -41,6 +41,9 @@ using namespace std;
 int winPos[2] = {50, 50};
 int winSize[2] = {800, 600};
 
+bool obHit = false;
+bool powHit = false;
+
 bool keysDown[256]; // Boolean array for keys
 float alpha = 7.5;	// Angle of ship rotation along y-axis
 
@@ -87,6 +90,9 @@ powerup powerup1 = powerup(70, 0);
 powerup powerup2 = powerup(110, 70);
 powerup powerup3 = powerup(50, 86);
 
+obstacle checkO[] = {obstacle1, obstacle2, obstacle3, obstacle4, obstacle5, obstacle6, obstacle7, obstacle8, obstacle9};
+powerup checkP[] = {powerup1, powerup2, powerup3};
+
 /* GUI */
 HUD hud;
 
@@ -102,10 +108,10 @@ BoundingSphere obstacle9Bound = BoundingSphere(-37.5, 1, 30, 1);
 
 BoundingSphere powerup1Bound = BoundingSphere(70, 1, 0, 1);
 BoundingSphere powerup2Bound = BoundingSphere(110, 1, 70, 1);
-BoundingSphere powerup3Bound = BoundingSphere(50, 1, 85, 1);
+BoundingSphere powerup3Bound = BoundingSphere(50, 1, 86, 1);
 
-BoundingSphere bounds[] = {obstacle1Bound, obstacle2Bound, obstacle3Bound, obstacle4Bound, obstacle5Bound, obstacle6Bound, obstacle7Bound, obstacle8Bound, obstacle9Bound,
-	powerup1Bound, powerup2Bound, powerup3Bound};
+BoundingSphere boundsO[] = {obstacle1Bound, obstacle2Bound, obstacle3Bound, obstacle4Bound, obstacle5Bound, obstacle6Bound, obstacle7Bound, obstacle8Bound, obstacle9Bound};
+BoundingSphere boundsP[] = {powerup1Bound, powerup2Bound, powerup3Bound};
 
 BoundingSphere* playerBound;
 
@@ -502,9 +508,9 @@ void keyboard(unsigned char key, int xIn, int yIn)
 		case 'c': // Switch between cameras
 		case 'C':
 		{
-			cout << "Camera index before shift: " << curCamInd << endl;
+			//cout << "Camera index before shift: " << curCamInd << endl;
 			curCamInd = (curCamInd+1)%cameras.size(); // Move to next camera index (or beginning)
-			cout << "Camera index after shift: " << curCamInd << endl;
+			//cout << "Camera index after shift: " << curCamInd << endl;
 			break;
 		}
 	}
@@ -628,12 +634,41 @@ void display(void)
 		obstacle9.draw();
 	glPopMatrix();
 
-	/* Collision check */
-	/*for (int i = 0; i < 12; i++) // Loop through bounds
+	 //Collision check 
+	for (int i = 0; i < 9; i++) // Loop through bounds
 	{
-		cout << playerBound->collidingWith(bounds[i]); // Check for collision with this  collider
-	}*/
-	cout << playerBound->collidingWith(obstacle1Bound);
+		//cout << playerBound->collidingWith(boundsO[i]); // Check for collision with this  collider
+		if(playerBound->collidingWith(boundsO[i]) == true)
+		{
+			obHit = true;
+		}
+
+		if(obHit == true)
+		{
+			//checkO[i].collision();
+			player->speedDrop();
+			player->decHealth();
+			obHit = false;
+		}
+		
+	}
+	
+	for (int i = 0; i < 3; i++) // Loop through bounds
+	{
+		//cout << playerBound->collidingWith(boundsP[i]); // Check for collision with this  collider
+		if(playerBound->collidingWith(boundsP[i]) == true)
+		{
+			powHit = true;
+		}
+	
+		if(powHit == true)
+		{
+			//checkP[i].collision();
+			player->speedBoost();
+			powHit = false;
+		}
+	}
+	//cout << playerBound->collidingWith(obstacle1Bound);
 
 	drawHUD();
 

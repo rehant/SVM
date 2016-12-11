@@ -31,6 +31,8 @@ Player::Player(float x, float z, float trackL, float trackR, std::string ship)
 	rot[1] = 0;
 	rot[2] = 0;
 	stillRacing = true;
+	collided = false;
+	speed = 1;
 }
 
 Player::~Player()
@@ -111,11 +113,11 @@ void Player::velocity()
 		z -= (sin(rot[1]*M_PI/180)*0.05);*/
 		float xAmt = cos(rot[1]*M_PI/180)*0.1;
 		float zAmt = sin(rot[1]*M_PI/180)*0.1;
-		x += (cos(rot[1]*M_PI/180)*0.1);
-		z -= (sin(rot[1]*M_PI/180)*0.1);
+		x += (cos(rot[1]*M_PI/180)*0.1*speed);
+		z -= (sin(rot[1]*M_PI/180)*0.1*speed);
 		//x += xAmt;
 		//z += zAmt;
-		bsp->move(cos(rot[1]*M_PI/180)*0.1, 0, sin(rot[1]*M_PI/180)*0.13);
+		bsp->move(cos(rot[1]*M_PI/180)*0.1*speed, 0, -sin(rot[1]*M_PI/180)*0.1*speed);
 	}
 }
 
@@ -157,4 +159,29 @@ void Player::decHealth()
 void Player::setBoundingSphere(BoundingSphere* sp)
 {
 	bsp = sp;
+}
+
+void Player::speedBoost(){
+	speed++;
+	//collidedP = true;
+	//if (collidedP = true){
+	//	speed += 1;
+	//	collidedP = false;
+	//}
+}
+
+void Player::speedDrop(){
+	if(speed <= 1)
+	{
+		cout << "Keep Going!!!!";
+	}
+	if(speed > 1)
+	{	
+	speed--;
+	}
+	//collidedO = true;
+	//if (collidedO = true){
+	//	speed -= 1;
+	//	collidedO = false;
+	//}
 }
