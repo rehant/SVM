@@ -43,6 +43,8 @@ public:
 	int getMaxHealth() const;	
 	void decHealth();
 	void setBoundingSphere(BoundingSphere* sp);
+	void stop() { stillRacing = false; }
+	void start() { stillRacing = true; }
 };
 
 

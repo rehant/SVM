@@ -507,6 +507,13 @@ void keyboard(unsigned char key, int xIn, int yIn)
 			cout << "Camera index after shift: " << curCamInd << endl;
 			break;
 		}
+
+		case 'w':
+		case 'W':
+		{
+			player->start();
+			break;
+		}
 	}
 
 	
@@ -629,11 +636,15 @@ void display(void)
 	glPopMatrix();
 
 	/* Collision check */
-	/*for (int i = 0; i < 12; i++) // Loop through bounds
+	for (int i = 0; i < 12; i++) // Loop through bounds
 	{
-		cout << playerBound->collidingWith(bounds[i]); // Check for collision with this  collider
-	}*/
-	cout << playerBound->collidingWith(obstacle1Bound);
+		if (playerBound->collidingWith(bounds[i])) // Check for collision with this  collider
+		{
+			cout << "Collided with object #" << i << endl;
+			player->stop();
+		}
+	}
+	//cout << playerBound->collidingWith(obstacle1Bound);
 
 	drawHUD();
 

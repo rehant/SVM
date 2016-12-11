@@ -28,7 +28,7 @@ bool BoundingSphere::collidingWith(BoundingSphere other) // Whether or not this 
 	double sqDist = unsquaredDist(myX, myY, myZ, otherX, otherY, otherZ); // Get squared distance between sphere centres
 	double sqRadSum = (rad+other.getRadius())*(rad+other.getRadius()); // Squared sum of both radii
 
-	cout << "sqDist = " << sqDist << ", sqRadSum = " << sqRadSum << endl;
+	//cout << "sqDist = " << sqDist << ", sqRadSum = " << sqRadSum << endl;
 	
 	if (sqDist <= 8*sqRadSum) // Collision occurred
 	{
@@ -36,7 +36,7 @@ bool BoundingSphere::collidingWith(BoundingSphere other) // Whether or not this 
 		return true;
 	}
 
-	cout << "no success::::::::::::" << endl;
+	//cout << "no success::::::::::::" << endl;
 	return false;
 }
 
