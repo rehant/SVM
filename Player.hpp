@@ -47,6 +47,8 @@ public:
 	void setBoundingSphere(BoundingSphere* sp);
 	void stop() { stillRacing = false; }
 	void start() { stillRacing = true; }
+	void setPosition(float x, float z) { this->x = x; this->z = z;}
+	void reset();
 };
 
 

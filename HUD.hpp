@@ -10,6 +10,11 @@ class HUD // Contains data for heads-up display
 		string getTimeString(); // Get formatted string displaying time
 		void addTime(float dt); // Add elapsed time to current time
 		HUD(); // Constructor
+		string getBestTimeStr();
+		void saveTime(); // Save current elapsed time as best time
+		float getBestTime() { return bestTime; }
+		float getTime() { return mSecTime; }
+		void resetTime() { mSecTime = 0; }
 	
 	private:
 		/* Methods */
@@ -17,7 +22,9 @@ class HUD // Contains data for heads-up display
 
 		/* Properties */
 		float mSecTime; // Elapsed time in milliseconds
+		float bestTime; // Best time
 		string timeStr; // Time as a string
+		string bestTimeStr;
 };
 
 #endif

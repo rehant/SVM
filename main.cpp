@@ -466,7 +466,8 @@ void keyboard(unsigned char key, int xIn, int yIn)
 {
 	keysDown[(int)key] = true; // If true then this key is down
 
-	
+	if (run)
+{	
 
 	switch(key)
 	{
@@ -504,7 +505,24 @@ void keyboard(unsigned char key, int xIn, int yIn)
 			break;
 		}
 	}
+}
 
+else
+{
+	switch (key)
+	{
+		case 27:
+			exit(0);
+			break;
+
+		case 's': // Start
+		case 'S': 
+		{
+			run = true;
+			break;
+		}
+	}
+}
 	
 	glutPostRedisplay();
 }
@@ -564,6 +582,8 @@ void updateCams()
 
 void display(void)
 {
+	if (run)
+	{
 	// Clears screen color buffer, and depth buffer on each callback
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -627,6 +647,21 @@ void display(void)
 			player->speedDrop();
 			player->decHealth();
 			player->healthBar();
+
+			if (player->getHealth() == 0)
+			{
+				if (hud.getTime() > hud.getBestTime())
+				{
+					hud.saveTime(); // Save current time as best time
+				}
+
+				hud.resetTime(); // Reset time for next round
+				player->setPosition(1, 1);
+				player->reset();
+				run = false;
+				//cout << "Ending game" << endl; 
+			}
+
 			obHit = false;
 		}
 		
@@ -648,6 +683,13 @@ void display(void)
 		}
 	}
 	drawHUD();
+}
+
+else // Not running
+{
+	drawString(400, 300, hud.getBestTimeStr());
+	drawString(400,500, "Press 'S' to start");
+}
 
 	// Swap into back buffer on each call to display 
 	glutSwapBuffers();

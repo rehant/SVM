@@ -130,7 +130,7 @@ void Player::healthBar()
 	{
 		stillRacing = false;
 		
-		exit(1);
+		//exit(1);
 	}
 }
 
@@ -156,7 +156,7 @@ void Player::setBoundingSphere(BoundingSphere* sp)
 
 void Player::speedBoost(){
 	if(speed >= 2){
-		cout << "Whoa there";
+		//cout << "Whoa there";
 	}
 	else
 	{ 
@@ -167,10 +167,16 @@ void Player::speedBoost(){
 void Player::speedDrop(){
 	if(speed <= 1)
 	{
-		cout << "Keep Going!!!!";
+	//	cout << "Keep Going!!!!";
 	}
 	if(speed > 1)
 	{	
 	speed -= 0.05;
 	}
+}
+
+void Player::reset()
+{
+	speed = 1;
+	stillRacing = true;
 }
