@@ -20,5 +20,6 @@ Vec3D cross(Vec3D u, Vec3D v); // Cross-product
 Vec3D avg(Vec3D vecs[], int nVecs); // Averages $nVecs vectors and returns the result
 Vec3D quadNormal(Point3D p1, Point3D p2, Point3D p3, Point3D p4); // Calculates the normal for a quad defined by the given points (assumed to be in counter-clockwise order)
 Vec3D triNormal(Point3D p1, Point3D p2, Point3D p3); // Calculates and returns the normal for a triangle
+double unsquaredDist(float ax, float ay, float az, float bx, float by, float bz);
 
 #endif

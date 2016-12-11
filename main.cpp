@@ -604,6 +604,7 @@ void display(void)
 		obstacle7.draw();
 		obstacle8.draw();
 		obstacle9.draw();
+	cout << playerBound->collidingWith(obstacle1Bound);
 	glPopMatrix();
 
 	drawHUD();
@@ -652,6 +653,8 @@ void init(void)
 
 	// Applies mesh data to ship, and creates a player using ship object
 	player = new Player(1, 1, -5, 5, "Assets/ship_triangulated.obj");	
+	playerBound = new BoundingSphere(*player->getShip());
+	player->setBoundingSphere(playerBound);	
 
 	/** Camera setup **/
 	thirdPersonCam = new TrackingCamera(Point3D(camPos[0], camPos[1], camPos[2]), player, Vec3D(camUp[0], camUp[1], camUp[2])); // Create the third-person cam

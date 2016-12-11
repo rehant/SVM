@@ -109,8 +109,13 @@ void Player::velocity()
 		z -= (sin(rot[1]*M_PI/180)*0.2);*/
 		/*x += (cos(rot[1]*M_PI/180)*0.05);
 		z -= (sin(rot[1]*M_PI/180)*0.05);*/
+		float xAmt = cos(rot[1]*M_PI/180)*0.13;
+		float zAmt = sin(rot[1]*M_PI/180)*0.13;
 		x += (cos(rot[1]*M_PI/180)*0.13);
 		z -= (sin(rot[1]*M_PI/180)*0.13);
+		//x += xAmt;
+		//z += zAmt;
+		bsp->move(cos(rot[1]*M_PI/180)*0.13, 0, sin(rot[1]*M_PI/180)*0.13);
 	}
 }
 
@@ -147,4 +152,9 @@ void Player::decHealth()
 	//clog << "Old health = " << health << endl;
 	health--;
 	//clog << "New health = " << health << endl;
+}
+
+void Player::setBoundingSphere(BoundingSphere* sp)
+{
+	bsp = sp;
 }

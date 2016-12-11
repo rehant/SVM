@@ -22,6 +22,7 @@ class BoundingSphere
 		float getX();
 		float getY();
 		float getZ();
+		void move(float x, float y, float z);
 		
 
 	private:

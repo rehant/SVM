@@ -14,6 +14,16 @@ double fdist(Point3D a, Point3D b) // 3D unrooted distance
 	return pow(b.getX() - a.getX(), 2) + pow(b.getY() - a.getY(), 2) + pow(b.getZ() - a.getZ(), 2);
 }
 
+double fdist2(float ax, float ay, float az, float bx, float by, float bz) // 3D unrooted distance
+{
+	return pow(bx - ax, 2) + pow(by - ay, 2) + pow(bz - az, 2);
+}
+
+double unsquaredDist(float ax, float ay, float az, float bx, float by, float bz)
+{
+	return pow(bx-ax, 2)+pow(by-ay, 2)+pow(bz-az, 2);
+}
+
 double length(Vec3D v)
 {
 	return sqrt(powf(v.getX(), 2) + powf(v.getY(), 2) + powf(v.getZ(), 2));
