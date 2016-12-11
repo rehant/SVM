@@ -107,8 +107,10 @@ void Player::velocity()
 	{
 		/*x += (cos(rot[1]*M_PI/180)*0.2);
 		z -= (sin(rot[1]*M_PI/180)*0.2);*/
-		x += (cos(rot[1]*M_PI/180)*0.05);
-		z -= (sin(rot[1]*M_PI/180)*0.05);
+		/*x += (cos(rot[1]*M_PI/180)*0.05);
+		z -= (sin(rot[1]*M_PI/180)*0.05);*/
+		x += (cos(rot[1]*M_PI/180)*0.13);
+		z -= (sin(rot[1]*M_PI/180)*0.13);
 	}
 }
 

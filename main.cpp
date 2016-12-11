@@ -629,6 +629,12 @@ void display(void)
 	glutPostRedisplay();
 }
 
+void addScore(int dt) // Adds to player's time for every second they stay alive
+{
+	hud.addTime(dt); // Add 1 millisecond
+	glutTimerFunc(1000, addScore, 1);
+}
+
 void callBacks(void)
 {
 	// Runs display callback function
@@ -648,6 +654,9 @@ void callBacks(void)
 
 	// Cleans up memory
 	atexit(cleanup);
+
+	// Adds 1 to player's score for every millisecond
+	glutTimerFunc(1000, addScore, 1);
 }
 
 void init(void)
