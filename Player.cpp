@@ -165,7 +165,7 @@ void Player::speedBoost(){
 	}
 	else
 	{ 
-	speed += 0.1;
+	speed += 0.02;
 	}
 }
 

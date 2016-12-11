@@ -15,8 +15,8 @@ class Player
 private:
 	Mesh* ship;
 	bool stillRacing, collided;
-	int penaltyCounter, health, speed;
-	float x, y, z, trackL, trackR;
+	int penaltyCounter, health;
+	float x, y, z, trackL, trackR, speed;
 	float rot[3];
 	BoundingSphere* bsp;
 
