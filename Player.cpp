@@ -132,11 +132,14 @@ void Player::wallPenalty()
 
 void Player::healthBar()
 {
-	if(health <= 0)
+	if(health == 0)
 	{
 		stillRacing = false;
+		
+		exit(1);
 	}
 }
+
 int Player::getHealth()
 {
 	return health;
