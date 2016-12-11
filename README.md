@@ -1,7 +1,8 @@
-####SVM
+##ShipRacer
 
-##Ships Vs Aliens
-
-BY: Rehan Theiveehathasan, Karnvir Bining, Puru Jetly, Victor Carri
+BY: Rehan Theiveehathasan - theivers
+	Karnvir Bining		  - biningk
+	Puru Jetly			  - jetlyp
+	Victor Carri		  - carriva
 
 3GC3 Project Repository.
