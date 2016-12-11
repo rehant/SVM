@@ -96,7 +96,7 @@ powerup checkP[] = {powerup1, powerup2, powerup3};
 /* GUI */
 HUD hud;
 
-BoundingSphere obstacle1Bound = BoundingSphere(70, 1, 4, 0.5);
+BoundingSphere obstacle1Bound = BoundingSphere(70, 1, 4, 1);
 BoundingSphere obstacle2Bound = BoundingSphere(70, 1, -4, 1);
 BoundingSphere obstacle3Bound = BoundingSphere(102, 1, 70, 1);
 BoundingSphere obstacle4Bound = BoundingSphere(106, 1, 70, 1);
@@ -106,7 +106,7 @@ BoundingSphere obstacle7Bound = BoundingSphere(-29.5, 1, 30, 1);
 BoundingSphere obstacle8Bound = BoundingSphere(-33.5, 1, 30, 1);
 BoundingSphere obstacle9Bound = BoundingSphere(-37.5, 1, 30, 1);
 
-BoundingSphere powerup1Bound = BoundingSphere(70, 1, 0, 0.5);
+BoundingSphere powerup1Bound = BoundingSphere(70, 1, 0, 1);
 BoundingSphere powerup2Bound = BoundingSphere(110, 1, 70, 1);
 BoundingSphere powerup3Bound = BoundingSphere(50, 1, 86, 1);
 
@@ -148,19 +148,6 @@ void collide()
 
 }
 
-void drawBoundingSphere(BoundingSphere bsp)
-{
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-	glColor3f(0, 0, 1);
-	cout << "Drawing bounding sphere @ (" << bsp.getX() << ", " << bsp.getY() << ", " << bsp.getZ() << ")" << endl;
-	glTranslatef(bsp.getX(), bsp.getY(), bsp.getZ());
-	cout << "Sphere radius is: " << bsp.getRadius() << endl;
-	glutSolidSphere(20*bsp.getRadius(), 100, 100);
-	glPopMatrix();
-}
-
 void drawString(int x, int y, string s)
 {
 	void* font = GLUT_BITMAP_9_BY_15;
@@ -198,9 +185,8 @@ void drawHealthBar()
 	Point2D botLeft(600, 520);
 	float pHealth = player->getHealth();
 	float pMaxHealth = player->getMaxHealth();
-	//clog << "main: pHealth = " << pHealth << ", pMaxHealth = " << pMaxHealth << endl;
 	float pHP = 100*pHealth/pMaxHealth;
-	//clog << "main: pHP = " << pHP << endl;
+
 	Point2D topRight(600+pHP, 540);
 	Point2D botRight(600+pHP, 520);
 	Colour pCol; // Colour to use for health bar (depends on percentage of player health)
@@ -247,10 +233,6 @@ void drawHealthBar()
 		glVertex2f(topRight.getX(), topRight.getY());
 		glVertex2f(topLeft.getX(), topLeft.getY());
 		glVertex2f(botLeft.getX(), botLeft.getY());
-		/*glVertex2f(700, 520);
-		glVertex2f(700, 540);
-		glVertex2f(600, 540);
-		glVertex2f(600, 520);*/
 	glEnd();
 
 	glMatrixMode(GL_MODELVIEW);
@@ -268,7 +250,6 @@ void drawHUD()
 	int mod = 4;
 	int sx = 600;
 	int sy = 550;
-	//cout << "String pos = (" << sx << ", " << sy << ")" << endl;
 	drawString(sx, sy, tmstr);
 
 	drawHealthBar();
@@ -497,14 +478,12 @@ void keyboard(unsigned char key, int xIn, int yIn)
 		case 'a':
 		case 'A':
 			player->setRotY(alpha);
-			//cout << player->getRotY() << endl;
 			break;
 
 		// Rotates player right
 		case 'd':
 		case 'D':
 			player->setRotY(-alpha);
-			//cout << player->getRotY() << endl;
 			break;
 
 		case 's':
@@ -521,16 +500,7 @@ void keyboard(unsigned char key, int xIn, int yIn)
 		case 'c': // Switch between cameras
 		case 'C':
 		{
-			//cout << "Camera index before shift: " << curCamInd << endl;
 			curCamInd = (curCamInd+1)%cameras.size(); // Move to next camera index (or beginning)
-			//cout << "Camera index after shift: " << curCamInd << endl;
-			break;
-		}
-
-		case 'w':
-		case 'W':
-		{
-			player->start();
 			break;
 		}
 	}
@@ -547,37 +517,31 @@ void special(int key, int x, int y)
 	{
 		// Move camera in positive z direction
 		case GLUT_KEY_UP:
-			//camPos[2] += 2;
 			thirdPersonCam->move(0, 0, 2);
 			break;
 
 		// Move camera in negative z direction
 		case GLUT_KEY_DOWN:
-			//camPos[2] -= 2;
 			thirdPersonCam->move(0, 0, -2);
 			break;
 
 		// Move camera in negative x direction
 		case GLUT_KEY_LEFT:
-			//camPos[0] -= 2;
 			thirdPersonCam->move(-2, 0, 0);
 			break;
 
 		// Move camera in positive x direction
 		case GLUT_KEY_RIGHT:
-			//camPos[0] += 2;
 			thirdPersonCam->move(2, 0, 0);
 			break;
 
 		// Move camera in negative y direction
 		case GLUT_KEY_PAGE_DOWN:
-			//camPos[1] -= 1;
 			thirdPersonCam->move(0, -1, 0);
 			break;
 
 		// Move camera in positive y direction
 		case GLUT_KEY_PAGE_UP:
-			//camPos[1] += 1;
 			thirdPersonCam->move(0, 1, 0);
 			break;
 	}
@@ -612,7 +576,6 @@ void display(void)
 	TrackingCamera* curCam = cameras.at(curCamInd); // Fetch current camera
 
 	// Set where we're looking at
-	//gluLookAt(camPos[0], camPos[1], camPos[2], tarPos[0], tarPos[1], tarPos[2], camUp[0], camUp[1], camUp[2]);
 	gluLookAt(curCam->getPosX(), curCam->getPosY(), curCam->getPosZ(),  // Position
 		curCam->getTargX(), curCam->getTargY(), curCam->getTargZ(), // Target
 		curCam->getUpX(), curCam->getUpY(), curCam->getUpZ()); // Up vector
@@ -623,11 +586,7 @@ void display(void)
 	drawSky();
 
 	glPushMatrix();
-		/* Rotate track */
-		//glTranslatef(tarPos[0], tarPos[1], tarPos[2]);
-		//glRotatef(angle, 0.0, 1.0, 0.0);
-		//glTranslatef(-tarPos[0], -tarPos[1], -tarPos[2]);
-
+		
 		// Draws track
 		drawMesh(track);
 
@@ -635,8 +594,7 @@ void display(void)
 		renderShip();
 		player->velocity();
 		updateCams();
-		//tCam->update(); // Update camera with new position
-
+		
 		// Draws power ups
 		powerup1.draw();
 		powerup2.draw();
@@ -657,7 +615,7 @@ void display(void)
 	 //Collision check 
 	for (int i = 0; i < 9; i++) // Loop through bounds
 	{
-		//cout << playerBound->collidingWith(boundsO[i]); // Check for collision with this  collider
+		
 		if(playerBound->collidingWith(boundsO[i]) == true)
 		{
 			obHit = true;
@@ -665,9 +623,10 @@ void display(void)
 
 		if(obHit == true)
 		{
-			//checkO[i].collision();
+			
 			player->speedDrop();
 			player->decHealth();
+			player->healthBar();
 			obHit = false;
 		}
 		
@@ -675,7 +634,7 @@ void display(void)
 	
 	for (int i = 0; i < 3; i++) // Loop through bounds
 	{
-		//cout << playerBound->collidingWith(boundsP[i]); // Check for collision with this  collider
+		
 		if(playerBound->collidingWith(boundsP[i]) == true)
 		{
 			powHit = true;
@@ -683,13 +642,11 @@ void display(void)
 	
 		if(powHit == true)
 		{
-			//checkP[i].collision();
+			
 			player->speedBoost();
 			powHit = false;
 		}
 	}
-	//cout << playerBound->collidingWith(obstacle1Bound);
-
 	drawHUD();
 
 	// Swap into back buffer on each call to display 

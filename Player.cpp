@@ -107,14 +107,8 @@ void Player::velocity()
 {
 	if(stillRacing)
 	{
-		/*x += (cos(rot[1]*M_PI/180)*0.2);
-		z -= (sin(rot[1]*M_PI/180)*0.2);*/
-		/*x += (cos(rot[1]*M_PI/180)*0.05);
-		z -= (sin(rot[1]*M_PI/180)*0.05);*/
 		x += (cos(rot[1]*M_PI/180)*0.1*speed);
 		z -= (sin(rot[1]*M_PI/180)*0.1*speed);
-		//x += xAmt;
-		//z += zAmt;
 		bsp->move(cos(rot[1]*M_PI/180)*0.1*speed, 0, -sin(rot[1]*M_PI/180)*0.1*speed);
 	}
 }
@@ -151,10 +145,8 @@ int Player::getMaxHealth() const
 }
 
 void Player::decHealth()
-{
-	//clog << "Old health = " << health << endl;
+{	
 	health--;
-	//clog << "New health = " << health << endl;
 }
 
 void Player::setBoundingSphere(BoundingSphere* sp)
