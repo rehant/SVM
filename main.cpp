@@ -583,7 +583,7 @@ void display(void)
 	// Sets how polygons are drawn
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	drawSky();
+	//drawSky();
 
 	glPushMatrix();
 		
